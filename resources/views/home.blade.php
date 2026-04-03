@@ -22,6 +22,7 @@
         position: relative;
         overflow: hidden;
         margin-top: 0;
+        background: linear-gradient(180deg, #0d1421 0%, #121b2d 100%);
     }
     
     .slider-container {
@@ -190,6 +191,30 @@
         max-width: 700px;
         margin: 0 auto 2rem;
         line-height: 1.6;
+    }
+
+    [dir="rtl"] .slide-title,
+    [dir="rtl"] .section-title-modern,
+    [dir="rtl"] .category-card-title,
+    [dir="rtl"] .product-card-title,
+    [dir="rtl"] .feature-title-modern {
+        font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+        letter-spacing: 0;
+        text-transform: none;
+        font-feature-settings: "liga" 1, "calt" 1;
+    }
+
+    [dir="rtl"] .slide-title,
+    [dir="rtl"] .section-title-modern {
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    [dir="rtl"] .category-card-title,
+    [dir="rtl"] .product-card-title,
+    [dir="rtl"] .feature-title-modern {
+        font-weight: 700;
+        line-height: 1.35;
     }
     
     .section-divider {
@@ -900,7 +925,7 @@
     @media (max-width: 768px) {
         .hero-slider {
             min-height: 500px;
-            padding-top: var(--navbar-height-mobile);
+            padding-top: 0;
         }
         
         .slide-title {

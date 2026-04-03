@@ -1063,7 +1063,7 @@
             
             main > section:first-child,
             main > .hero-slider {
-                padding-top: var(--navbar-height-mobile);
+                padding-top: 0;
             }
             
             .card-voltronix {
@@ -1832,8 +1832,10 @@
         }
         
         .action-btn-login {
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
             gap: 8px;
             padding: 10px 20px;
             background: linear-gradient(135deg, #007fff, #0066cc);
@@ -1842,10 +1844,18 @@
             color: #fff;
             font-weight: 600;
             font-size: 0.9rem;
+            line-height: 1;
+            white-space: nowrap;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             box-shadow: 0 4px 15px rgba(0, 127, 255, 0.3);
+        }
+
+        .action-btn-login span {
+            display: inline-block;
+            line-height: 1.1;
+            white-space: nowrap;
         }
         
         .action-btn-login:hover {
@@ -1853,6 +1863,19 @@
             box-shadow: 0 6px 25px rgba(0, 127, 255, 0.5);
             transform: translateY(-2px);
             color: #fff;
+        }
+
+        [dir="rtl"] .action-btn-login {
+            gap: 6px;
+            padding: 10px 16px;
+            font-size: 0.82rem;
+            min-height: 44px;
+            letter-spacing: 0;
+        }
+
+        [dir="rtl"] .action-btn-login i,
+        [dir="rtl"] .action-btn-login span {
+            flex-shrink: 0;
         }
         
         .ctrl-dropdown {
@@ -2423,6 +2446,191 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .voltronix-header {
+                height: 68px !important;
+            }
+
+            .header-container {
+                padding: 0 0.95rem !important;
+                gap: 0.75rem !important;
+                height: 100% !important;
+            }
+
+            .header-center {
+                flex: 1 1 auto !important;
+                min-width: 0;
+                justify-content: flex-start !important;
+            }
+
+            .header-right {
+                flex: 0 0 auto !important;
+                gap: 0.55rem !important;
+            }
+
+            [dir="rtl"] .header-container {
+                flex-direction: row-reverse !important;
+            }
+
+            [dir="rtl"] .header-center {
+                justify-content: flex-end !important;
+            }
+
+            .brand-section {
+                gap: 0.75rem !important;
+                min-width: 0;
+            }
+
+            .brand-identity {
+                display: flex !important;
+                min-width: 0;
+                max-width: clamp(140px, 38vw, 220px);
+            }
+
+            .brand-title {
+                display: inline-flex !important;
+                font-size: 1.2rem !important;
+                line-height: 1 !important;
+            }
+
+            .brand-title[data-brand-script="arabic"] {
+                display: inline-block !important;
+                font-size: 1.14rem !important;
+            }
+
+            .brand-logo-wrapper {
+                width: 58px !important;
+                height: 58px !important;
+            }
+
+            .brand-logo-img {
+                width: 50px !important;
+                height: 50px !important;
+            }
+
+            .header-actions {
+                gap: 0.45rem !important;
+            }
+
+            .action-icon,
+            .action-btn-login,
+            .mobile-menu-btn {
+                width: 38px !important;
+                height: 38px !important;
+                min-width: 38px !important;
+                min-height: 38px !important;
+                border-radius: 12px !important;
+            }
+
+            .action-btn-login {
+                padding: 0 !important;
+                gap: 0 !important;
+                box-shadow: 0 4px 15px rgba(0, 127, 255, 0.22) !important;
+            }
+
+            .action-btn-login span {
+                display: none !important;
+            }
+
+            .mobile-menu-btn {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 4px !important;
+                padding: 0 !important;
+                background: rgba(0, 127, 255, 0.08) !important;
+                border: 1px solid rgba(0, 127, 255, 0.18) !important;
+                border-radius: 12px !important;
+            }
+
+            .mobile-menu-btn span {
+                width: 16px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .voltronix-header {
+                height: 64px !important;
+            }
+
+            .header-container {
+                padding: 0 0.75rem !important;
+                gap: 0.5rem !important;
+                height: 100% !important;
+            }
+
+            .brand-identity {
+                max-width: min(41vw, 150px);
+            }
+
+            .brand-title {
+                font-size: 1.04rem !important;
+            }
+
+            .brand-title[data-brand-script="arabic"] {
+                font-size: 1rem !important;
+            }
+
+            .brand-logo-wrapper {
+                width: 52px !important;
+                height: 52px !important;
+            }
+
+            .brand-logo-img {
+                width: 46px !important;
+                height: 46px !important;
+            }
+
+            .header-actions {
+                gap: 0.35rem !important;
+            }
+
+            .action-icon,
+            .action-btn-login,
+            .mobile-menu-btn {
+                width: 34px !important;
+                height: 34px !important;
+                min-width: 34px !important;
+                min-height: 34px !important;
+                font-size: 0.95rem !important;
+            }
+
+            .mobile-menu-btn span {
+                width: 14px !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .header-container {
+                padding: 0 0.65rem !important;
+                gap: 0.35rem !important;
+                height: 100% !important;
+            }
+
+            .brand-identity {
+                display: none !important;
+            }
+
+            .brand-logo-wrapper {
+                width: 46px !important;
+                height: 46px !important;
+            }
+
+            .brand-logo-img {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .action-icon,
+            .action-btn-login,
+            .mobile-menu-btn {
+                width: 32px !important;
+                height: 32px !important;
+                min-width: 32px !important;
+                min-height: 32px !important;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .electric-arc,
             .spark,
@@ -2485,13 +2693,61 @@
             unicode-bidi: isolate;
             text-align: right;
             text-rendering: optimizeLegibility;
+            isolation: isolate;
             background: linear-gradient(135deg, #f5f8ff 0%, #9adfff 52%, #23efff 100%) !important;
             background-image: linear-gradient(135deg, #f5f8ff 0%, #9adfff 52%, #23efff 100%) !important;
+            background-size: 220% 100% !important;
+            background-position: 0% 50% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
             text-shadow: 0 0 18px rgba(0, 127, 255, 0.18);
-            animation: arabicBrandGlow 5s ease-in-out infinite;
+            animation: arabicBrandGlow 3.6s ease-in-out infinite, arabicBrandShimmer 7.2s linear infinite;
+        }
+
+        .brand-title[data-brand-script="arabic"]::before {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            font: inherit;
+            direction: inherit;
+            unicode-bidi: inherit;
+            white-space: inherit;
+            color: rgba(154, 223, 255, 0.28);
+            text-shadow: 0 0 16px rgba(0, 127, 255, 0.22),
+                0 0 28px rgba(35, 239, 255, 0.16);
+            filter: blur(0.55px);
+            opacity: 0.72;
+            pointer-events: none;
+            animation: arabicBrandAura 3.6s ease-in-out infinite;
+        }
+
+        .brand-title[data-brand-script="arabic"]::after {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            font: inherit;
+            direction: inherit;
+            unicode-bidi: inherit;
+            white-space: inherit;
+            background: linear-gradient(112deg,
+                transparent 16%,
+                rgba(255, 255, 255, 0.12) 43%,
+                rgba(255, 255, 255, 0.96) 50%,
+                rgba(35, 239, 255, 0.82) 54%,
+                transparent 72%);
+            background-size: 240% 100%;
+            background-position: 120% 50%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0.55;
+            mix-blend-mode: screen;
+            filter: drop-shadow(0 0 8px rgba(35, 239, 255, 0.18));
+            pointer-events: none;
+            animation: arabicBrandCurrent 6.2s cubic-bezier(0.42, 0, 0.28, 1) infinite;
         }
 
         .mobile-brand-name[lang="ar"] {
@@ -2506,6 +2762,13 @@
             direction: rtl;
             unicode-bidi: isolate;
             text-rendering: optimizeLegibility;
+            background: linear-gradient(135deg, #f5f8ff 0%, #9adfff 52%, #23efff 100%);
+            background-size: 220% 100%;
+            background-position: 0% 50%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: arabicBrandGlow 4.2s ease-in-out infinite, arabicBrandShimmer 9s linear infinite;
         }
 
         /* Per-letter spans for internal electric behavior */
@@ -2678,12 +2941,60 @@
 
         @keyframes arabicBrandGlow {
             0%, 100% {
-                text-shadow: 0 0 14px rgba(0, 127, 255, 0.14);
-                filter: brightness(1);
+                text-shadow: 0 0 12px rgba(0, 127, 255, 0.14);
+                filter: brightness(0.98) saturate(1);
+            }
+            42% {
+                text-shadow: 0 0 26px rgba(35, 239, 255, 0.22);
+                filter: brightness(1.08) saturate(1.08);
             }
             50% {
-                text-shadow: 0 0 24px rgba(35, 239, 255, 0.2);
-                filter: brightness(1.05);
+                text-shadow: 0 0 18px rgba(255, 255, 255, 0.16),
+                    0 0 32px rgba(35, 239, 255, 0.18);
+                filter: brightness(1.12) saturate(1.1);
+            }
+            58% {
+                text-shadow: 0 0 14px rgba(0, 127, 255, 0.16);
+                filter: brightness(1.02) saturate(1.02);
+            }
+        }
+
+        @keyframes arabicBrandShimmer {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 220% 50%;
+            }
+        }
+
+        @keyframes arabicBrandAura {
+            0%, 100% {
+                opacity: 0.46;
+                transform: translateY(0);
+            }
+            50% {
+                opacity: 0.84;
+                transform: translateY(-0.4px);
+            }
+        }
+
+        @keyframes arabicBrandCurrent {
+            0%,
+            14% {
+                background-position: 130% 50%;
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.68;
+            }
+            33% {
+                background-position: -35% 50%;
+                opacity: 0.22;
+            }
+            100% {
+                background-position: -35% 50%;
+                opacity: 0;
             }
         }
 
@@ -2719,6 +3030,11 @@
                 animation: none !important;
                 background-position: 0 50%;
             }
+            .brand-title[data-brand-script="arabic"]::before,
+            .brand-title[data-brand-script="arabic"]::after {
+                animation: none !important;
+                opacity: 0 !important;
+            }
             .brand-char {
                 animation: none !important;
                 transform: none !important;
@@ -2730,6 +3046,7 @@
             }
             .mobile-brand-name[lang="ar"] {
                 animation: none !important;
+                background-position: 0 50% !important;
             }
         }
         
