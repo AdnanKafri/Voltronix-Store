@@ -123,6 +123,7 @@
             --voltronix-gradient-light: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
             --navbar-height-desktop: 75px;
             --navbar-height-mobile: 60px;
+            --site-header-height: 80px;
             --border-radius-sm: 12px;
             --border-radius-md: 20px;
             --border-radius-lg: 30px;
@@ -214,6 +215,10 @@
         /* Prevent mobile menu body scroll */
         body.mobile-menu-open {
             overflow: hidden;
+        }
+
+        .content-wrapper {
+            padding-top: var(--site-header-height);
         }
         
         /* Hero Section */
@@ -2447,6 +2452,10 @@
         }
 
         @media (max-width: 768px) {
+            :root {
+                --site-header-height: 68px;
+            }
+
             .voltronix-header {
                 height: 68px !important;
             }
@@ -2549,6 +2558,10 @@
         }
 
         @media (max-width: 480px) {
+            :root {
+                --site-header-height: 64px;
+            }
+
             .voltronix-header {
                 height: 64px !important;
             }
@@ -4406,6 +4419,419 @@
             outline: 2px solid var(--voltronix-secondary);
             outline-offset: 2px;
         }
+
+        /* Footer Refresh */
+        .footer-voltronix {
+            position: relative;
+            margin-top: 4rem;
+            padding: 4.25rem 0 1.15rem;
+            background:
+                radial-gradient(circle at top left, rgba(35, 239, 255, 0.14), transparent 26%),
+                radial-gradient(circle at top right, rgba(0, 127, 255, 0.12), transparent 24%),
+                linear-gradient(180deg, #09111d 0%, #0d1625 52%, #08101b 100%);
+            border-top: 1px solid rgba(35, 239, 255, 0.16);
+            overflow: hidden;
+        }
+
+        .footer-voltronix::before {
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent 30%),
+                linear-gradient(180deg, rgba(0, 127, 255, 0.06), transparent 75%);
+            opacity: 1;
+        }
+
+        .footer-voltronix::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 4.9rem;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.06) 18%,
+                    rgba(35, 239, 255, 0.24) 50%,
+                    rgba(255, 255, 255, 0.06) 82%,
+                    transparent 100%);
+            opacity: 0.75;
+            pointer-events: none;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-main-row {
+            --bs-gutter-x: 1.75rem;
+            --bs-gutter-y: 1.75rem;
+            align-items: stretch;
+        }
+
+        .footer-column {
+            display: flex;
+        }
+
+        .footer-section {
+            width: 100%;
+            height: 100%;
+            padding: 1.45rem 1.5rem 1.35rem;
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .footer-column-brand .footer-section {
+            background: linear-gradient(180deg, rgba(0, 127, 255, 0.12), rgba(255, 255, 255, 0.03));
+        }
+
+        .footer-brand {
+            gap: 1rem;
+            margin-bottom: 1.15rem;
+        }
+
+        .footer-logo {
+            height: 48px;
+            width: auto;
+            filter: drop-shadow(0 10px 20px rgba(0, 127, 255, 0.25));
+        }
+
+        .footer-brand-text {
+            font-size: 1.35rem;
+            letter-spacing: 0.06em;
+        }
+
+        .footer-description {
+            margin-bottom: 1.35rem;
+            font-size: 0.96rem;
+            line-height: 1.8;
+            color: rgba(236, 243, 255, 0.78);
+            max-width: 32rem;
+        }
+
+        .footer-title {
+            margin-bottom: 1.1rem;
+            font-size: 0.82rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.82);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .footer-links li {
+            margin-bottom: 0;
+        }
+
+        .footer-links a {
+            padding: 0.08rem 0;
+            gap: 0.7rem;
+            font-size: 0.94rem;
+            color: rgba(228, 236, 248, 0.74);
+        }
+
+        .footer-links a i {
+            width: 1rem;
+            color: rgba(35, 239, 255, 0.78);
+            opacity: 1;
+        }
+
+        .footer-links a:hover {
+            transform: translateX(6px);
+            color: #fff;
+        }
+
+        .social-links {
+            gap: 0.85rem;
+            margin-top: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(10, 20, 34, 0.78), rgba(18, 39, 65, 0.56));
+            border: 1px solid rgba(35, 239, 255, 0.16);
+            color: rgba(244, 248, 255, 0.82);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                0 12px 24px rgba(0, 0, 0, 0.18);
+            font-size: 1rem;
+        }
+
+        .social-link:hover {
+            transform: translateY(-4px) scale(1.04);
+            background: linear-gradient(135deg, rgba(0, 127, 255, 0.92), rgba(35, 239, 255, 0.88));
+            border-color: rgba(35, 239, 255, 0.55);
+            box-shadow:
+                0 18px 30px rgba(0, 127, 255, 0.28),
+                0 0 22px rgba(35, 239, 255, 0.12);
+            color: #fff;
+        }
+
+        .contact-info {
+            gap: 0.9rem;
+        }
+
+        .contact-item {
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            line-height: 1.65;
+            color: rgba(236, 243, 255, 0.74);
+        }
+
+        .contact-item i {
+            width: 18px;
+            font-size: 1rem;
+            margin-top: 0.18rem;
+        }
+
+        .footer-divider {
+            height: 1px;
+            border: 0;
+            opacity: 1;
+            margin: 2.3rem 0 1.1rem;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.08) 18%,
+                    rgba(35, 239, 255, 0.34) 50%,
+                    rgba(255, 255, 255, 0.08) 82%,
+                    transparent 100%);
+        }
+
+        .footer-bottom-row {
+            padding-top: 0.4rem;
+            row-gap: 0.45rem;
+        }
+
+        .footer-copyright,
+        .footer-made {
+            color: rgba(219, 228, 242, 0.58);
+            font-size: 0.9rem;
+            letter-spacing: 0.01em;
+        }
+
+        [dir="rtl"] .footer-voltronix,
+        [dir="rtl"] .footer-voltronix .footer-section,
+        [dir="rtl"] .footer-links a,
+        [dir="rtl"] .contact-item,
+        [dir="rtl"] .footer-copyright,
+        [dir="rtl"] .footer-made {
+            font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+        }
+
+        [dir="rtl"] .footer-voltronix .footer-section {
+            text-align: right;
+        }
+
+        [dir="rtl"] .footer-brand {
+            justify-content: flex-start;
+        }
+
+        [dir="rtl"] .footer-brand-text,
+        [dir="rtl"] .footer-title {
+            font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        [dir="rtl"] .footer-links a {
+            justify-content: flex-start;
+            gap: 0.65rem;
+        }
+
+        [dir="rtl"] .footer-links a:hover {
+            transform: translateX(-6px);
+        }
+
+        [dir="rtl"] .contact-item {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+
+        [dir="rtl"] .contact-item i {
+            margin-top: 0.12rem;
+        }
+
+        [dir="rtl"] .social-links {
+            justify-content: flex-start;
+        }
+
+        [dir="rtl"] .footer-bottom-row>div {
+            text-align: right !important;
+        }
+
+        @media (max-width: 991px) {
+            .footer-voltronix {
+                padding: 3.5rem 0 1rem;
+            }
+
+            .footer-section {
+                padding: 1.3rem 1.25rem;
+            }
+
+            .footer-main-row {
+                --bs-gutter-x: 1.15rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-voltronix {
+                padding: 3rem 0 1rem !important;
+                margin-top: 2.5rem !important;
+            }
+
+            .footer-voltronix::after {
+                bottom: 5.65rem;
+            }
+
+            .footer-main-row {
+                --bs-gutter-y: 1rem;
+            }
+
+            .footer-column {
+                display: block;
+            }
+
+            .footer-section {
+                padding: 1.25rem 1.15rem !important;
+                border-radius: 20px;
+                text-align: start !important;
+            }
+
+            .footer-brand {
+                justify-content: flex-start !important;
+                text-align: start !important;
+            }
+
+            .footer-title {
+                font-size: 0.78rem !important;
+            }
+
+            .footer-links a {
+                justify-content: flex-start !important;
+                font-size: 0.9rem !important;
+            }
+
+            .social-links {
+                justify-content: flex-start !important;
+            }
+
+            .contact-info {
+                align-items: stretch !important;
+                text-align: start !important;
+            }
+
+            .footer-bottom-row>div,
+            [dir="rtl"] .footer-bottom-row>div {
+                text-align: center !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .footer-voltronix {
+                padding: 2.65rem 0 0.9rem !important;
+            }
+
+            .footer-brand {
+                gap: 0.85rem;
+            }
+
+            .footer-logo {
+                height: 42px;
+            }
+
+            .footer-brand-text {
+                font-size: 1.15rem;
+            }
+
+            .footer-description {
+                font-size: 0.9rem;
+                line-height: 1.75;
+            }
+
+            .social-link {
+                width: 42px;
+                height: 42px;
+            }
+
+            .footer-divider {
+                margin: 1.7rem 0 1rem;
+            }
+
+            .footer-copyright,
+            .footer-made {
+                font-size: 0.82rem;
+            }
+        }
+
+        /* Mobile Arabic Header Balance */
+        @media (max-width: 768px) {
+            [dir="rtl"] .brand-section {
+                gap: 0.55rem !important;
+            }
+
+            [dir="rtl"] .brand-identity {
+                max-width: min(30vw, 118px) !important;
+            }
+
+            [dir="rtl"] .brand-title[data-brand-script="arabic"] {
+                font-size: 0.96rem !important;
+                line-height: 1.04 !important;
+            }
+
+            [dir="rtl"] .header-actions {
+                gap: 0.32rem !important;
+            }
+
+            [dir="rtl"] .action-icon,
+            [dir="rtl"] .action-btn-login,
+            [dir="rtl"] .mobile-menu-btn {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            [dir="rtl"] .header-container {
+                gap: 0.4rem !important;
+            }
+
+            [dir="rtl"] .brand-identity {
+                display: none !important;
+            }
+
+            [dir="rtl"] .brand-section {
+                gap: 0.35rem !important;
+            }
+
+            [dir="rtl"] .brand-logo-wrapper {
+                width: 48px !important;
+                height: 48px !important;
+            }
+
+            [dir="rtl"] .brand-logo-img {
+                width: 42px !important;
+                height: 42px !important;
+            }
+
+            [dir="rtl"] .header-actions {
+                gap: 0.28rem !important;
+            }
+        }
     </style>
 
     @stack('styles')
@@ -4454,8 +4880,8 @@
     <footer class="footer-voltronix">
         <div class="footer-content">
             <div class="volt-container">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 mb-3">
+                <div class="row footer-main-row">
+                    <div class="col-lg-4 col-md-6 mb-3 footer-column footer-column-brand">
                         <div class="footer-section">
                             <div class="footer-brand">
                                 <img src="{{ asset('images/logo.png') }}" alt="{{ __('app.brand.name') }}" class="footer-logo">
@@ -4484,7 +4910,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-3 col-6 mb-3">
+                    <div class="col-lg-2 col-md-3 col-6 mb-3 footer-column footer-column-links">
                         <div class="footer-section">
                             <h6 class="footer-title">{{ __('app.footer.quick_links') }}</h6>
                             <ul class="footer-links">
@@ -4496,7 +4922,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-3 col-6 mb-3">
+                    <div class="col-lg-2 col-md-3 col-6 mb-3 footer-column footer-column-legal">
                         <div class="footer-section">
                             <h6 class="footer-title">{{ __('app.footer.legal') }}</h6>
                             <ul class="footer-links">
@@ -4506,7 +4932,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-12 mb-3">
+                    <div class="col-lg-4 col-md-12 mb-3 footer-column footer-column-contact">
                         <div class="footer-section">
                             <h6 class="footer-title">{{ __('app.footer.connect') }}</h6>
                             <div class="contact-info">
@@ -4533,7 +4959,7 @@
                     </div>
                 </div>
                 <hr class="footer-divider">
-                <div class="row align-items-center">
+                <div class="row align-items-center footer-bottom-row">
                     <div class="col-md-6 text-center text-md-start">
                         <p class="footer-copyright">
                             {{ __('app.footer.copyright') }}
@@ -5654,43 +6080,26 @@
             hideSpinner();
         };
 
-        let lastScrollTop = 0;
-        let scrollTimeout;
-        const navbar = document.querySelector('.voltronix-header');
-        
-        function handleScroll() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            if (scrollTop > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-            
-            if (scrollTop > 200) {
-                if (scrollTop > lastScrollTop && !navbar.classList.contains('hidden')) {
-                    navbar.classList.add('hidden');
-                    navbar.classList.remove('visible');
-                } else if (scrollTop < lastScrollTop && navbar.classList.contains('hidden')) {
-                    navbar.classList.remove('hidden');
-                    navbar.classList.add('visible');
+        const persistentNavbar = document.querySelector('.voltronix-header');
+
+        if (persistentNavbar) {
+            function syncNavbarVisibility() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (scrollTop > 50) {
+                    persistentNavbar.classList.add('scrolled');
+                } else {
+                    persistentNavbar.classList.remove('scrolled');
                 }
-            } else {
-                navbar.classList.remove('hidden');
-                navbar.classList.add('visible');
+
+                // The storefront header should always remain visible.
+                persistentNavbar.classList.remove('hidden');
+                persistentNavbar.classList.add('visible');
             }
-            
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+            window.addEventListener('scroll', syncNavbarVisibility, { passive: true });
+            syncNavbarVisibility();
         }
-        
-        window.addEventListener('scroll', function() {
-            if (scrollTimeout) {
-                clearTimeout(scrollTimeout);
-            }
-            scrollTimeout = setTimeout(handleScroll, 10);
-        }, { passive: true });
-        
-        handleScroll();
         
         /* ========================================
            VOLTAGE CANVAS ANIMATION SYSTEM

@@ -1266,10 +1266,11 @@
    ======================================== */
 
 .navbar-sticky-wrapper {
-    position: -webkit-sticky;
-    /* Safari */
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: 9999;
 }
 
@@ -1283,11 +1284,21 @@
     height: 80px;
     border-bottom: 1px solid rgba(0, 127, 255, 0.15);
     transition: all 0.3s ease;
+    width: 100%;
+}
 
+.voltronix-header.hidden,
+.voltronix-header.visible {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
 }
 
 /* Responsive adjustments for header height */
 @media (max-width: 991px) {
+    :root {
+        --site-header-height: 60px;
+    }
+
     .voltronix-header {
         height: 60px !important;
     }

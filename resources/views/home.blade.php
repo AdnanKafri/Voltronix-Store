@@ -38,7 +38,7 @@
         width: 100%;
         height: 100%;
         opacity: 0;
-        transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -83,6 +83,11 @@
         max-width: 900px;
         margin: 0 auto;
         padding: 2rem;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
     
     .slide-title {
@@ -898,7 +903,35 @@
         line-height: 1.6;
         color: #555;
         margin-bottom: 1.5rem;
-        font-style: italic;
+        font-style: normal;
+        direction: ltr;
+        text-align: left;
+        unicode-bidi: isolate;
+        quotes: "“" "”" "‘" "’";
+    }
+
+    .testimonial-text::before,
+    .testimonial-text::after {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.35rem;
+        color: rgba(0, 127, 255, 0.68);
+        line-height: 0;
+        vertical-align: middle;
+    }
+
+    .testimonial-text::before {
+        content: open-quote;
+        margin-right: 0.28rem;
+    }
+
+    .testimonial-text::after {
+        content: close-quote;
+        margin-left: 0.28rem;
+    }
+
+    [dir="rtl"] .testimonial-text {
+        direction: ltr;
+        text-align: left;
     }
     
     .testimonial-author {
@@ -924,8 +957,18 @@
     /* Responsive Design */
     @media (max-width: 768px) {
         .hero-slider {
-            min-height: 500px;
+            min-height: max(560px, calc(100svh - var(--navbar-height-mobile)));
             padding-top: 0;
+        }
+
+        .slide {
+            padding: 0 0.85rem;
+            align-items: stretch;
+        }
+
+        .slide-content {
+            max-width: min(100%, 34rem);
+            padding: 5.75rem 1.35rem 8rem;
         }
         
         .slide-title {
@@ -934,6 +977,17 @@
         
         .slide-subtitle {
             font-size: 1.1rem;
+            margin-bottom: 1.85rem;
+            max-width: 32rem;
+        }
+
+        .slide-buttons {
+            width: 100%;
+            gap: 0.85rem;
+        }
+
+        .slide-buttons .btn {
+            min-height: 50px;
         }
         
         .section-title-modern {
@@ -946,12 +1000,24 @@
         }
         
         .slider-nav {
-            width: 45px;
-            height: 45px;
+            top: auto;
+            bottom: 1.15rem;
+            transform: none;
+            width: 44px;
+            height: 44px;
+            font-size: 1rem;
         }
         
         .slider-prev { left: 1rem; }
         .slider-next { right: 1rem; }
+
+        .slider-controls {
+            bottom: 1.15rem;
+        }
+
+        .slider-nav:hover {
+            transform: scale(1.06);
+        }
         
         .stat-number {
             font-size: 2.5rem;
@@ -959,8 +1025,22 @@
     }
     
     @media (max-width: 576px) {
+        .hero-slider {
+            min-height: 620px;
+        }
+
+        .slide-content {
+            padding: 5.35rem 1rem 8.35rem;
+        }
+
         .slide-title {
-            font-size: 2rem;
+            font-size: clamp(1.9rem, 9vw, 2.45rem);
+            margin-bottom: 1rem;
+        }
+
+        .slide-subtitle {
+            font-size: 0.98rem;
+            line-height: 1.7;
         }
         
         .slide-buttons {
@@ -970,6 +1050,23 @@
         
         .slide-buttons .btn {
             width: 100%;
+        }
+
+        .slider-nav {
+            width: 40px;
+            height: 40px;
+            bottom: 1rem;
+        }
+
+        .slider-prev { left: 0.75rem; }
+        .slider-next { right: 0.75rem; }
+
+        .slider-controls {
+            bottom: 1rem;
+        }
+
+        .slider-nav:hover {
+            transform: scale(1.04);
         }
     }
 </style>
@@ -1335,8 +1432,8 @@
                                 <i class="bi bi-star-fill"></i>
                             @endfor
                         </div>
-                        <p class="testimonial-text">
-                            "{{ __('app.testimonials.sample_text_' . $i) }}"
+                        <p class="testimonial-text" dir="ltr" lang="en">
+                            {{ __('app.testimonials.sample_text_' . $i) }}
                         </p>
                         <div class="testimonial-author">
                             <strong>{{ __('app.testimonials.sample_author_' . $i) }}</strong>
@@ -1353,6 +1450,7 @@
 @push('scripts')
 <script>
     // Hero Slider Functionality
+    const HERO_SLIDE_INTERVAL = 6500;
     let currentSlideIndex = 0;
     let autoSlideInterval;
     const slides = document.querySelectorAll('.slide');
@@ -1360,6 +1458,8 @@
     const totalSlides = slides.length;
 
     function showSlide(index) {
+        if (!totalSlides) return;
+
         slides.forEach(slide => slide.classList.remove('active'));
         dots.forEach(dot => dot.classList.remove('active'));
         
@@ -1394,22 +1494,42 @@
     }
 
     function startAutoSlide() {
-        autoSlideInterval = setInterval(nextSlide, 5000);
+        if (totalSlides <= 1) return;
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(nextSlide, HERO_SLIDE_INTERVAL);
+    }
+
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
     }
 
     function resetAutoSlide() {
-        clearInterval(autoSlideInterval);
+        stopAutoSlide();
         startAutoSlide();
     }
 
     // Initialize slider
     document.addEventListener('DOMContentLoaded', function() {
+        const sliderContainer = document.querySelector('.hero-slider');
+        if (!sliderContainer || sliderContainer.dataset.sliderInitialized === 'true' || !totalSlides) {
+            return;
+        }
+
+        sliderContainer.dataset.sliderInitialized = 'true';
         showSlide(0);
         startAutoSlide();
-        
-        const sliderContainer = document.querySelector('.hero-slider');
-        sliderContainer.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
-        sliderContainer.addEventListener('mouseleave', () => startAutoSlide());
+
+        sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+        sliderContainer.addEventListener('mouseleave', startAutoSlide);
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoSlide();
+            } else {
+                startAutoSlide();
+            }
+        });
     });
 
     // Keyboard navigation
