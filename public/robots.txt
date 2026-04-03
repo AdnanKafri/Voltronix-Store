@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /delivery/
+Disallow: /storage/app/private/
+
+# Allow important pages
+Allow: /products/
+Allow: /categories/
+Allow: /offers/
+
+# Sitemap location
+Sitemap: https://voltronix.com/sitemap.xml

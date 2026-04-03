@@ -1,0 +1,20 @@
+<svg width="80" height="40" viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Syriatel Cash Logo - Red/Blue theme -->
+  <rect width="80" height="40" rx="8" fill="#DC143C"/>
+  <rect width="80" height="40" rx="8" fill="url(#syriatelGradient)" opacity="0.2"/>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="syriatelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E90FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066CC;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Syriatel Text -->
+  <text x="40" y="14" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white">SYRIATEL</text>
+  <text x="40" y="26" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" font-weight="600" fill="#FFE4E1">CASH</text>
+  
+  <!-- Phone icon -->
+  <path d="M8 8 L12 8 L12 32 L8 32 Z M14 12 L18 12 L18 28 L14 28 Z" fill="white" opacity="0.4"/>
+</svg>

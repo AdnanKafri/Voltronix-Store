@@ -1,0 +1,26 @@
+{
+    "name": "Voltronix Digital Store",
+    "short_name": "Voltronix",
+    "description": "Your trusted hub for software subscriptions, gaming services, and digital tools.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0d1421",
+    "theme_color": "#007fff",
+    "icons": [
+        {
+            "src": "/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        },
+        {
+            "src": "/images/logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

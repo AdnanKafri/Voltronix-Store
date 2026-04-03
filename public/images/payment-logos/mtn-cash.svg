@@ -1,0 +1,20 @@
+<svg width="80" height="40" viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- MTN Cash Logo - Yellow background with MTN text -->
+  <rect width="80" height="40" rx="8" fill="#FFD700"/>
+  <rect width="80" height="40" rx="8" fill="url(#mtnGradient)" opacity="0.1"/>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="mtnGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- MTN Text -->
+  <text x="40" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#333">MTN</text>
+  <text x="40" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="600" fill="#555">CASH</text>
+  
+  <!-- Phone icon -->
+  <path d="M8 8 L12 8 L12 32 L8 32 Z M14 12 L18 12 L18 28 L14 28 Z" fill="#333" opacity="0.3"/>
+</svg>
