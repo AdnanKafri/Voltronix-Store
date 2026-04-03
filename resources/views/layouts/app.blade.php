@@ -50,7 +50,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     @if(app()->getLocale() == 'ar')
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
     @endif
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -1776,6 +1776,27 @@
             transform: translateY(-2px);
         }
 
+        [dir="rtl"] .header-container,
+        [dir="rtl"] .header-right,
+        [dir="rtl"] .header-actions,
+        [dir="rtl"] .header-controls,
+        [dir="rtl"] .ctrl-btn,
+        [dir="rtl"] .header-nav,
+        [dir="rtl"] .nav-item,
+        [dir="rtl"] .brand-section,
+        [dir="rtl"] .mobile-brand {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .brand-identity {
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        [dir="rtl"] .mobile-brand-name {
+            text-align: right;
+        }
+
         /* Removed headerPulse animation to prevent stacking context issues */
         /* .voltronix-header {
             animation: headerPulse 3.2s ease-in-out infinite;
@@ -2438,6 +2459,7 @@
         .brand-title {
             color: #f5f8ff;
             display: inline-flex;
+            align-items: center;
             gap: 0.02em;
             background: none !important;
             background-image: none !important;
@@ -2448,6 +2470,42 @@
 
         .brand-title::before {
             content: none;
+        }
+
+        .brand-title[data-brand-script="arabic"] {
+            display: inline-block;
+            font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            word-spacing: 0;
+            line-height: 1.08;
+            white-space: nowrap;
+            direction: rtl;
+            unicode-bidi: isolate;
+            text-align: right;
+            text-rendering: optimizeLegibility;
+            background: linear-gradient(135deg, #f5f8ff 0%, #9adfff 52%, #23efff 100%) !important;
+            background-image: linear-gradient(135deg, #f5f8ff 0%, #9adfff 52%, #23efff 100%) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            text-shadow: 0 0 18px rgba(0, 127, 255, 0.18);
+            animation: arabicBrandGlow 5s ease-in-out infinite;
+        }
+
+        .mobile-brand-name[lang="ar"] {
+            display: inline-block;
+            font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            word-spacing: 0;
+            line-height: 1.08;
+            white-space: nowrap;
+            direction: rtl;
+            unicode-bidi: isolate;
+            text-rendering: optimizeLegibility;
         }
 
         /* Per-letter spans for internal electric behavior */
@@ -2618,6 +2676,17 @@
             }
         }
 
+        @keyframes arabicBrandGlow {
+            0%, 100% {
+                text-shadow: 0 0 14px rgba(0, 127, 255, 0.14);
+                filter: brightness(1);
+            }
+            50% {
+                text-shadow: 0 0 24px rgba(35, 239, 255, 0.2);
+                filter: brightness(1.05);
+            }
+        }
+
         @keyframes logoCharge {
             0%, 100% {
                 filter: none;
@@ -2658,6 +2727,9 @@
                 animation: none !important;
                 filter: none !important;
                 transform: none !important;
+            }
+            .mobile-brand-name[lang="ar"] {
+                animation: none !important;
             }
         }
         
@@ -5134,23 +5206,30 @@
 
             const brandTitle = document.querySelector('.brand-title');
             const logoImg = document.querySelector('.brand-logo-img');
+            const brandText = brandTitle ? brandTitle.textContent.trim() : '';
+            const isArabicWordmark = brandTitle
+                ? brandTitle.dataset.brandScript === 'arabic' || /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(brandText)
+                : false;
 
             if (brandTitle && brandTitle.dataset && !brandTitle.dataset.electricReady) {
-                const text = brandTitle.textContent.trim();
-                const chars = text.split('');
-                const frag = document.createDocumentFragment();
+                if (isArabicWordmark) {
+                    brandTitle.dataset.electricReady = 'true';
+                } else {
+                    const chars = Array.from(brandText);
+                    const frag = document.createDocumentFragment();
 
-                chars.forEach((ch, index) => {
-                    const span = document.createElement('span');
-                    span.className = 'brand-char';
-                    span.textContent = ch;
-                    span.style.setProperty('--char-index', index.toString());
-                    frag.appendChild(span);
-                });
+                    chars.forEach((ch, index) => {
+                        const span = document.createElement('span');
+                        span.className = 'brand-char';
+                        span.textContent = ch;
+                        span.style.setProperty('--char-index', index.toString());
+                        frag.appendChild(span);
+                    });
 
-                brandTitle.textContent = '';
-                brandTitle.appendChild(frag);
-                brandTitle.dataset.electricReady = 'true';
+                    brandTitle.textContent = '';
+                    brandTitle.appendChild(frag);
+                    brandTitle.dataset.electricReady = 'true';
+                }
             }
 
             const letterFlickerChance = 0.28;
@@ -5180,7 +5259,7 @@
                 });
             }
 
-            if (!window.__voltronixLetterTimer) {
+            if (!isArabicWordmark && !window.__voltronixLetterTimer) {
                 window.__voltronixLetterTimer = setInterval(triggerLetterEvents, 520);
             }
 

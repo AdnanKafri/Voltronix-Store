@@ -44,7 +44,11 @@
                     <div class="spark spark-4"></div>
                 </div>
                 <div class="brand-identity">
-                    <span class="brand-title" data-text="{{ __('app.brand.name') }}">
+                    <span class="brand-title"
+                          lang="{{ app()->getLocale() }}"
+                          dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}"
+                          data-brand-script="{{ app()->isLocale('ar') ? 'arabic' : 'latin' }}"
+                          data-text="{{ __('app.brand.name') }}">
                         {{ __('app.brand.name') }}
                     </span>
                     <svg class="text-lightning-svg" viewBox="0 0 300 80" xmlns="http://www.w3.org/2000/svg">
@@ -161,7 +165,11 @@
         <div class="mobile-menu-header">
             <div class="mobile-brand">
                 <img src="{{ asset('images/logo.png') }}" alt="{{ __('app.brand.name') }}" class="mobile-logo">
-                <span class="mobile-brand-name">{{ __('app.brand.name') }}</span>
+                <span class="mobile-brand-name"
+                      lang="{{ app()->getLocale() }}"
+                      dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}">
+                    {{ __('app.brand.name') }}
+                </span>
             </div>
             <button class="mobile-close" id="mobileMenuClose">
                 <i class="bi bi-x-lg"></i>
@@ -328,4 +336,3 @@
         </div>
     </div>
 </div>
-
