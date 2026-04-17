@@ -91,14 +91,9 @@ class DeliveryController extends Controller
             ]);
         }
 
-        // Record view
-        $delivery->recordView($request->ip(), $request->userAgent());
+        $maskedCredentials = $delivery->getMaskedProtectedData();
 
-        // Get credentials
-        $credentials = $delivery->getCredentials();
-        $maskedCredentials = $delivery->getMaskedCredentials();
-
-        return view('delivery.credentials', compact('delivery', 'credentials', 'maskedCredentials'));
+        return view('delivery.credentials', compact('delivery', 'maskedCredentials'));
     }
 
     /**
@@ -110,15 +105,23 @@ class DeliveryController extends Controller
             ->whereIn('type', [OrderDelivery::TYPE_CREDENTIALS, OrderDelivery::TYPE_LICENSE])
             ->first();
 
-        if (!$delivery || !$this->canAccessDelivery($delivery) || !$delivery->isAccessible()) {
+        if (
+            !$delivery ||
+            !$this->canAccessDelivery($delivery) ||
+            !$delivery->isAccessible() ||
+            !$delivery->isIpAllowed($request->ip())
+        ) {
             return response()->json(['error' => 'Access denied'], 403);
         }
+
+        $delivery->recordView($request->ip(), $request->userAgent());
 
         // Record credential reveal
         $delivery->recordAccess('reveal_credentials', $request->ip(), $request->userAgent());
 
         return response()->json([
-            'credentials' => $delivery->getCredentials(),
+            'success' => true,
+            'credentials' => $delivery->getProtectedData(),
             'view_duration' => $delivery->view_duration ?? 60 // Default 60 seconds
         ]);
     }

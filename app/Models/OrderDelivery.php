@@ -275,9 +275,24 @@ class OrderDelivery extends Model
         try {
             $decrypted = Crypt::decryptString($this->encrypted_credentials);
             return json_decode($decrypted, true) ?? [];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return [];
         }
+    }
+
+    public function getProtectedData(): array
+    {
+        if ($this->type === self::TYPE_LICENSE) {
+            if (!$this->license_key) {
+                return [];
+            }
+
+            return [
+                'license_key' => $this->license_key,
+            ];
+        }
+
+        return $this->getCredentials();
     }
 
     /**
@@ -298,14 +313,25 @@ class OrderDelivery extends Model
         $masked = [];
 
         foreach ($credentials as $key => $value) {
-            if (in_array(strtolower($key), ['password', 'pass', 'secret', 'key', 'token', 'api_key'])) {
-                $masked[$key] = str_repeat('*', min(strlen($value), 12));
-            } else {
-                $masked[$key] = $value;
-            }
+            $masked[$key] = $this->maskProtectedValue((string) $key, $value);
         }
 
         return $masked;
+    }
+
+    public function getMaskedProtectedData(): array
+    {
+        if ($this->type === self::TYPE_LICENSE) {
+            if (!$this->license_key) {
+                return [];
+            }
+
+            return [
+                'license_key' => $this->getMaskedLicenseKey(),
+            ];
+        }
+
+        return $this->getMaskedCredentials();
     }
 
     /**
@@ -366,6 +392,27 @@ class OrderDelivery extends Model
         
         // Show first 4 and last 4 characters
         return substr($key, 0, 4) . str_repeat('*', $length - 8) . substr($key, -4);
+    }
+
+    private function maskProtectedValue(string $key, mixed $value): string
+    {
+        $stringValue = (string) $value;
+        $normalizedKey = strtolower($key);
+
+        if ($stringValue === '') {
+            return '';
+        }
+
+        if (in_array($normalizedKey, ['password', 'pass', 'secret', 'key', 'token', 'api_key', 'license_key'])) {
+            $maskLength = min(max(strlen($stringValue), 6), 16);
+            return str_repeat('*', $maskLength);
+        }
+
+        if (strlen($stringValue) <= 4) {
+            return str_repeat('*', strlen($stringValue));
+        }
+
+        return substr($stringValue, 0, 2) . str_repeat('*', max(strlen($stringValue) - 4, 4)) . substr($stringValue, -2);
     }
 
     /**
