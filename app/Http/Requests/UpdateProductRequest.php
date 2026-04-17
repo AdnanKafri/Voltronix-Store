@@ -116,8 +116,16 @@ class UpdateProductRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge([
+        $normalized = [
             'sort_order' => $this->integer('sort_order') ?? 0,
-        ]);
+        ];
+
+        foreach (['default_expiration_days', 'default_max_downloads', 'default_max_views'] as $field) {
+            if ($this->filled($field)) {
+                $normalized[$field] = $this->integer($field);
+            }
+        }
+
+        $this->merge($normalized);
     }
 }

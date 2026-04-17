@@ -31,6 +31,7 @@ return new class extends Migration
             // Credentials Delivery (encrypted)
             $table->text('encrypted_credentials')->nullable(); // JSON encrypted credentials
             $table->string('credentials_type')->nullable(); // email_password, license_key, api_key, etc.
+            $table->string('license_key')->nullable();
             
             // Access Control
             $table->string('token')->unique(); // Unique access token

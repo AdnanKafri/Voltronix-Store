@@ -223,7 +223,7 @@ class OrderDelivery extends Model
             ]);
 
             return $log;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('Failed to record delivery access', [
                 'delivery_id' => $this->id,
                 'action' => $action,

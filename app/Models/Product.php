@@ -54,7 +54,10 @@ class Product extends Model
         'media_data' => 'array',
         'average_rating' => 'decimal:2',
         'reviews_count' => 'integer',
-        'auto_delivery_enabled' => 'boolean'
+        'auto_delivery_enabled' => 'boolean',
+        'default_expiration_days' => 'integer',
+        'default_max_downloads' => 'integer',
+        'default_max_views' => 'integer',
     ];
 
     /**
@@ -439,15 +442,26 @@ class Product extends Model
      */
     public function getDeliveryConfig(): array
     {
-        $config = $this->delivery_config ?? [];
-        
-        return array_merge([
-            'expiration_days' => $this->default_expiration_days ?? 30,
-            'max_downloads' => $this->default_max_downloads,
-            'max_views' => $this->default_max_views,
-            'require_otp' => false,
-            'allowed_ips' => null,
-        ], $config);
+        $config = is_array($this->delivery_config) ? $this->delivery_config : [];
+
+        return [
+            'expiration_days' => $this->normalizeNullableInteger(
+                $config['expiration_days'] ?? $this->default_expiration_days ?? 30
+            ),
+            'max_downloads' => $this->normalizeNullableInteger(
+                $config['max_downloads'] ?? $this->default_max_downloads
+            ),
+            'max_views' => $this->normalizeNullableInteger(
+                $config['max_views'] ?? $this->default_max_views
+            ),
+            'require_otp' => filter_var($config['require_otp'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'allowed_ips' => $config['allowed_ips'] ?? null,
+            'default_username' => $config['default_username'] ?? null,
+            'default_password' => $config['default_password'] ?? null,
+            'credential_notes' => $config['credential_notes'] ?? null,
+            'default_license_key' => $config['default_license_key'] ?? null,
+            'license_instructions' => $config['license_instructions'] ?? null,
+        ];
     }
 
     /**
@@ -485,5 +499,14 @@ class Product extends Model
         return $query->where('auto_delivery_enabled', true)
                      ->where('delivery_type', '!=', 'manual')
                      ->where('status', 'available');
+    }
+
+    private function normalizeNullableInteger(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return is_numeric($value) ? (int) $value : null;
     }
 }

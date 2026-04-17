@@ -218,6 +218,8 @@ class OrderController extends Controller
         ]);
 
         try {
+            $shouldDispatchStatusEvent = false;
+
             if ($status === 'approved') {
                 if ($currentStatus === 'pending') {
                     \Log::info('Attempting to approve pending order', ['order_id' => $order->id]);
@@ -230,6 +232,7 @@ class OrderController extends Controller
                     \Log::info('Direct status update to approved', ['order_id' => $order->id]);
                     $order->update(['status' => $status]);
                     \Log::info('Direct update completed', ['new_status' => $order->fresh()->status]);
+                    $shouldDispatchStatusEvent = true;
                 }
             } elseif ($status === 'rejected') {
                 if ($currentStatus === 'pending') {
@@ -239,15 +242,18 @@ class OrderController extends Controller
                     
                     $result = $order->reject($admin, 'Status updated via admin panel', 'Status updated via admin panel');
                     \Log::info('Reject method result', ['result' => $result, 'new_status' => $order->fresh()->status]);
+                    $shouldDispatchStatusEvent = true;
                 } else {
                     \Log::info('Direct status update to rejected', ['order_id' => $order->id]);
                     $order->update(['status' => $status]);
                     \Log::info('Direct update completed', ['new_status' => $order->fresh()->status]);
+                    $shouldDispatchStatusEvent = true;
                 }
             } else {
                 \Log::info('Direct status update to other status', ['order_id' => $order->id, 'status' => $status]);
                 $order->update(['status' => $status]);
                 \Log::info('Direct update completed', ['new_status' => $order->fresh()->status]);
+                $shouldDispatchStatusEvent = true;
             }
 
             $finalOrder = $order->fresh();
@@ -258,7 +264,7 @@ class OrderController extends Controller
             ]);
 
             // Fire event for automation processing
-            if ($currentStatus !== $finalOrder->status) {
+            if ($shouldDispatchStatusEvent && $currentStatus !== $finalOrder->status) {
                 OrderStatusChanged::dispatch($finalOrder, $currentStatus, $finalOrder->status);
             }
 
@@ -268,7 +274,7 @@ class OrderController extends Controller
                 'status' => $finalOrder->status,
                 'status_badge' => $finalOrder->status_badge_class
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('=== ORDER STATUS UPDATE EXCEPTION ===', [
                 'order_id' => $order->id,
                 'current_status' => $currentStatus,

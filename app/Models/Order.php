@@ -430,7 +430,7 @@ class Order extends Model
             }
 
             return true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('=== ORDER APPROVE METHOD EXCEPTION ===', [
                 'order_id' => $this->id,
                 'error_message' => $e->getMessage(),
@@ -476,7 +476,7 @@ class Order extends Model
             ]);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('=== ORDER REJECT METHOD EXCEPTION ===', [
                 'order_id' => $this->id,
                 'error_message' => $e->getMessage(),

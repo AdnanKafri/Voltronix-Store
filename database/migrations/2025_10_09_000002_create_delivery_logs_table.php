@@ -13,14 +13,16 @@ return new class extends Migration
     {
         Schema::create('delivery_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('delivery_id')->constrained('order_deliveries')->onDelete('cascade');
+            $table->foreignId('delivery_id')->nullable()->constrained('order_deliveries')->nullOnDelete();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             
             // Action Details
             $table->enum('action', [
                 'download', 'view_credentials', 'reveal_credentials', 
                 'reissue', 'extend', 'revoke', 'regenerate_token',
-                'access_denied', 'expired_access', 'limit_exceeded'
+                'access_denied', 'expired_access', 'limit_exceeded',
+                'reset_counts', 'access_request',
+                'auto_created', 'auto_failed', 'automation_summary'
             ]);
             $table->string('status')->default('success'); // success, failed, denied
             $table->text('details')->nullable(); // Additional action details

@@ -7,10 +7,19 @@ class VoltronixLoader {
     constructor() {
         this.preloader = null;
         this.progressBar = null;
+        this.progressBarContainer = null;
         this.pageTransition = null;
         this.contentWrapper = null;
         this.isLoading = false;
         this.navigationInProgress = false;
+        this.pageReadyTimeout = null;
+        this.windowLoadTimeout = null;
+        this.preloaderRemovalTimeout = null;
+        this.progressBarInterval = null;
+        this.progressBarResetTimeout = null;
+        this.popStateTimeout = null;
+        this.transitionTimeout = null;
+        this.navigationTimeout = null;
 
         this.init();
     }
@@ -110,6 +119,9 @@ class VoltronixLoader {
         // Handle window load (all resources loaded)
         window.addEventListener('load', () => this.handleWindowLoad());
 
+        // Handle bfcache restore
+        window.addEventListener('pageshow', (event) => this.handlePageShow(event));
+
         // Handle navigation clicks
         this.bindNavigationEvents();
 
@@ -142,7 +154,8 @@ class VoltronixLoader {
         const remainingTime = this.minLoadingTime - Date.now();
         const delay = Math.max(0, remainingTime);
 
-        setTimeout(() => {
+        this.clearTimeoutRef('pageReadyTimeout');
+        this.pageReadyTimeout = setTimeout(() => {
             this.hidePreloader();
             this.showContent();
         }, delay);
@@ -153,10 +166,22 @@ class VoltronixLoader {
      */
     handleWindowLoad() {
         // Ensure preloader is hidden
-        setTimeout(() => {
+        this.clearTimeoutRef('windowLoadTimeout');
+        this.windowLoadTimeout = setTimeout(() => {
             this.hidePreloader();
             this.showContent();
         }, 100);
+    }
+
+    /**
+     * Handle bfcache restore and ensure any loader state is cleared immediately
+     */
+    handlePageShow(event) {
+        if (!event.persisted) {
+            return;
+        }
+
+        this.forceResetLoaderState();
     }
 
     /**
@@ -168,9 +193,11 @@ class VoltronixLoader {
             document.body.classList.remove('no-scroll');
 
             // Remove preloader from DOM after animation
-            setTimeout(() => {
+            this.clearTimeoutRef('preloaderRemovalTimeout');
+            this.preloaderRemovalTimeout = setTimeout(() => {
                 if (this.preloader && this.preloader.parentNode) {
                     this.preloader.remove();
+                    this.preloader = null;
                 }
             }, 500);
         }
@@ -256,12 +283,14 @@ class VoltronixLoader {
         this.showProgressBar();
 
         // Show page transition overlay (not as a separate page)
-        setTimeout(() => {
+        this.clearTimeoutRef('transitionTimeout');
+        this.transitionTimeout = setTimeout(() => {
             this.showPageTransition();
         }, 150);
 
         // Navigate to new page without adding loading screen to history
-        setTimeout(() => {
+        this.clearTimeoutRef('navigationTimeout');
+        this.navigationTimeout = setTimeout(() => {
             // Use location.replace to avoid history entry for transition
             window.location.href = url;
         }, 300);
@@ -276,7 +305,8 @@ class VoltronixLoader {
 
             // Animate progress
             let progress = 0;
-            const interval = setInterval(() => {
+            this.clearIntervalRef('progressBarInterval');
+            this.progressBarInterval = setInterval(() => {
                 progress += Math.random() * 15;
                 if (progress > 90) progress = 90;
 
@@ -285,7 +315,7 @@ class VoltronixLoader {
                 }
 
                 if (progress >= 90) {
-                    clearInterval(interval);
+                    this.clearIntervalRef('progressBarInterval');
                 }
             }, 100);
         }
@@ -296,9 +326,11 @@ class VoltronixLoader {
      */
     completeProgressBar() {
         if (this.progressBar) {
+            this.clearIntervalRef('progressBarInterval');
             this.progressBar.style.width = '100%';
 
-            setTimeout(() => {
+            this.clearTimeoutRef('progressBarResetTimeout');
+            this.progressBarResetTimeout = setTimeout(() => {
                 if (this.progressBarContainer) {
                     this.progressBarContainer.classList.remove('active');
                     this.progressBar.style.width = '0%';
@@ -334,9 +366,71 @@ class VoltronixLoader {
         // Show brief loading indicator for back/forward navigation
         this.showProgressBar();
 
-        setTimeout(() => {
+        this.clearTimeoutRef('popStateTimeout');
+        this.popStateTimeout = setTimeout(() => {
             this.completeProgressBar();
         }, 200);
+    }
+
+    /**
+     * Force clear any active loader UI immediately.
+     * This is used for bfcache restores where normal load events do not replay.
+     */
+    forceResetLoaderState() {
+        this.clearPendingTimers();
+        this.navigationInProgress = false;
+
+        document.body.classList.remove('no-scroll');
+
+        if (this.preloader) {
+            this.preloader.classList.remove('fade-out');
+            this.preloader.style.display = 'none';
+
+            if (this.preloader.parentNode) {
+                this.preloader.remove();
+            }
+
+            this.preloader = null;
+        }
+
+        if (this.pageTransition) {
+            this.pageTransition.classList.remove('active');
+        }
+
+        if (this.progressBarContainer) {
+            this.progressBarContainer.classList.remove('active');
+        }
+
+        if (this.progressBar) {
+            this.progressBar.style.width = '0%';
+        }
+
+        this.showContent();
+    }
+
+    clearPendingTimers() {
+        this.clearTimeoutRef('pageReadyTimeout');
+        this.clearTimeoutRef('windowLoadTimeout');
+        this.clearTimeoutRef('preloaderRemovalTimeout');
+        this.clearTimeoutRef('progressBarResetTimeout');
+        this.clearTimeoutRef('popStateTimeout');
+        this.clearTimeoutRef('transitionTimeout');
+        this.clearTimeoutRef('navigationTimeout');
+        this.clearIntervalRef('progressBarInterval');
+    }
+
+    clearTimeoutRef(property) {
+        if (this[property]) {
+            clearTimeout(this[property]);
+            this[property] = null;
+        }
+    }
+
+    clearIntervalRef(property) {
+        if (this[property]) {
+            clearInterval(this[property]);
+            this[property] = null;
+        }
     }
 
     /**

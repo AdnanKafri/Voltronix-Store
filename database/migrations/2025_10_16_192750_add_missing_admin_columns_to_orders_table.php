@@ -11,15 +11,30 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('orders')) {
+            return;
+        }
+
         Schema::table('orders', function (Blueprint $table) {
-            // Add missing admin columns that should have been in the original migration
-            $table->foreignId('approved_by')->nullable()->after('approved_at')->constrained('admins')->onDelete('set null');
-            $table->foreignId('rejected_by')->nullable()->after('rejected_at')->constrained('admins')->onDelete('set null');
-            
-            // Add missing columns for download management
-            $table->boolean('downloads_enabled')->default(false)->after('admin_notes');
-            $table->timestamp('downloads_expires_at')->nullable()->after('downloads_enabled');
-            $table->text('rejection_reason')->nullable()->after('rejected_by');
+            if (!Schema::hasColumn('orders', 'approved_by')) {
+                $table->foreignId('approved_by')->nullable()->after('approved_at')->constrained('admins')->nullOnDelete();
+            }
+
+            if (!Schema::hasColumn('orders', 'rejected_by')) {
+                $table->foreignId('rejected_by')->nullable()->after('rejected_at')->constrained('admins')->nullOnDelete();
+            }
+
+            if (!Schema::hasColumn('orders', 'downloads_enabled')) {
+                $table->boolean('downloads_enabled')->default(false)->after('admin_notes');
+            }
+
+            if (!Schema::hasColumn('orders', 'downloads_expires_at')) {
+                $table->timestamp('downloads_expires_at')->nullable()->after('downloads_enabled');
+            }
+
+            if (!Schema::hasColumn('orders', 'rejection_reason')) {
+                $table->text('rejection_reason')->nullable()->after('rejected_by');
+            }
         });
     }
 
@@ -28,19 +43,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            // Drop foreign key constraints first
-            $table->dropForeign(['approved_by']);
-            $table->dropForeign(['rejected_by']);
-            
-            // Drop the columns
-            $table->dropColumn([
-                'approved_by',
-                'rejected_by', 
-                'downloads_enabled',
-                'downloads_expires_at',
-                'rejection_reason'
-            ]);
-        });
+        // Intentionally left as a no-op because the canonical orders schema
+        // now includes these columns in the base table migration.
     }
 };

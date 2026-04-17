@@ -46,7 +46,7 @@ class ProcessDeliveryAutomation
                 'order_id' => $event->order->id,
                 'results' => $results
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Delivery automation failed for order ' . $event->order->order_number, [
                 'order_id' => $event->order->id,
                 'error' => $e->getMessage(),

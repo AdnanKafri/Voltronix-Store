@@ -27,6 +27,14 @@ class CartService
     }
 
     /**
+     * Get the existing guest cart session identifier without creating a new one.
+     */
+    private function getExistingSessionId(): ?string
+    {
+        return Session::get(self::SESSION_ID_KEY);
+    }
+
+    /**
      * Get cart query based on authentication status
      */
     private function getCartQuery()
@@ -175,14 +183,16 @@ class CartService
      */
     public function transferGuestCartToUser(int $userId): bool
     {
-        if (Auth::check()) {
-            return false; // Already authenticated
+        $sessionId = $this->getExistingSessionId();
+
+        if (!$sessionId) {
+            return true;
         }
 
-        $sessionId = $this->getSessionId();
         $guestCartItems = Cart::forSession($sessionId)->get();
 
         if ($guestCartItems->isEmpty()) {
+            Session::forget(self::SESSION_ID_KEY);
             return true; // No items to transfer
         }
 
@@ -209,10 +219,11 @@ class CartService
 
             // Clean up any remaining guest items
             Cart::forSession($sessionId)->delete();
+            Session::forget(self::SESSION_ID_KEY);
             
             DB::commit();
             return true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollback();
             return false;
         }

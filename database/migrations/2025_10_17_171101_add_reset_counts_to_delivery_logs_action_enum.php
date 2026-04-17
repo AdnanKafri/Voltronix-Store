@@ -17,7 +17,8 @@ return new class extends Migration
             'download', 'view_credentials', 'reveal_credentials', 
             'reissue', 'extend', 'revoke', 'regenerate_token',
             'access_denied', 'expired_access', 'limit_exceeded',
-            'reset_counts', 'access_request'
+            'reset_counts', 'access_request',
+            'auto_created', 'auto_failed', 'automation_summary'
         )");
     }
 

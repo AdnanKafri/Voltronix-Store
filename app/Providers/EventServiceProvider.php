@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Events\OrderPlaced;
 use App\Events\OrderStatusChanged;
+use App\Listeners\MergeGuestCartOnLogin;
 use App\Listeners\SendOrderConfirmation;
 use App\Listeners\ProcessDeliveryAutomation;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -16,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
+        Login::class => [
+            MergeGuestCartOnLogin::class,
+        ],
         OrderPlaced::class => [
             SendOrderConfirmation::class,
         ],

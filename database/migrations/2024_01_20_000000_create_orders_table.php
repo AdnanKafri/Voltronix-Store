@@ -28,15 +28,15 @@ return new class extends Migration
             $table->text('notes')->nullable();
             
             // Payment Information
-            $table->enum('payment_method', ['bank_transfer', 'crypto_usdt', 'crypto_btc']);
+            $table->enum('payment_method', ['bank_transfer', 'crypto_usdt', 'crypto_btc', 'mtn_cash', 'syriatel_cash']);
             $table->string('payment_proof_path')->nullable();
-            $table->text('payment_details')->nullable(); // JSON for additional payment info
+            $table->json('payment_details')->nullable(); // JSON for additional payment info
             
             // Admin Actions
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
-            $table->foreignId('approved_by')->nullable()->constrained('users');
-            $table->foreignId('rejected_by')->nullable()->constrained('users');
+            $table->foreignId('approved_by')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('rejected_by')->nullable()->constrained('admins')->nullOnDelete();
             $table->text('admin_notes')->nullable();
             $table->text('rejection_reason')->nullable();
             

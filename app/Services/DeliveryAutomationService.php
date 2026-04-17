@@ -46,7 +46,7 @@ class DeliveryAutomationService
                 $result = $this->processOrderItem($order, $item);
                 $results[$result]++;
                 
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $results['failed']++;
                 $results['errors'][] = [
                     'item_id' => $item->id,
@@ -175,7 +175,7 @@ class DeliveryAutomationService
                 'file_size' => $fileInfo['size'],
                 
                 // Configuration from product defaults
-                'expires_at' => $config['expiration_days'] ? now()->addDays($config['expiration_days']) : null,
+                'expires_at' => $this->resolveExpirationDate($config),
                 'max_downloads' => $config['max_downloads'],
                 'max_views' => $config['max_views'],
                 'require_otp' => $config['require_otp'] ?? false,
@@ -204,7 +204,7 @@ class DeliveryAutomationService
                 'product_name' => $product->getTranslation('name'),
                 'automation_trigger' => 'order_approval'
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Log the error but don't fail the delivery creation
             \Log::warning('Failed to log delivery creation', [
                 'delivery_id' => $delivery->id,
@@ -244,7 +244,7 @@ class DeliveryAutomationService
                 'credentials_type' => 'login_credentials',
                 
                 // Configuration from product defaults
-                'expires_at' => isset($config['expiration_days']) ? now()->addDays($config['expiration_days']) : null,
+                'expires_at' => $this->resolveExpirationDate($config),
                 'max_views' => $config['max_views'] ?? null,
                 
                 // Automation tracking
@@ -271,7 +271,7 @@ class DeliveryAutomationService
                 'automation_trigger' => 'order_approval',
                 'delivery_type' => 'credentials'
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::warning('Failed to log credentials delivery creation', [
                 'delivery_id' => $delivery->id,
                 'error' => $e->getMessage()
@@ -306,7 +306,7 @@ class DeliveryAutomationService
                 'credentials_type' => 'license_key',
                 
                 // Configuration from product defaults
-                'expires_at' => isset($config['expiration_days']) ? now()->addDays($config['expiration_days']) : null,
+                'expires_at' => $this->resolveExpirationDate($config),
                 
                 // Automation tracking
                 'created_automatically' => true,
@@ -333,7 +333,7 @@ class DeliveryAutomationService
                 'automation_trigger' => 'order_approval',
                 'delivery_type' => 'license'
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::warning('Failed to log license delivery creation', [
                 'delivery_id' => $delivery->id,
                 'error' => $e->getMessage()
@@ -349,20 +349,28 @@ class DeliveryAutomationService
      */
     private function logAutomationEvent(Order $order, $item, string $action, array $details = []): void
     {
-        DeliveryLog::create([
-            'delivery_id' => $item->delivery?->id,
-            'user_id' => $order->user_id,
-            'action' => $action,
-            'status' => $action === 'auto_failed' ? 'failed' : 'success',
-            'details' => json_encode(array_merge($details, [
-                'order_number' => $order->order_number,
-                'item_id' => $item->id,
-                'automation_source' => 'order_approval'
-            ])),
-            'ip_address' => request()->ip() ?? '127.0.0.1',
-            'user_agent' => 'DeliveryAutomationService',
-            'session_id' => 'automation'
-        ]);
+        try {
+            DeliveryLog::create([
+                'delivery_id' => data_get($item, 'delivery.id'),
+                'user_id' => $order->user_id,
+                'action' => $action,
+                'status' => $action === 'auto_failed' ? 'failed' : 'success',
+                'details' => json_encode(array_merge($details, [
+                    'order_number' => $order->order_number,
+                    'item_id' => data_get($item, 'id'),
+                    'automation_source' => 'order_approval'
+                ])),
+                'ip_address' => request()->ip() ?? '127.0.0.1',
+                'user_agent' => 'DeliveryAutomationService',
+                'session_id' => 'automation'
+            ]);
+        } catch (\Throwable $e) {
+            \Log::warning('Failed to log automation event', [
+                'order_id' => $order->id,
+                'action' => $action,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -370,10 +378,26 @@ class DeliveryAutomationService
      */
     private function logAutomationSummary(Order $order, array $results): void
     {
-        $this->logAutomationEvent($order, (object)['delivery' => null], 'automation_summary', [
+        $this->logAutomationEvent($order, null, 'automation_summary', [
             'results' => $results,
             'success_rate' => $results['processed'] > 0 ? 
                 round(($results['created'] / $results['processed']) * 100, 2) : 0
         ]);
+    }
+
+    private function resolveExpirationDate(array $config): ?\Illuminate\Support\Carbon
+    {
+        $expirationDays = $this->normalizeNullableInteger($config['expiration_days'] ?? null);
+
+        return $expirationDays ? now()->addDays($expirationDays) : null;
+    }
+
+    private function normalizeNullableInteger(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return is_numeric($value) ? (int) $value : null;
     }
 }
