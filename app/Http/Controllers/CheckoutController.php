@@ -376,7 +376,7 @@ class CheckoutController extends Controller
             abort(404);
         }
 
-        $order->load(['items.product', 'downloads']);
+        $order->load(['items.product', 'items.delivery', 'downloads']);
         
         // Clear the order_placed session flag if set
         if (session('order_placed')) {
