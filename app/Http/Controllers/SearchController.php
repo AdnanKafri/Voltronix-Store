@@ -102,7 +102,7 @@ class SearchController extends Controller
                     'name' => $product->getTranslation('name'),
                     'slug' => $product->slug,
                     'price' => $product->formatted_price,
-                    'thumbnail' => $product->thumbnail ? asset('storage/' . $product->thumbnail) : null,
+                    'thumbnail' => $product->thumbnail_url,
                     'category' => $product->category ? $product->category->getTranslation('name') : null,
                     'url' => route('products.show', $product->slug),
                     'type' => 'product'
@@ -123,7 +123,7 @@ class SearchController extends Controller
                     'slug' => $category->slug,
                     'description' => $category->getTranslation('description'),
                     'products_count' => $category->products_count,
-                    'thumbnail' => $category->thumbnail ? asset('storage/' . $category->thumbnail) : null,
+                    'thumbnail' => $category->thumbnail_url,
                     'url' => route('categories.show', $category->slug),
                     'type' => 'category'
                 ];

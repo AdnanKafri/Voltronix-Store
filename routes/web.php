@@ -139,6 +139,7 @@ Route::middleware(['auth', 'setlocale'])->group(function () {
     // Order routes
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order:order_number}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order:order_number}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     Route::patch('/orders/{order:order_number}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/{order:order_number}/receipt/download', [OrderController::class, 'downloadReceipt'])->name('orders.receipt.download');
     Route::get('/orders/{order:order_number}/receipt/view', [OrderController::class, 'viewReceipt'])->name('orders.receipt.view');
@@ -150,6 +151,7 @@ Route::middleware(['auth', 'setlocale'])->group(function () {
     // New Delivery System Routes
     Route::get('/delivery/download/{token}', [DeliveryController::class, 'download'])->name('delivery.download');
     Route::get('/delivery/credentials/{token}', [DeliveryController::class, 'credentials'])->name('delivery.credentials');
+    Route::get('/delivery/license/{token}', [DeliveryController::class, 'license'])->name('delivery.license');
     Route::post('/delivery/reveal/{token}', [DeliveryController::class, 'revealCredentials'])->name('delivery.reveal');
     Route::get('/delivery/request/{token}', [DeliveryController::class, 'requestAccess'])->name('delivery.request');
     Route::post('/delivery/request/{token}', [DeliveryController::class, 'submitAccessRequest'])->name('delivery.request.submit');
@@ -279,7 +281,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'setlocale'])-
 });
 
 // Public API Routes for AJAX
-Route::post('/api/coupons/validate', [\App\Http\Controllers\Admin\CouponController::class, 'validateCoupon'])->name('api.coupons.validate');
+Route::post('/api/coupons/validate', [\App\Http\Controllers\Admin\CouponController::class, 'validateCoupon'])
+    ->middleware(['auth', 'setlocale', 'throttle:30,1'])
+    ->name('api.coupons.validate');
 
 // Authentication Routes (Laravel Breeze)
 require __DIR__.'/auth.php';

@@ -229,9 +229,9 @@
                             <td>
                                 <div class="text-muted small">
                                     <i class="bi bi-clock {{ app()->getLocale() == 'ar' ? 'ms-1' : 'me-1' }}"></i>
-                                    {{ $currency->updated_at->format('M d, Y') }}
+                                    {{ local_datetime($currency->updated_at, 'M d, Y') }}
                                     <br>
-                                    <small>{{ $currency->updated_at->format('H:i') }}</small>
+                                    <small>{{ local_datetime($currency->updated_at, 'H:i') }}</small>
                                 </div>
                             </td>
                             <td>
@@ -571,3 +571,5 @@ function updateAllRates() {
 </script>
 @endpush
 @endsection
+
+

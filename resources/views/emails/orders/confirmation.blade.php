@@ -28,10 +28,10 @@
                 <tbody>
                     @foreach($order->items as $item)
                         <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 10px;">{{ $item->product_name }}</td>
-                            <td style="padding: 10px; text-align: right;">{{ $item->formatted_price }}</td>
+                            <td style="padding: 10px;">{{ $item->getTranslation() }}</td>
+                            <td style="padding: 10px; text-align: right;">{{ $order->formatMoney($item->product_price) }}</td>
                             <td style="padding: 10px; text-align: center;">{{ $item->quantity }}</td>
-                            <td style="padding: 10px; text-align: right;">{{ $item->formatted_subtotal }}</td>
+                            <td style="padding: 10px; text-align: right;">{{ $order->formatMoney($item->subtotal) }}</td>
                         </tr>
                     @endforeach
                     <tr>

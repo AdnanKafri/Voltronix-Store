@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
@@ -120,8 +121,8 @@ class CouponController extends Controller
                     'max_discount' => $validated['max_discount'],
                     'usage_limit' => $validated['usage_limit'],
                     'per_user_limit' => $validated['per_user_limit'],
-                    'start_date' => $validated['start_date'],
-                    'expiry_date' => $validated['expiry_date'],
+                    'start_date' => $this->normalizeAdminDateTime($validated['start_date'] ?? null),
+                    'expiry_date' => $this->normalizeAdminDateTime($validated['expiry_date'] ?? null),
                     'target_user_id' => $validated['target_user_id'],
                     'first_time_only' => $request->boolean('first_time_only'),
                     'is_active' => $request->boolean('is_active')
@@ -248,8 +249,8 @@ class CouponController extends Controller
                 'max_discount' => $validated['max_discount'],
                 'usage_limit' => $validated['usage_limit'],
                 'per_user_limit' => $validated['per_user_limit'],
-                'start_date' => $validated['start_date'],
-                'expiry_date' => $validated['expiry_date'],
+                'start_date' => $this->normalizeAdminDateTime($validated['start_date'] ?? null),
+                'expiry_date' => $this->normalizeAdminDateTime($validated['expiry_date'] ?? null),
                 'target_user_id' => $validated['target_user_id'],
                 'first_time_only' => $request->boolean('first_time_only'),
                 'is_active' => $request->boolean('is_active')
@@ -366,6 +367,21 @@ class CouponController extends Controller
         ]);
     }
 
+    private function normalizeAdminDateTime(?string $value): ?Carbon
+    {
+        if (!$value) {
+            return null;
+        }
+
+        $timezone = config('app.display_timezone', 'Asia/Damascus');
+
+        try {
+            return Carbon::createFromFormat('Y-m-d\TH:i', $value, $timezone)->utc();
+        } catch (\Throwable) {
+            return Carbon::parse($value, $timezone)->utc();
+        }
+    }
+
     /**
      * Validate coupon code for checkout
      */
@@ -405,10 +421,10 @@ class CouponController extends Controller
                 'type' => $coupon->type,
                 'value' => $coupon->formatted_value
             ],
-            'discount' => number_format($discount, 2),
-            'formatted_discount' => '$' . number_format($discount, 2),
-            'new_total' => number_format($newTotal, 2),
-            'formatted_new_total' => '$' . number_format($newTotal, 2)
+            'discount' => number_format($discount, 2, '.', ''),
+            'formatted_discount' => currency_format($discount),
+            'new_total' => number_format($newTotal, 2, '.', ''),
+            'formatted_new_total' => currency_format($newTotal)
         ]);
     }
 }

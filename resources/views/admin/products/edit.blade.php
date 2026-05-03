@@ -345,7 +345,7 @@
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
             <h4 class="mb-1">{{ __('admin.product.edit') }}</h4>
-            <p class="mb-0">Edit: {{ $product->getTranslation('name') }}</p>
+            <p class="mb-0">{{ __('admin.product.edit') }}: {{ $product->getTranslation('name') }}</p>
         </div>
         <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
@@ -412,7 +412,7 @@
                             <button class="nav-link active" id="english-tab" data-bs-toggle="tab" 
                                     data-bs-target="#english" type="button" role="tab">
                                 <i class="bi bi-flag {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                <span>English</span>
+                                <span>{{ __('app.common.english') }}</span>
                                 <i class="bi bi-check-circle {{ app()->getLocale() == 'ar' ? 'me-2' : 'ms-2' }}" style="opacity: 0.7;"></i>
                             </button>
                         </li>
@@ -420,7 +420,7 @@
                             <button class="nav-link" id="arabic-tab" data-bs-toggle="tab" 
                                     data-bs-target="#arabic" type="button" role="tab">
                                 <i class="bi bi-flag {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                <span>العربية</span>
+                                <span>{{ __('app.common.arabic') }}</span>
                                 <i class="bi bi-check-circle {{ app()->getLocale() == 'ar' ? 'me-2' : 'ms-2' }}" style="opacity: 0.7;"></i>
                             </button>
                         </li>
@@ -474,7 +474,7 @@
                                                             <i class="bi bi-star text-warning"></i>
                                                         </span>
                                                         <input type="text" name="features_en[]" class="form-control" 
-                                                               value="{{ $feature }}" placeholder="Enter product feature in English">
+                                                               value="{{ $feature }}" placeholder="{{ __('admin.product.features_en') }}">
                                                         <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
@@ -488,7 +488,7 @@
                                                         <i class="bi bi-star text-warning"></i>
                                                     </span>
                                                     <input type="text" name="features_en[]" class="form-control" 
-                                                           placeholder="Enter product feature in English">
+                                                           placeholder="{{ __('admin.product.features_en') }}">
                                                     <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
@@ -529,7 +529,7 @@
                                 <div class="col-12">
                                     <label class="form-label">
                                         <i class="bi bi-list-stars"></i>
-                                        Arabic Features
+                                        {{ __('admin.product.features_ar') }}
                                     </label>
                                     <div id="featuresAr" class="features-container">
                                         @php
@@ -543,7 +543,7 @@
                                                             <i class="bi bi-star text-warning"></i>
                                                         </span>
                                                         <input type="text" name="features_ar[]" class="form-control" 
-                                                               value="{{ $feature }}" placeholder="أدخل ميزة المنتج بالعربية" dir="rtl">
+                                                               value="{{ $feature }}" placeholder="{{ __('admin.product.enter_feature_ar') }}" dir="rtl">
                                                         <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
@@ -557,7 +557,7 @@
                                                         <i class="bi bi-star text-warning"></i>
                                                     </span>
                                                     <input type="text" name="features_ar[]" class="form-control" 
-                                                           placeholder="أدخل ميزة المنتج بالعربية" dir="rtl">
+                                                           placeholder="{{ __('admin.product.enter_feature_ar') }}" dir="rtl">
                                                     <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
@@ -567,7 +567,7 @@
                                     </div>
                                     <button type="button" class="btn btn-outline-primary" onclick="addFeature('featuresAr', 'features_ar[]')">
                                         <i class="bi bi-plus-circle {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                        إضافة ميزة
+                                        {{ __('admin.product.add_feature') }}
                                     </button>
                                 </div>
                             </div>
@@ -699,7 +699,7 @@
                                    class="form-control @error('thumbnail') is-invalid @enderror">
                             @if($product->thumbnail)
                                 <div class="mt-2">
-                                    <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                                    <img src="{{ $product->thumbnail_url }}" 
                                          alt="Current thumbnail" class="img-thumbnail" style="max-height: 100px;">
                                     <div class="form-text">Current thumbnail (leave empty to keep current)</div>
                                 </div>
@@ -778,12 +778,12 @@
                                         @foreach($product->media_data['images'] as $index => $image)
                                             <div class="media-item-card" data-media-type="gallery" data-index="{{ $index }}" data-source="json">
                                                 <div class="media-preview">
-                                                    <img src="{{ asset('storage/' . $image['path']) }}" 
+                                                    <img src="{{ $product->resolveMediaUrl($image['path'] ?? null) }}" 
                                                          alt="Gallery Image {{ $index + 1 }}" 
                                                          class="media-thumbnail">
                                                     <div class="media-overlay">
                                                         <div class="media-actions">
-                                                            <button type="button" class="btn btn-sm btn-light" onclick="viewLegacyMedia('{{ asset('storage/' . $image['path']) }}', 'Gallery Image {{ $index + 1 }}')" title="{{ __('admin.product.view_media') }}">
+                                                            <button type="button" class="btn btn-sm btn-light" onclick="viewLegacyMedia('{{ $product->resolveMediaUrl($image['path'] ?? null) }}', 'Gallery Image {{ $index + 1 }}')" title="{{ __('admin.product.view_media') }}">
                                                                 <i class="bi bi-eye"></i>
                                                             </button>
                                                             <button type="button" class="btn btn-sm btn-danger" onclick="removeLegacyMedia(this, 'gallery', {{ $index }})" title="{{ __('admin.product.delete_media') }}">
@@ -803,11 +803,11 @@
                                         @if(isset($product->media_data['before_image']))
                                             <div class="media-item-card" data-media-type="before_after" data-index="before" data-source="json">
                                                 <div class="media-preview">
-                                                    <img src="{{ asset('storage/' . $product->media_data['before_image']) }}" 
+                                                    <img src="{{ $product->resolveMediaUrl($product->media_data['before_image'] ?? null) }}" 
                                                          alt="Before Image" class="media-thumbnail">
                                                     <div class="media-overlay">
                                                         <div class="media-actions">
-                                                            <button type="button" class="btn btn-sm btn-light" onclick="viewLegacyMedia('{{ asset('storage/' . $product->media_data['before_image']) }}', 'Before Image')" title="{{ __('admin.product.view_media') }}">
+                                                            <button type="button" class="btn btn-sm btn-light" onclick="viewLegacyMedia('{{ $product->resolveMediaUrl($product->media_data['before_image'] ?? null) }}', 'Before Image')" title="{{ __('admin.product.view_media') }}">
                                                                 <i class="bi bi-eye"></i>
                                                             </button>
                                                             <button type="button" class="btn btn-sm btn-danger" onclick="removeLegacyMedia(this, 'before_after', 'before')" title="{{ __('admin.product.delete_media') }}">
@@ -824,11 +824,11 @@
                                         @if(isset($product->media_data['after_image']))
                                             <div class="media-item-card" data-media-type="before_after" data-index="after" data-source="json">
                                                 <div class="media-preview">
-                                                    <img src="{{ asset('storage/' . $product->media_data['after_image']) }}" 
+                                                    <img src="{{ $product->resolveMediaUrl($product->media_data['after_image'] ?? null) }}" 
                                                          alt="After Image" class="media-thumbnail">
                                                     <div class="media-overlay">
                                                         <div class="media-actions">
-                                                            <button type="button" class="btn btn-sm btn-light" onclick="viewLegacyMedia('{{ asset('storage/' . $product->media_data['after_image']) }}', 'After Image')" title="{{ __('admin.product.view_media') }}">
+                                                            <button type="button" class="btn btn-sm btn-light" onclick="viewLegacyMedia('{{ $product->resolveMediaUrl($product->media_data['after_image'] ?? null) }}', 'After Image')" title="{{ __('admin.product.view_media') }}">
                                                                 <i class="bi bi-eye"></i>
                                                             </button>
                                                             <button type="button" class="btn btn-sm btn-danger" onclick="removeLegacyMedia(this, 'before_after', 'after')" title="{{ __('admin.product.delete_media') }}">
@@ -1128,7 +1128,7 @@ function updateMediaFields(mediaType) {
             html = `
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Video File</label>
+                        <label class="form-label">{{ __('admin.product.video_upload') }}</label>
                         <input type="file" name="video_file" accept="video/*" class="form-control">
                         <div class="form-text">Upload video file (max 50MB). Leave empty to keep current.</div>
                     </div>
@@ -1155,7 +1155,7 @@ function updateMediaFields(mediaType) {
                         <div class="form-text">Multiple images (max 5)</div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Video File</label>
+                        <label class="form-label">{{ __('admin.product.video_upload') }}</label>
                         <input type="file" name="mixed_video" accept="video/*" class="form-control">
                     </div>
                     <div class="col-md-4">
@@ -1177,7 +1177,7 @@ function addFeature(containerId, inputName) {
     div.className = 'feature-item mb-3';
     
     const isArabic = inputName.includes('_ar');
-    const placeholder = isArabic ? 'أدخل ميزة المنتج بالعربية' : 'Enter product feature in English';
+    const placeholder = isArabic ? '{{ __('admin.product.enter_feature_ar') }}' : '{{ __('admin.product.features_en') }}';
     const dirAttribute = isArabic ? ' dir="rtl"' : '';
     
     div.innerHTML = `
@@ -1247,7 +1247,7 @@ function viewMediaItem(mediaId) {
         })
         .catch(error => {
             console.error('Error loading media:', error);
-            Swal.fire('{{ __('admin.error') }}', 'Failed to load media item.', 'error');
+            Swal.fire('{{ __('admin.error') }}', '{{ __('admin.something_went_wrong') }}', 'error');
         });
 }
 
@@ -1317,12 +1317,12 @@ function deleteMediaItem(mediaId) {
                         position: 'top-end'
                     });
                 } else {
-                    Swal.fire('{{ __('admin.error') }}', data.message || 'Failed to delete media item.', 'error');
+                    Swal.fire('{{ __('admin.error') }}', data.message || '{{ __('admin.something_went_wrong') }}', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error deleting media:', error);
-                Swal.fire('{{ __('admin.error') }}', 'Failed to delete media item.', 'error');
+                Swal.fire('{{ __('admin.error') }}', '{{ __('admin.something_went_wrong') }}', 'error');
             });
         }
     });
@@ -1412,21 +1412,21 @@ function showMediaUploadModal() {
                         <div class="col-md-6">
                             <label class="form-label">{{ __('admin.product.media_type') }} <span class="text-danger">*</span></label>
                             <select name="type" class="form-select" required onchange="toggleMediaFields(this.value)">
-                                <option value="">Select media type</option>
+                                <option value="">{{ __('admin.product.media_type') }}</option>
                                 <option value="image">{{ __('admin.product.gallery_images') }}</option>
                                 <option value="before">{{ __('admin.product.before_image') }}</option>
                                 <option value="after">{{ __('admin.product.after_image') }}</option>
-                                <option value="video">Video File</option>
+                                <option value="video">{{ __('admin.product.video_upload') }}</option>
                                 <option value="youtube">{{ __('admin.product.youtube_url') }}</option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">{{ __('admin.product.media_title') }}</label>
-                            <input type="text" name="title" class="form-control" placeholder="Enter media title">
+                            <input type="text" name="title" class="form-control" placeholder="{{ __('admin.product.media_title') }}">
                         </div>
                         <div class="col-12">
                             <label class="form-label">{{ __('admin.product.media_description') }}</label>
-                            <textarea name="description" class="form-control" rows="2" placeholder="Enter media description"></textarea>
+                            <textarea name="description" class="form-control" rows="2" placeholder="{{ __('admin.product.media_description') }}"></textarea>
                         </div>
                         
                         <!-- File Upload Fields -->
@@ -1440,7 +1440,7 @@ function showMediaUploadModal() {
                         <div class="col-12" id="urlField" style="display: none;">
                             <label class="form-label">{{ __('admin.product.external_url') }} <span class="text-danger">*</span></label>
                             <input type="url" name="url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
-                            <div class="form-text">Enter the full YouTube URL</div>
+                            <div class="form-text">{{ __('admin.product.youtube_url') }}</div>
                         </div>
                     </div>
                 </form>
@@ -1491,11 +1491,11 @@ function showMediaEditModal(mediaId) {
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">{{ __('admin.product.media_title') }}</label>
-                                        <input type="text" name="title" class="form-control" value="${media.title || ''}" placeholder="Enter media title">
+                                        <input type="text" name="title" class="form-control" value="${media.title || ''}" placeholder="{{ __('admin.product.media_title') }}">
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">{{ __('admin.product.media_description') }}</label>
-                                        <textarea name="description" class="form-control" rows="2" placeholder="Enter media description">${media.description || ''}</textarea>
+                                        <textarea name="description" class="form-control" rows="2" placeholder="{{ __('admin.product.media_description') }}">${media.description || ''}</textarea>
                                     </div>
                                     
                                     ${media.type === 'youtube' ? `
@@ -1507,7 +1507,7 @@ function showMediaEditModal(mediaId) {
                                         <div class="col-12">
                                             <label class="form-label">{{ __('admin.product.replace_media') }}</label>
                                             <input type="file" name="media_file" class="form-control" accept="${media.type === 'video' ? 'video/*' : 'image/*'}">
-                                            <div class="form-text">Leave empty to keep current file</div>
+                                            <div class="form-text">{{ __('admin.product.keep_current_file') }}</div>
                                         </div>
                                     `}
                                 </div>
@@ -1522,13 +1522,13 @@ function showMediaEditModal(mediaId) {
                 
                 document.body.appendChild(modal);
             } else {
-                Swal.fire('{{ __('admin.error') }}', 'Failed to load media details.', 'error');
+                Swal.fire('{{ __('admin.error') }}', '{{ __('admin.something_went_wrong') }}', 'error');
             }
         })
         .catch(error => {
             Swal.close();
             console.error('Error loading media:', error);
-            Swal.fire('{{ __('admin.error') }}', 'Failed to load media details.', 'error');
+            Swal.fire('{{ __('admin.error') }}', '{{ __('admin.something_went_wrong') }}', 'error');
         });
 }
 
@@ -1549,7 +1549,7 @@ function showYouTubeModal(url, title) {
                 ` : `
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle me-2"></i>
-                        Invalid YouTube URL
+                        {{ __('admin.product.invalid_youtube_url') }}
                     </div>
                 `}
             </div>
@@ -1628,7 +1628,7 @@ function submitMediaForm() {
         if (data.success) {
             Swal.fire({
                 title: '{{ __('admin.success') }}!',
-                text: 'Media added successfully!',
+                text: '{{ __('admin.product.media_updated') }}',
                 icon: 'success',
                 timer: 2000,
                 showConfirmButton: false
@@ -1636,12 +1636,12 @@ function submitMediaForm() {
                 location.reload(); // Reload to show new media
             });
         } else {
-            Swal.fire('{{ __('admin.error') }}', data.message || 'Failed to add media.', 'error');
+            Swal.fire('{{ __('admin.error') }}', data.message || '{{ __('admin.something_went_wrong') }}', 'error');
         }
     })
     .catch(error => {
         console.error('Error adding media:', error);
-        Swal.fire('{{ __('admin.error') }}', 'Failed to add media.', 'error');
+        Swal.fire('{{ __('admin.error') }}', '{{ __('admin.something_went_wrong') }}', 'error');
     });
 }
 
@@ -1679,12 +1679,12 @@ function updateMediaForm() {
                 location.reload(); // Reload to show updated media
             });
         } else {
-            Swal.fire('{{ __('admin.error') }}', data.message || 'Failed to update media.', 'error');
+            Swal.fire('{{ __('admin.error') }}', data.message || '{{ __('admin.something_went_wrong') }}', 'error');
         }
     })
     .catch(error => {
         console.error('Error updating media:', error);
-        Swal.fire('{{ __('admin.error') }}', 'Failed to update media.', 'error');
+        Swal.fire('{{ __('admin.error') }}', '{{ __('admin.something_went_wrong') }}', 'error');
     });
 }
 
@@ -1752,3 +1752,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+

@@ -171,6 +171,115 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
+.admin-media-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.admin-media-tab {
+    border: 1px solid rgba(0, 127, 255, 0.25);
+    background: #fff;
+    color: #007fff;
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.admin-media-tab.active {
+    color: #fff;
+    border-color: transparent;
+    background: linear-gradient(135deg, #007fff, #23efff);
+}
+
+.admin-media-panel {
+    display: none;
+}
+
+.admin-media-panel.active {
+    display: block;
+}
+
+.admin-media-main {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 127, 255, 0.1);
+    background: #f5f8ff;
+}
+
+.admin-media-main-image {
+    width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    cursor: pointer;
+    display: block;
+}
+
+.admin-media-thumbnails {
+    margin-top: 0.85rem;
+    display: flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.admin-media-thumb {
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+    width: 86px;
+    height: 64px;
+    background: #fff;
+}
+
+.admin-media-thumb.active {
+    border-color: #007fff;
+}
+
+.admin-media-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.admin-media-video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.admin-video-card {
+    background: #fff;
+    border: 1px solid rgba(0, 127, 255, 0.14);
+    border-radius: 14px;
+    padding: 0.8rem;
+}
+
+.admin-video-card video {
+    width: 100%;
+    max-height: 320px;
+    border-radius: 10px;
+    background: #000;
+}
+
+.admin-youtube-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+}
+
+.admin-youtube-wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .media-placeholder {
     width: 100%;
     height: 200px;
@@ -373,6 +482,11 @@
     .comparison-item img {
         height: 250px;
     }
+
+    .admin-media-thumb {
+        width: 72px;
+        height: 56px;
+    }
     
     .action-buttons {
         flex-direction: column;
@@ -451,7 +565,7 @@
                                 <i class="bi bi-type"></i>
                                 {{ __('admin.product.name_ar') }}
                             </div>
-                            <p class="info-value" dir="rtl">{{ $product->getTranslation('name', 'ar') ?: 'غير متوفر' }}</p>
+                            <p class="info-value" dir="rtl">{{ $product->getTranslation('name', 'ar') ?: __('admin.product.not_available') }}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -487,7 +601,7 @@
                                 <i class="bi bi-card-text"></i>
                                 {{ __('admin.product.description_ar') }}
                             </div>
-                            <p class="info-value" dir="rtl">{{ $product->getTranslation('description', 'ar') ?: 'لا يوجد وصف' }}</p>
+                            <p class="info-value" dir="rtl">{{ $product->getTranslation('description', 'ar') ?: __('admin.product.no_description') }}</p>
                         </div>
                     </div>
                 </div>
@@ -532,7 +646,7 @@
                             <div class="info-item">
                                 <div class="info-label">
                                     <i class="bi bi-flag"></i>
-                                    Arabic Features
+                                    {{ __('admin.product.features_ar') }}
                                 </div>
                                 @if($featuresAr && count($featuresAr) > 0)
                                     <ul class="features-list" dir="rtl">
@@ -541,7 +655,7 @@
                                         @endforeach
                                     </ul>
                                 @else
-                                    <p class="text-muted" dir="rtl">لا توجد ميزات عربية</p>
+                                    <p class="text-muted" dir="rtl">{{ __('admin.product.no_arabic_features') }}</p>
                                 @endif
                             </div>
                         </div>
@@ -550,138 +664,7 @@
             </div>
         @endif
 
-        <!-- Media Information -->
-        <div class="media-card">
-            <div class="card-header-modern">
-                <h5 class="card-title-modern">
-                    <i class="bi bi-images"></i>
-                    Product Media
-                </h5>
-            </div>
-            
-            <!-- Main Thumbnail -->
-            @if($product->thumbnail)
-                <div class="card-body-modern">
-                    <div class="info-item">
-                        <div class="info-label">
-                            <i class="bi bi-image"></i>
-                            Main Thumbnail
-                        </div>
-                        <div class="media-item" style="max-width: 300px;">
-                            <img src="{{ asset('storage/' . $product->thumbnail) }}" 
-                                 alt="{{ $product->getTranslation('name') }}"
-                                 onclick="openImageModal(this.src)">
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Media Type Display -->
-            <div class="card-body-modern">
-                <div class="info-item">
-                    <div class="info-label">
-                        <i class="bi bi-camera"></i>
-                        Media Type
-                    </div>
-                    <span class="status-badge" style="background: linear-gradient(135deg, #6c757d, #495057); color: white;">
-                        <i class="bi bi-camera"></i>
-                        {{ ucfirst(str_replace('_', ' ', $product->media_type)) }}
-                    </span>
-                </div>
-            </div>
-
-            <!-- Dynamic Media Display -->
-            @if($product->media_data)
-                @if($product->media_type === 'gallery' && isset($product->media_data['images']))
-                    <!-- Gallery Images -->
-                    <div class="card-body-modern">
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="bi bi-images"></i>
-                                Gallery Images ({{ count($product->media_data['images']) }} images)
-                            </div>
-                            <div class="media-grid">
-                                @foreach($product->media_data['images'] as $image)
-                                    <div class="media-item">
-                                        <img src="{{ asset('storage/' . $image['path']) }}" 
-                                             alt="Gallery Image"
-                                             onclick="openImageModal(this.src)">
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @elseif($product->media_type === 'before_after')
-                    <!-- Before/After Images -->
-                    <div class="before-after-container">
-                        @if(isset($product->media_data['before_image']))
-                            <div class="comparison-item">
-                                <div class="comparison-label">
-                                    <span class="comparison-badge before">Before</span>
-                                </div>
-                                <img src="{{ asset('storage/' . $product->media_data['before_image']) }}" 
-                                     alt="Before Image"
-                                     onclick="openImageModal(this.src)">
-                            </div>
-                        @endif
-                        @if(isset($product->media_data['after_image']))
-                            <div class="comparison-item">
-                                <div class="comparison-label">
-                                    <span class="comparison-badge after">After</span>
-                                </div>
-                                <img src="{{ asset('storage/' . $product->media_data['after_image']) }}" 
-                                     alt="After Image"
-                                     onclick="openImageModal(this.src)">
-                            </div>
-                        @endif
-                    </div>
-                @elseif($product->media_type === 'video')
-                    <!-- Video Information -->
-                    <div class="card-body-modern">
-                        @if(isset($product->media_data['youtube_url']))
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="bi bi-youtube"></i>
-                                    YouTube Video
-                                </div>
-                                <p class="info-value">
-                                    <a href="{{ $product->media_data['youtube_url'] }}" target="_blank" class="text-primary">
-                                        {{ $product->media_data['youtube_url'] }}
-                                        <i class="bi bi-box-arrow-up-right ms-1"></i>
-                                    </a>
-                                </p>
-                            </div>
-                        @endif
-                        @if(isset($product->media_data['video_file']))
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="bi bi-file-play"></i>
-                                    Video File
-                                </div>
-                                <p class="info-value">
-                                    <code>{{ basename($product->media_data['video_file']) }}</code>
-                                </p>
-                            </div>
-                        @endif
-                    </div>
-                @endif
-            @else
-                @php
-                    $hasGalleryImages = isset($product->media_data['images']) && count($product->media_data['images']) > 0;
-                    $hasBeforeAfter = (isset($product->media_data['before_image']) || isset($product->media_data['after_image']));
-                    $hasVideoContent = (isset($product->media_data['youtube_url']) || isset($product->media_data['video_file']));
-                    $hasAnyMedia = $hasGalleryImages || $hasBeforeAfter || $hasVideoContent;
-                @endphp
-                @if(!$hasAnyMedia)
-                    <div class="card-body-modern text-center py-5">
-                        <div class="media-placeholder">
-                            <i class="bi bi-image"></i>
-                        </div>
-                        <p class="text-muted mt-3">No additional media available</p>
-                    </div>
-                @endif
-            @endif
-        </div>
+        @include('admin.products.partials.media-viewer', ['product' => $product])
     </div>
 
     <div class="col-lg-4">
@@ -835,7 +818,7 @@
                         <i class="bi bi-calendar-plus"></i>
                         Created
                     </div>
-                    <p class="info-value">{{ $product->created_at->format('M d, Y H:i') }}</p>
+                    <p class="info-value">{{ local_datetime($product->created_at, 'M d, Y H:i') }}</p>
                 </div>
                 
                 <div class="info-item">
@@ -843,7 +826,7 @@
                         <i class="bi bi-calendar-check"></i>
                         Last Updated
                     </div>
-                    <p class="info-value">{{ $product->updated_at->format('M d, Y H:i') }}</p>
+                    <p class="info-value">{{ local_datetime($product->updated_at, 'M d, Y H:i') }}</p>
                 </div>
                 
                 <div class="info-item">
@@ -881,16 +864,50 @@ function openImageModal(imageSrc) {
     new bootstrap.Modal(document.getElementById('imageModal')).show();
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('.admin-media-tab');
+    const panels = document.querySelectorAll('.admin-media-panel');
+
+    tabs.forEach((tab) => {
+        tab.addEventListener('click', function () {
+            const target = this.dataset.target;
+            tabs.forEach((item) => item.classList.remove('active'));
+            panels.forEach((panel) => panel.classList.remove('active'));
+            this.classList.add('active');
+            const targetPanel = document.querySelector(`.admin-media-panel[data-panel="${target}"]`);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
+        });
+    });
+
+    document.querySelectorAll('.admin-media-panel[data-panel="gallery"]').forEach((galleryPanel) => {
+        const mainImage = galleryPanel.querySelector('[data-main-image]');
+        const thumbs = galleryPanel.querySelectorAll('.admin-media-thumb');
+
+        thumbs.forEach((thumb) => {
+            thumb.addEventListener('click', function () {
+                const nextUrl = this.dataset.imageUrl;
+                if (mainImage && nextUrl) {
+                    mainImage.src = nextUrl;
+                }
+                thumbs.forEach((item) => item.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+});
+
 function deleteProduct() {
     Swal.fire({
-        title: 'Delete Product?',
-        text: 'This action cannot be undone. The product and all its media will be permanently deleted.',
+        title: '{{ __("admin.product.delete") }}?',
+        text: '{{ __("admin.cannot_be_undone") }}',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, Delete',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: '{{ __("admin.yes_delete") }}',
+        cancelButtonText: '{{ __("admin.common.cancel") }}'
     }).then((result) => {
         if (result.isConfirmed) {
             const form = document.createElement('form');
@@ -916,3 +933,7 @@ function deleteProduct() {
 }
 </script>
 @endpush
+
+
+
+

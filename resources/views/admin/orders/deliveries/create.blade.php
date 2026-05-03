@@ -180,13 +180,13 @@
                         <p><strong>{{ __('admin.orders.email') }}:</strong> {{ $order->customer_email }}</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>{{ __('admin.orders.total_amount') }}:</strong> {{ currency_format($order->total_amount) }}</p>
+                        <p><strong>{{ __('admin.orders.total_amount') }}:</strong> {{ $order->formatted_total }}</p>
                         <p><strong>{{ __('admin.orders.status') }}:</strong> 
                             <span class="badge bg-{{ $order->status == 'approved' ? 'success' : ($order->status == 'pending' ? 'warning' : 'danger') }}">
                                 {{ __('admin.orders.status_' . $order->status) }}
                             </span>
                         </p>
-                        <p><strong>{{ __('admin.orders.created_at') }}:</strong> {{ $order->created_at->format('Y-m-d H:i') }}</p>
+                        <p><strong>{{ __('admin.orders.created_at') }}:</strong> {{ local_datetime($order->created_at, 'Y-m-d H:i') }}</p>
                     </div>
                 </div>
             </div>
@@ -477,12 +477,24 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add required attributes based on type
         if (type === 'file') {
-            document.querySelector('input[name="file"]').setAttribute('required', 'required');
+            const fileInput = document.querySelector('input[name="delivery_file"]');
+            if (fileInput) {
+                fileInput.setAttribute('required', 'required');
+            }
         } else if (type === 'credentials') {
-            document.querySelector('input[name="username"]').setAttribute('required', 'required');
-            document.querySelector('input[name="password"]').setAttribute('required', 'required');
+            const usernameInput = document.querySelector('input[name="credentials[username]"]');
+            const passwordInput = document.querySelector('input[name="credentials[password]"]');
+            if (usernameInput) {
+                usernameInput.setAttribute('required', 'required');
+            }
+            if (passwordInput) {
+                passwordInput.setAttribute('required', 'required');
+            }
         } else if (type === 'license') {
-            document.querySelector('input[name="license_key"]').setAttribute('required', 'required');
+            const licenseInput = document.querySelector('input[name="credentials[license_key]"]');
+            if (licenseInput) {
+                licenseInput.setAttribute('required', 'required');
+            }
         }
     }
     
@@ -627,3 +639,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+

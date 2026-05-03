@@ -346,17 +346,17 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link nav-link-voltronix dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-globe {{ app()->getLocale() == 'ar' ? 'ms-1' : 'me-1' }}"></i>
-                            {{ app()->getLocale() == 'ar' ? 'العربية' : 'English' }}
+                            {{ app()->isLocale('ar') ? __('app.language.arabic') : __('app.language.english') }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-{{ app()->getLocale() == 'ar' ? 'start' : 'end' }}">
                             <li>
                                 <a class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}">
-                                    🇺🇸 English
+                                    🇺🇸 {{ __('app.language.english') }}
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item {{ app()->getLocale() == 'ar' ? 'active' : '' }}" href="{{ route('locale.switch', 'ar') }}">
-                                    🇸🇦 العربية
+                                    🇸🇦 {{ __('app.language.arabic') }}
                                 </a>
                             </li>
                         </ul>

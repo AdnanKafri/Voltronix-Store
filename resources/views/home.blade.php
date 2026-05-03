@@ -201,9 +201,8 @@
     [dir="rtl"] .slide-title,
     [dir="rtl"] .section-title-modern,
     [dir="rtl"] .category-card-title,
-    [dir="rtl"] .product-card-title,
-    [dir="rtl"] .feature-title-modern {
-        font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+    [dir="rtl"] .product-card-title {
+        font-family: var(--font-ar-heading) !important;
         letter-spacing: 0;
         text-transform: none;
         font-feature-settings: "liga" 1, "calt" 1;
@@ -216,8 +215,7 @@
     }
 
     [dir="rtl"] .category-card-title,
-    [dir="rtl"] .product-card-title,
-    [dir="rtl"] .feature-title-modern {
+    [dir="rtl"] .product-card-title {
         font-weight: 700;
         line-height: 1.35;
     }
@@ -683,268 +681,6 @@
         transform: translateX(5px) scale(1.1);
         box-shadow: 0 6px 20px rgba(0, 127, 255, 0.4);
     }
-    
-    /* Why Voltronix Section */
-    .why-voltronix-section {
-        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
-        padding: 6rem 0;
-        position: relative;
-    }
-    
-    .why-voltronix-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent 0%, rgba(0, 127, 255, 0.08) 50%, transparent 100%);
-    }
-    
-    .why-voltronix-section::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent 0%, rgba(0, 127, 255, 0.08) 50%, transparent 100%);
-    }
-    
-    .feature-card-modern {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 2.5rem 2rem;
-        text-align: center;
-        height: 100%;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-        transition: all 0.4s ease;
-        border: 2px solid transparent;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .feature-card-modern::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--voltronix-gradient);
-        transform: scaleX(0);
-        transition: transform 0.4s ease;
-    }
-    
-    .feature-card-modern:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 127, 255, 0.15);
-        border-color: var(--voltronix-primary);
-    }
-    
-    .feature-card-modern:hover::before {
-        transform: scaleX(1);
-    }
-    
-    .feature-icon-modern {
-        width: 90px;
-        height: 90px;
-        background: var(--voltronix-gradient);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        font-size: 2.5rem;
-        color: white;
-        box-shadow: 0 10px 30px rgba(0, 127, 255, 0.3);
-        transition: all 0.4s ease;
-    }
-    
-    .feature-card-modern:hover .feature-icon-modern {
-        transform: scale(1.1) rotate(5deg);
-        box-shadow: 0 15px 40px rgba(0, 127, 255, 0.4);
-    }
-    
-    .feature-title-modern {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--voltronix-accent);
-        margin-bottom: 1rem;
-    }
-    
-    .feature-description-modern {
-        color: #666;
-        line-height: 1.6;
-        font-size: 0.95rem;
-    }
-    
-    /* Stats Section */
-    .stats-section {
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-        color: white;
-        padding: 5rem 0;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .stats-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent 0%, rgba(0, 127, 255, 0.4) 50%, transparent 100%);
-    }
-    
-    .stats-section::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at 30% 50%, rgba(0, 127, 255, 0.12) 0%, transparent 70%);
-        animation: pulse 4s ease-in-out infinite alternate;
-        pointer-events: none;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 0.6; }
-        50% { opacity: 1; }
-    }
-    
-    .stat-card {
-        text-align: center;
-        padding: 2rem 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
-    }
-    
-    .stat-card:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 127, 255, 0.3);
-    }
-    
-    .stat-number {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 3.5rem;
-        font-weight: 900;
-        background: var(--voltronix-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: block;
-        margin-bottom: 0.5rem;
-    }
-    
-    .stat-label {
-        font-size: 1.1rem;
-        color: rgba(255, 255, 255, 0.9);
-        font-weight: 500;
-    }
-    
-    /* Testimonials Section */
-    .testimonials-section {
-        background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 50%, #f8f9fa 100%);
-        padding: 6rem 0;
-        position: relative;
-    }
-    
-    .testimonials-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent 0%, rgba(0, 127, 255, 0.1) 50%, transparent 100%);
-    }
-    
-    .testimonial-card {
-        background: white;
-        border-radius: 20px;
-        padding: 2rem;
-        height: 100%;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-        border: 2px solid transparent;
-        transition: all 0.4s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .testimonial-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: var(--voltronix-gradient);
-        transform: scaleX(0);
-        transition: transform 0.4s ease;
-    }
-    
-    .testimonial-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(0, 127, 255, 0.12);
-        border-color: var(--voltronix-primary);
-    }
-    
-    .testimonial-card:hover::before {
-        transform: scaleX(1);
-    }
-    
-    .testimonial-text {
-        font-size: 1rem;
-        line-height: 1.6;
-        color: #555;
-        margin-bottom: 1.5rem;
-        font-style: normal;
-        direction: ltr;
-        text-align: left;
-        unicode-bidi: isolate;
-        quotes: "“" "”" "‘" "’";
-    }
-
-    .testimonial-text::before,
-    .testimonial-text::after {
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 1.35rem;
-        color: rgba(0, 127, 255, 0.68);
-        line-height: 0;
-        vertical-align: middle;
-    }
-
-    .testimonial-text::before {
-        content: open-quote;
-        margin-right: 0.28rem;
-    }
-
-    .testimonial-text::after {
-        content: close-quote;
-        margin-left: 0.28rem;
-    }
-
-    [dir="rtl"] .testimonial-text {
-        direction: ltr;
-        text-align: left;
-    }
-    
-    .testimonial-author {
-        border-top: 1px solid rgba(0, 127, 255, 0.1);
-        padding-top: 1rem;
-    }
-    
-    .testimonial-rating {
-        color: #ffc107;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-    }
-    
     /* Standardized Section Spacing */
     section {
         transition: background 0.3s ease;
@@ -1017,10 +753,6 @@
 
         .slider-nav:hover {
             transform: scale(1.06);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
         }
     }
     
@@ -1356,95 +1088,6 @@
         </div>
     </div>
 </section>
-
-{{-- ========================================
-     SECTION 5: WHY VOLTRONIX
-     ======================================== --}}
-<section class="why-voltronix-section">
-    <div class="volt-container">
-        <x-section-header 
-            :title="__('app.features.why_title')"
-            :subtitle="__('app.features.why_subtitle')"
-            icon="award-fill"
-        />
-        
-        <div class="row g-4">
-            @foreach([
-                ['icon' => 'shield-check', 'title' => __('app.features.secure.title'), 'desc' => __('app.features.secure.description')],
-                ['icon' => 'lightning-charge', 'title' => __('app.features.fast.title'), 'desc' => __('app.features.fast.description')],
-                ['icon' => 'headset', 'title' => __('app.features.support.title'), 'desc' => __('app.features.support.description')],
-                ['icon' => 'star', 'title' => __('app.features.quality.title'), 'desc' => __('app.features.quality.description')]
-            ] as $feature)
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-card-modern">
-                        <div class="feature-icon-modern">
-                            <i class="bi bi-{{ $feature['icon'] }}"></i>
-                        </div>
-                        <h4 class="feature-title-modern">{{ $feature['title'] }}</h4>
-                        <p class="feature-description-modern">{{ $feature['desc'] }}</p>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- ========================================
-     SECTION 6: STATS
-     ======================================== --}}
-<section class="stats-section">
-    <div class="volt-container">
-        <div class="row g-4">
-            @foreach([
-                ['number' => '10K+', 'label' => __('app.stats.customers')],
-                ['number' => '500+', 'label' => __('app.stats.products')],
-                ['number' => '99.9%', 'label' => __('app.stats.satisfaction')],
-                ['number' => '24/7', 'label' => __('app.stats.support')]
-            ] as $stat)
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card">
-                        <span class="stat-number">{{ $stat['number'] }}</span>
-                        <span class="stat-label">{{ $stat['label'] }}</span>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- ========================================
-     SECTION 7: TESTIMONIALS
-     ======================================== --}}
-<section class="testimonials-section">
-    <div class="volt-container">
-        <x-section-header 
-            :title="__('app.testimonials.title')"
-            :subtitle="__('app.testimonials.subtitle')"
-            icon="chat-quote-fill"
-        />
-        
-        <div class="row g-4">
-            @for($i = 1; $i <= 3; $i++)
-                <div class="col-lg-4 col-md-6">
-                    <div class="testimonial-card">
-                        <div class="testimonial-rating">
-                            @for($j = 0; $j < 5; $j++)
-                                <i class="bi bi-star-fill"></i>
-                            @endfor
-                        </div>
-                        <p class="testimonial-text" dir="ltr" lang="en">
-                            {{ __('app.testimonials.sample_text_' . $i) }}
-                        </p>
-                        <div class="testimonial-author">
-                            <strong>{{ __('app.testimonials.sample_author_' . $i) }}</strong>
-                            <div class="text-muted small">{{ __('app.testimonials.sample_role_' . $i) }}</div>
-                        </div>
-                    </div>
-                </div>
-            @endfor
-        </div>
-    </div>
-</section>
 @endsection
 
 @push('scripts')
@@ -1553,34 +1196,12 @@
         });
     }, observerOptions);
 
-    document.querySelectorAll('.product-card-compact, .category-card-modern, .feature-card-modern').forEach(card => {
+    document.querySelectorAll('.product-card-compact, .category-card-modern').forEach(card => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
         card.style.transition = 'all 0.6s ease';
         observer.observe(card);
     });
-
-    // Stats counter animation
-    const statsObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const statNumbers = entry.target.querySelectorAll('.stat-number');
-                statNumbers.forEach((stat, index) => {
-                    const text = stat.textContent;
-                    stat.textContent = '0';
-                    setTimeout(() => {
-                        stat.textContent = text;
-                    }, index * 100);
-                });
-                statsObserver.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    const statsSection = document.querySelector('.stats-section');
-    if (statsSection) {
-        statsObserver.observe(statsSection);
-    }
 
     // Add to cart function
     window.addToCart = function(productId) {
@@ -1590,13 +1211,13 @@
         toast.textContent = '{{ __("app.cart.added_to_cart") }}';
         toast.style.cssText = `
             position: fixed;
-            top: 100px;
+            top: calc(var(--navbar-height-desktop, 88px) + 20px);
             right: 20px;
             background: var(--voltronix-gradient);
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 12px;
-            z-index: 9999;
+            z-index: 20050;
             box-shadow: 0 8px 25px rgba(0, 127, 255, 0.4);
             animation: slideIn 0.3s ease;
         `;
@@ -1619,3 +1240,4 @@
 }
 </style>
 @endpush
+

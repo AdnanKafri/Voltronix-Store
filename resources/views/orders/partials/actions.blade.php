@@ -34,10 +34,10 @@
     </div>
     @endif
     
-    <button type="button" class="btn btn-primary btn-block print-btn" onclick="window.print()">
+    <a href="{{ route('orders.invoice', $order) }}" class="btn btn-primary btn-block print-btn" target="_blank" rel="noopener">
         <i class="bi bi-printer {{ app()->getLocale() == 'ar' ? 'ms-1' : 'me-1' }}"></i>
         {{ __('orders.print_invoice') }}
-    </button>
+    </a>
     
     <a href="{{ route('orders.index') }}" class="btn btn-outline-primary btn-block">
         <i class="bi bi-arrow-left {{ app()->getLocale() == 'ar' ? 'ms-1' : 'me-1' }}"></i>

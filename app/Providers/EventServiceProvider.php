@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\DeliveryCreated;
 use App\Events\OrderPlaced;
 use App\Events\OrderStatusChanged;
 use App\Listeners\MergeGuestCartOnLogin;
-use App\Listeners\SendOrderConfirmation;
 use App\Listeners\ProcessDeliveryAutomation;
+use App\Listeners\SendDeliveryReadyNotification;
+use App\Listeners\SendOrderPlacedNotifications;
+use App\Listeners\SendOrderStatusNotifications;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -22,10 +25,14 @@ class EventServiceProvider extends ServiceProvider
             MergeGuestCartOnLogin::class,
         ],
         OrderPlaced::class => [
-            SendOrderConfirmation::class,
+            SendOrderPlacedNotifications::class,
         ],
         OrderStatusChanged::class => [
             ProcessDeliveryAutomation::class,
+            SendOrderStatusNotifications::class,
+        ],
+        DeliveryCreated::class => [
+            SendDeliveryReadyNotification::class,
         ],
     ];
 

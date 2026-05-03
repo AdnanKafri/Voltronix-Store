@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 
 class OrderDownload extends Model
 {
+    private const DOWNLOAD_DEBOUNCE_SECONDS = 8;
+
     protected $fillable = [
         'order_id',
         'order_item_id',
@@ -97,6 +99,14 @@ class OrderDownload extends Model
      */
     public function recordDownload(string $ip): void
     {
+        if (
+            $this->last_downloaded_at &&
+            $this->last_downloaded_at->greaterThanOrEqualTo(now()->subSeconds(self::DOWNLOAD_DEBOUNCE_SECONDS)) &&
+            $this->wasLastDownloadedFromIp($ip)
+        ) {
+            return;
+        }
+
         $ips = $this->download_ips ?? [];
         $ips[] = [
             'ip' => $ip,
@@ -109,6 +119,14 @@ class OrderDownload extends Model
             'last_downloaded_at' => now(),
             'download_ips' => $ips
         ]);
+    }
+
+    private function wasLastDownloadedFromIp(string $ip): bool
+    {
+        $downloads = $this->download_ips ?? [];
+        $lastDownload = end($downloads);
+
+        return is_array($lastDownload) && ($lastDownload['ip'] ?? null) === $ip;
     }
 
     /**

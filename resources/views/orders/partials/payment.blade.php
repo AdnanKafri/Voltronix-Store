@@ -68,7 +68,7 @@
                 </div>
                 <div class="receipt-info">
                     <div class="receipt-name">{{ basename($order->payment_proof_path) }}</div>
-                    <div class="receipt-date">{{ __('orders.uploaded_on') }}: {{ $order->created_at->format('M d, Y H:i') }}</div>
+                    <div class="receipt-date">{{ __('orders.uploaded_on') }}: {{ local_datetime($order->created_at, 'M d, Y H:i') }}</div>
                 </div>
                 <div class="receipt-actions">
                     <a href="{{ route('orders.receipt.view', $order) }}" 
@@ -212,3 +212,5 @@
 }
 </style>
 @endpush
+
+

@@ -52,7 +52,7 @@ class Cart extends Model
      */
     public function getFormattedSubtotalAttribute(): string
     {
-        return '$' . number_format($this->subtotal, 2);
+        return currency_format($this->subtotal);
     }
 
     /**

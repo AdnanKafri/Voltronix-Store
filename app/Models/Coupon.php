@@ -72,7 +72,7 @@ class Coupon extends Model
 
     public function scopeValid($query)
     {
-        $now = Carbon::now();
+        $now = Carbon::now('UTC');
         return $query->where('is_active', true)
                     ->where(function ($q) use ($now) {
                         $q->whereNull('start_date')->orWhere('start_date', '<=', $now);
@@ -152,17 +152,17 @@ class Coupon extends Model
         if ($this->type === self::TYPE_PERCENTAGE) {
             return number_format($this->value, 0) . '%';
         }
-        return '$' . number_format($this->value, 2);
+        return currency_format($this->value);
     }
 
     public function getFormattedMinOrderValueAttribute()
     {
-        return $this->min_order_value ? '$' . number_format($this->min_order_value, 2) : null;
+        return $this->min_order_value ? currency_format($this->min_order_value) : null;
     }
 
     public function getFormattedMaxDiscountAttribute()
     {
-        return $this->max_discount ? '$' . number_format($this->max_discount, 2) : null;
+        return $this->max_discount ? currency_format($this->max_discount) : null;
     }
 
     public function getStatusBadgeClassAttribute()
@@ -210,12 +210,12 @@ class Coupon extends Model
         }
 
         // Check date validity
-        $now = Carbon::now();
-        if ($this->start_date && $this->start_date->gt($now)) {
+        $now = Carbon::now('UTC');
+        if ($this->start_date && $this->start_date->copy()->utc()->gt($now)) {
             return ['valid' => false, 'message' => __('admin.coupon.not_started')];
         }
         
-        if ($this->expiry_date && $this->expiry_date->lt($now)) {
+        if ($this->expiry_date && $this->expiry_date->copy()->utc()->lt($now)) {
             return ['valid' => false, 'message' => __('admin.coupon.expired')];
         }
 
@@ -276,7 +276,7 @@ class Coupon extends Model
 
     public function isExpired()
     {
-        return $this->expiry_date && $this->expiry_date->lt(Carbon::now());
+        return $this->expiry_date && $this->expiry_date->copy()->utc()->lt(Carbon::now('UTC'));
     }
 
     public function isUsageLimitReached()

@@ -14,6 +14,10 @@ class OfferController extends Controller
      */
     public function index(Request $request): View
     {
+        $locale = app()->getLocale();
+        $namePath = "$.\"{$locale}\"";
+        $descriptionPath = "$.\"{$locale}\"";
+
         $query = Product::with('category')->available();
 
         // For now, we'll show featured products as "offers"
@@ -22,11 +26,9 @@ class OfferController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->get('search');
-            $query->where(function ($q) use ($search) {
-                $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(name, '$.ar') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(description, '$.en') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(description, '$.ar') LIKE ?", ["%{$search}%"]);
+            $query->where(function ($q) use ($search, $namePath, $descriptionPath) {
+                $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, ?)) LIKE ?", [$namePath, "%{$search}%"])
+                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(description, ?)) LIKE ?", [$descriptionPath, "%{$search}%"]);
             });
         }
 
@@ -50,7 +52,7 @@ class OfferController extends Controller
                 $query->orderBy('created_at', 'desc');
                 break;
             case 'name':
-                $query->orderByRaw("JSON_EXTRACT(name, '$.en') ASC");
+                $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(name, ?)) ASC", [$namePath]);
                 break;
             default: // price_low
                 $query->orderBy('price', 'asc');

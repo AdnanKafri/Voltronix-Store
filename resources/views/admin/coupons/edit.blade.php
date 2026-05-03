@@ -230,7 +230,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">{{ __('admin.coupon.start_date') }}</label>
                                     <input type="datetime-local" name="start_date" class="form-control @error('start_date') is-invalid @enderror" 
-                                           value="{{ old('start_date', $coupon->start_date ? $coupon->start_date->format('Y-m-d\TH:i') : '') }}">
+                                           value="{{ old('start_date', $coupon->start_date ? $coupon->start_date->timezone(config('app.display_timezone'))->format('Y-m-d\TH:i') : '') }}">
                                     @error('start_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -238,7 +238,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">{{ __('admin.coupon.expiry_date') }}</label>
                                     <input type="datetime-local" name="expiry_date" class="form-control @error('expiry_date') is-invalid @enderror" 
-                                           value="{{ old('expiry_date', $coupon->expiry_date ? $coupon->expiry_date->format('Y-m-d\TH:i') : '') }}">
+                                           value="{{ old('expiry_date', $coupon->expiry_date ? $coupon->expiry_date->timezone(config('app.display_timezone'))->format('Y-m-d\TH:i') : '') }}">
                                     @error('expiry_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

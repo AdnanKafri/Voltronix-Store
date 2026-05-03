@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-md-3">
                     <strong>{{ __('admin.delivery.created') }}:</strong><br>
-                    {{ $delivery->created_at->format('M d, Y H:i') }}
+                    {{ local_datetime($order->created_at, 'M d, Y H:i') }}
                 </div>
             </div>
         </div>
@@ -158,8 +158,8 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <strong>{{ $log->created_at->format('M d, Y') }}</strong><br>
-                                            <small class="text-muted">{{ $log->created_at->format('H:i:s') }}</small>
+                                            <strong>{{ local_datetime($log->created_at, 'M d, Y') }}</strong><br>
+                                            <small class="text-muted">{{ local_datetime($log->created_at, 'H:i:s') }}</small>
                                         </div>
                                     </td>
                                 </tr>
@@ -211,3 +211,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+

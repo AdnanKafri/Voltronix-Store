@@ -775,7 +775,7 @@
                         <div class="order-info">
                             <div class="order-date">
                                 <i class="bi bi-calendar {{ app()->getLocale() == 'ar' ? 'ms-1' : 'me-1' }}"></i>
-                                {{ $order->created_at->format('M d, Y H:i') }}
+                                {{ local_datetime($order->created_at, 'M d, Y H:i') }}
                             </div>
                             <div class="payment-method">
                                 <i class="bi bi-credit-card {{ app()->getLocale() == 'ar' ? 'ms-1' : 'me-1' }}"></i>
@@ -1030,3 +1030,5 @@
 @endpush
 
 @endsection
+
+

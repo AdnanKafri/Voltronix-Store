@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=orbitron:400,700,900|poppins:300,400,500,600,700" rel="stylesheet" />
     @if(app()->getLocale() == 'ar')
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
     @endif
 
     <!-- Bootstrap CSS -->
@@ -32,6 +32,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* Font Settings */
         :root {
             --voltronix-primary: #007fff;
             --voltronix-secondary: #23efff;
@@ -40,6 +41,11 @@
             --voltronix-gradient: linear-gradient(135deg, #007fff, #23efff);
             --sidebar-width: 280px;
             --topbar-height: 70px;
+            
+            --font-en-primary: 'Poppins', sans-serif;
+            --font-en-heading: 'Orbitron', sans-serif;
+            --font-ar-primary: 'Noto Sans Arabic', sans-serif;
+            --font-ar-heading: 'Tajawal', 'Noto Sans Arabic', sans-serif;
         }
 
         * {
@@ -49,9 +55,16 @@
         }
 
         body {
-            font-family: {{ app()->getLocale() == 'ar' ? "'Noto Sans Arabic'" : "'Poppins'" }}, sans-serif;
+            font-family: {{ app()->getLocale() == 'ar' ? "var(--font-ar-primary)" : "var(--font-en-primary)" }};
             background: var(--voltronix-light);
             overflow-x: hidden;
+        }
+        
+        [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6,
+        [dir="rtl"] .card-title-admin, [dir="rtl"] .topbar-title, [dir="rtl"] .sidebar-logo, [dir="rtl"] .stat-value {
+            font-family: var(--font-ar-heading) !important;
+            letter-spacing: 0 !important;
+            font-feature-settings: "liga" 1, "calt" 1;
         }
 
         .admin-wrapper {
@@ -507,6 +520,25 @@
             max-width: 100%;
             overflow-x: hidden;
         }
+
+        .admin-page-header,
+        .admin-header {
+            margin-bottom: 1.25rem;
+        }
+
+        .admin-content .card,
+        .admin-content .admin-card,
+        .admin-content .admin-table {
+            margin-bottom: 1rem;
+        }
+
+        .admin-content .card-header {
+            padding: 0.9rem 1rem;
+        }
+
+        .admin-content .card-body {
+            padding: 1rem;
+        }
         
         .container-fluid {
             max-width: 100%;
@@ -613,6 +645,40 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 127, 255, 0.3);
             color: white;
+        }
+
+        .admin-content .btn {
+            font-weight: 600;
+        }
+
+        .admin-content .btn + .btn,
+        .admin-content .btn + a.btn,
+        .admin-content a.btn + .btn,
+        .admin-content a.btn + a.btn {
+            margin-{{ app()->getLocale() == 'ar' ? 'right' : 'left' }}: 0.35rem;
+        }
+
+        .admin-content .form-label {
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #374151;
+        }
+
+        .admin-content .form-control,
+        .admin-content .form-select,
+        .admin-content textarea.form-control {
+            min-height: 42px;
+            border-color: #dbe2ea;
+        }
+
+        .admin-content textarea.form-control {
+            min-height: 100px;
+        }
+
+        .admin-content .form-control:focus,
+        .admin-content .form-select:focus {
+            border-color: var(--voltronix-primary);
+            box-shadow: 0 0 0 0.2rem rgba(0, 127, 255, 0.1);
         }
 
         /* ===== ENHANCED UI FIXES ===== */
@@ -1192,6 +1258,44 @@
             background-color: rgba(0, 127, 255, 0.02);
         }
 
+        .admin-content .table th,
+        .admin-content .table td {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .admin-content .table td .text-wrap,
+        .admin-content .table td .small,
+        .admin-content .table td p {
+            white-space: normal;
+        }
+
+        .admin-content .table-responsive {
+            border-radius: 12px;
+        }
+
+        .admin-flash-stack {
+            position: sticky;
+            top: calc(var(--topbar-height) + 0.75rem);
+            z-index: 1010;
+            margin-bottom: 1rem;
+        }
+
+        .admin-flash-stack .alert {
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+            border: none;
+        }
+
+        .admin-img-thumb {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #f8fafc;
+            display: inline-block;
+        }
+
         /* RTL Support */
         [dir="rtl"] .action-buttons {
             flex-direction: row-reverse;
@@ -1219,6 +1323,23 @@
 
         /* Responsive Fixes */
         @media (max-width: 768px) {
+            .admin-topbar {
+                padding: 0 1rem;
+            }
+
+            .topbar-title {
+                font-size: 1rem;
+            }
+
+            .admin-page-header,
+            .admin-header {
+                margin-bottom: 0.9rem;
+            }
+
+            .admin-content .card-body {
+                padding: 0.85rem;
+            }
+
             .action-buttons {
                 gap: 0.25rem;
             }
@@ -1251,6 +1372,10 @@
                 font-size: 0.875rem;
             }
 
+            .admin-flash-stack {
+                top: calc(var(--topbar-height) + 0.5rem);
+            }
+
             .delivery-stat-content {
                 flex-direction: column;
                 text-align: center;
@@ -1278,6 +1403,11 @@
                 text-align: center;
                 align-items: center;
             }
+
+            .admin-img-thumb {
+                width: 56px;
+                height: 56px;
+            }
         }
     </style>
 
@@ -1299,19 +1429,23 @@
 
             <!-- Content -->
             <div class="admin-content">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle me-2"></i>
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
+                @if(session('success') || session('error'))
+                    <div class="admin-flash-stack">
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle me-2"></i>
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        @endif
 
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-circle me-2"></i>
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        @if(session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        @endif
                     </div>
                 @endif
 
@@ -1390,12 +1524,14 @@
             });
         };
 
-        // CSRF token setup for AJAX
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        // CSRF token setup for AJAX (if jQuery is present)
+        if (window.$ && typeof $.ajaxSetup === 'function') {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        }
 
         // Show flash messages with SweetAlert2
         @if(session('success'))

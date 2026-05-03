@@ -49,7 +49,14 @@ class ProductMedia extends Model
         }
         
         if ($this->path) {
-            return asset('storage/' . $this->path);
+            if ($this->product) {
+                return $this->product->resolveMediaUrl($this->path, '');
+            }
+
+            $path = ltrim($this->path, '/');
+            $path = preg_replace('#^public/#', '', $path) ?? $path;
+            $path = preg_replace('#^storage/#', '', $path) ?? $path;
+            return asset('storage/' . $path);
         }
         
         return '';

@@ -417,9 +417,11 @@
                             </td>
                             <td>
                                 @if($product->thumbnail)
-                                    <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                                    <img src="{{ $product->thumbnail_url }}" 
                                          alt="{{ $product->getTranslation('name', app()->getLocale()) ?? $product->name ?? 'Product' }}"
-                                         class="product-thumbnail">
+                                         class="product-thumbnail admin-img-thumb"
+                                         loading="lazy"
+                                         onerror="this.onerror=null;this.src='{{ asset('images/logo.png') }}';">
                                 @else
                                     <div class="thumbnail-placeholder">
                                         <i class="bi bi-image"></i>
@@ -633,14 +635,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // Delete single product
 function deleteProduct(productId) {
     Swal.fire({
-        title: 'Delete Product?',
-        text: 'This action cannot be undone.',
+        title: '{{ __("admin.product.delete") }}?',
+        text: '{{ __("admin.cannot_be_undone") }}',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, Delete',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: '{{ __("admin.yes_delete") }}',
+        cancelButtonText: '{{ __("admin.common.cancel") }}'
     }).then((result) => {
         if (result.isConfirmed) {
             const form = document.createElement('form');

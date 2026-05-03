@@ -155,8 +155,8 @@
                                     <!-- Expiry Date -->
                                     <td>
                                         @if($coupon->expiry_date)
-                                            <div class="small">{{ $coupon->expiry_date->format('M d, Y') }}</div>
-                                            <div class="text-muted small">{{ $coupon->expiry_date->format('H:i') }}</div>
+                                            <div class="small">{{ local_datetime($coupon->expiry_date, 'M d, Y') }}</div>
+                                            <div class="text-muted small">{{ local_datetime($coupon->expiry_date, 'H:i') }}</div>
                                         @else
                                             <span class="text-muted">{{ __('admin.never') }}</span>
                                         @endif

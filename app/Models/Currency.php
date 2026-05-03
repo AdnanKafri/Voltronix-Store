@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Support\MoneyFormatter;
 
 class Currency extends Model
 {
@@ -120,10 +121,13 @@ class Currency extends Model
      */
     public function format($amount, $showSymbol = true)
     {
-        $convertedAmount = $this->convertFromBase($amount);
-        $formatted = number_format($convertedAmount, 2);
-        
-        return $showSymbol ? $this->symbol . $formatted : $formatted;
+        return MoneyFormatter::formatSnapshot(
+            amount: $amount,
+            currencyCode: $this->code,
+            symbol: $this->symbol,
+            rate: (float) $this->exchange_rate,
+            showSymbol: $showSymbol
+        );
     }
 
     /**

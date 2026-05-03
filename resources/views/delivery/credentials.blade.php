@@ -217,28 +217,83 @@
 }
 
 .secure-copy-btn {
-    border: 1px solid rgba(13, 110, 253, 0.18);
-    background: #fff;
-    color: #0d6efd;
+    border: 1px solid #8bbcff;
+    background: #eef5ff;
+    color: #0a3d91;
     border-radius: 12px;
-    width: 2.4rem;
+    min-width: 2.6rem;
     height: 2.4rem;
+    padding: 0 0.7rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    gap: 0.4rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(10, 61, 145, 0.08);
+    transition: all 0.2s ease, box-shadow 0.2s ease;
 }
 
 .secure-copy-btn:hover {
-    background: #0d6efd;
-    color: #fff;
+    background: #dceaff;
+    border-color: #4f8dff;
+    color: #08306f;
+    box-shadow: 0 6px 14px rgba(13, 110, 253, 0.2);
     transform: translateY(-1px);
+}
+
+.secure-copy-btn:focus-visible {
+    outline: 2px solid rgba(13, 110, 253, 0.45);
+    outline-offset: 2px;
+}
+
+[data-bs-theme="dark"] .secure-copy-btn {
+    background: #1b2a42;
+    border-color: #3b5f9b;
+    color: #c9dcff;
+    box-shadow: none;
+}
+
+[data-bs-theme="dark"] .secure-copy-btn:hover {
+    background: #243757;
+    border-color: #5f8fe0;
+    color: #e6f0ff;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+}
+
+[data-bs-theme="dark"] .secure-copy-btn:focus-visible {
+    outline-color: rgba(120, 168, 255, 0.55);
+}
+
+.secure-copy-btn i {
+    font-size: 1.12rem;
+    opacity: 1;
+    filter: none;
+}
+
+.secure-copy-btn.is-success i {
+    font-size: 1.05rem;
+}
+
+.secure-copy-btn:hover i {
+    color: inherit;
+    opacity: 1;
+}
+
+.secure-copy-btn:hover {
+    color: #fff;
 }
 
 .secure-copy-btn.is-success {
     background: #198754;
     border-color: #198754;
     color: #fff;
+}
+
+.secure-copy-btn-label {
+    display: none;
 }
 
 .secure-action-row {
@@ -351,7 +406,7 @@
 [dir="rtl"] .secure-delivery-page h4,
 [dir="rtl"] .secure-delivery-page h5,
 [dir="rtl"] .secure-delivery-page h6 {
-    font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+    font-family: var(--font-ar-heading);
 }
 
 [dir="rtl"] .secure-credential-value,
@@ -396,6 +451,11 @@
     .secure-action-row .btn {
         width: 100%;
         justify-content: center;
+    }
+
+    .secure-copy-btn {
+        min-width: 2.4rem;
+        padding: 0 0.6rem;
     }
 }
 </style>
@@ -505,7 +565,7 @@
                             <div class="secure-delivery-meta-card">
                                 <span class="secure-delivery-meta-label">{{ __('app.delivery.expires') }}</span>
                                 <div class="secure-delivery-meta-value">
-                                    {{ $delivery->expires_at ? $delivery->expires_at->format('M d, Y H:i') : __('app.delivery.never_expires') }}
+                                    {{ $delivery->expires_at ? local_datetime($delivery->expires_at, 'M d, Y H:i') : __('app.delivery.never_expires') }}
                                 </div>
                             </div>
                         </div>
@@ -554,6 +614,8 @@
         credentialsHiddenMessage: @json(__('app.delivery.credentials_hidden_message')),
         copied: @json(__('app.delivery.copy_success')),
         copyFailed: @json(__('app.delivery.copy_failed')),
+        copyAction: @json(app()->getLocale() === 'ar' ? 'نسخ' : 'Copy'),
+        copiedAction: @json(app()->getLocale() === 'ar' ? 'تم النسخ' : 'Copied!'),
         noCredentials: @json(__('app.delivery.no_credentials_available')),
         credentialsWarning: @json(__('app.delivery.credentials_warning')),
     };
@@ -584,6 +646,7 @@
 
     function setCopyButtonState(button, success) {
         const icon = button.querySelector('i');
+        const text = button.querySelector('.secure-copy-btn-label');
 
         if (!icon) {
             return;
@@ -592,9 +655,17 @@
         if (success) {
             button.classList.add('is-success');
             icon.className = 'fas fa-check';
+            if (text) {
+                text.textContent = labels.copiedAction;
+            }
+            button.setAttribute('title', labels.copiedAction);
         } else {
-            icon.className = 'fas fa-copy';
+            icon.className = 'fas fa-clipboard';
             button.classList.remove('is-success');
+            if (text) {
+                text.textContent = labels.copyAction;
+            }
+            button.setAttribute('title', labels.copyAction);
         }
     }
 
@@ -639,8 +710,9 @@
                 copyButton.type = 'button';
                 copyButton.className = 'secure-copy-btn';
                 copyButton.dataset.value = String(value ?? '');
-                copyButton.setAttribute('aria-label', formatLabel(key));
-                copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+                copyButton.setAttribute('aria-label', `${labels.copyAction} ${formatLabel(key)}`);
+                copyButton.setAttribute('title', labels.copyAction);
+                copyButton.innerHTML = `<i class="fas fa-clipboard"></i><span class="secure-copy-btn-label">${labels.copyAction}</span>`;
                 copyButton.addEventListener('click', handleCopyClick);
                 header.appendChild(copyButton);
             }
@@ -811,3 +883,5 @@
 })();
 </script>
 @endpush
+
+

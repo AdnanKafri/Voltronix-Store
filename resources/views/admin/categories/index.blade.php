@@ -127,7 +127,7 @@
                                     <td>
                                         <div class="fw-bold">{{ $category->getTranslation('name', 'en') ?? $category->name ?? 'N/A' }}</div>
                                         @if(app()->getLocale() == 'ar' || $category->getTranslation('name', 'ar'))
-                                            <small class="text-muted">{{ $category->getTranslation('name', 'ar') ?? 'غير متوفر' }}</small>
+                                            <small class="text-muted">{{ $category->getTranslation('name', 'ar') ?? __('admin.product.not_available') }}</small>
                                         @endif
                                     </td>
                                     

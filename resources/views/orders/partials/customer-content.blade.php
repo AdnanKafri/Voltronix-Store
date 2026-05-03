@@ -1,79 +1,94 @@
-<div class="row g-3">
-    <div class="col-md-6">
-        <div class="info-item">
-            <label class="info-label">{{ __('orders.customer_name') }}</label>
-            <div class="info-value">{{ $order->customer_name }}</div>
+<div class="customer-grid">
+    <div class="customer-panel">
+        <span class="customer-label">{{ __('orders.customer_name') }}</span>
+        <div class="customer-value">{{ $order->customer_name }}</div>
+    </div>
+
+    <div class="customer-panel">
+        <span class="customer-label">{{ __('orders.customer_email') }}</span>
+        <div class="customer-value">
+            <a href="mailto:{{ $order->customer_email }}" class="customer-link">{{ $order->customer_email }}</a>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="info-item">
-            <label class="info-label">{{ __('orders.customer_email') }}</label>
-            <div class="info-value">
-                <a href="mailto:{{ $order->customer_email }}" class="email-link">
-                    {{ $order->customer_email }}
-                </a>
-            </div>
-        </div>
-    </div>
+
     @if($order->customer_phone)
-    <div class="col-md-6">
-        <div class="info-item">
-            <label class="info-label">{{ __('orders.customer_phone') }}</label>
-            <div class="info-value">
-                <a href="tel:{{ $order->customer_phone }}" class="phone-link">
-                    {{ $order->customer_phone }}
-                </a>
+        <div class="customer-panel">
+            <span class="customer-label">{{ __('orders.customer_phone') }}</span>
+            <div class="customer-value">
+                <a href="tel:{{ $order->customer_phone }}" class="customer-link">{{ $order->customer_phone }}</a>
             </div>
         </div>
-    </div>
     @endif
-    @if($order->notes)
-    <div class="col-12">
-        <div class="info-item">
-            <label class="info-label">{{ __('orders.notes') }}</label>
-            <div class="info-value notes-text">{{ $order->notes }}</div>
-        </div>
+
+    <div class="customer-panel">
+        <span class="customer-label">{{ __('orders.order_number') }}</span>
+        <div class="customer-value">{{ $order->order_number }}</div>
     </div>
+
+    @if($order->notes)
+        <div class="customer-panel customer-panel-wide">
+            <span class="customer-label">{{ __('orders.notes') }}</span>
+            <div class="customer-note">{{ $order->notes }}</div>
+        </div>
     @endif
 </div>
 
 <style>
-.info-item {
-    margin-bottom: 1rem;
+.customer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
 }
 
-.info-label {
+.customer-panel {
+    padding: 1rem;
+    border-radius: 14px;
+    background: #f8fbfe;
+    border: 1px solid #e3ebf4;
+}
+
+.customer-panel-wide {
+    grid-column: 1 / -1;
+}
+
+.customer-label {
     display: block;
-    font-weight: 600;
-    color: #6c757d;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.45rem;
+    color: #6d7d91;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
-.info-value {
-    font-size: 1.1rem;
-    color: #212529;
-    font-weight: 500;
+.customer-value {
+    color: #10233e;
+    font-size: 1rem;
+    font-weight: 700;
+    word-break: break-word;
 }
 
-.email-link, .phone-link {
-    color: #007fff;
+.customer-link {
+    color: #0d6efd;
     text-decoration: none;
-    transition: color 0.3s ease;
 }
 
-.email-link:hover, .phone-link:hover {
-    color: #0056b3;
+.customer-link:hover {
     text-decoration: underline;
 }
 
-.notes-text {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-    border-left: 4px solid #007fff;
-    font-style: italic;
+.customer-note {
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    background: #fff;
+    border-inline-start: 4px solid #0d6efd;
+    color: #4d6177;
+    line-height: 1.75;
+}
+
+@media (max-width: 768px) {
+    .customer-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>

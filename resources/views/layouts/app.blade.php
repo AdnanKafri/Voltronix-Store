@@ -203,15 +203,32 @@
             overflow-x: hidden;
         }
         
+        /* Font Settings */
+        :root {
+            --font-en-primary: 'Poppins', sans-serif;
+            --font-en-heading: 'Orbitron', sans-serif;
+            --font-ar-primary: 'Noto Sans Arabic', sans-serif;
+            --font-ar-heading: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+        }
+
         body {
-            font-family: {{ app()->getLocale() == 'ar' ? "'Noto Sans Arabic', sans-serif" : "'Poppins', sans-serif" }};
+            font-family: {{ app()->getLocale() == 'ar' ? "var(--font-ar-primary)" : "var(--font-en-primary)" }};
             background-color: var(--voltronix-light);
             margin: 0;
             padding: 0;
             line-height: 1.6;
             color: var(--voltronix-accent);
         }
-        
+
+        [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6,
+        [dir="rtl"] .section-title, [dir="rtl"] .hero-title, [dir="rtl"] .page-title,
+        [dir="rtl"] .title-orbitron, [dir="rtl"] .navbar-brand-voltronix, [dir="rtl"] .btn-voltronix-primary,
+        [dir="rtl"] .slide-title, [dir="rtl"] .section-title-modern, [dir="rtl"] .category-card-title, [dir="rtl"] .product-card-title {
+            font-family: var(--font-ar-heading) !important;
+            letter-spacing: 0 !important;
+            font-feature-settings: "liga" 1, "calt" 1;
+        }
+
         /* Prevent mobile menu body scroll */
         body.mobile-menu-open {
             overflow: hidden;
@@ -2695,7 +2712,7 @@
 
         .brand-title[data-brand-script="arabic"] {
             display: inline-block;
-            font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+            font-family: var(--font-ar-heading);
             font-size: 2.2rem;
             font-weight: 800;
             letter-spacing: 0;
@@ -2765,7 +2782,7 @@
 
         .mobile-brand-name[lang="ar"] {
             display: inline-block;
-            font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+            font-family: var(--font-ar-heading);
             font-size: 1.35rem;
             font-weight: 800;
             letter-spacing: 0;
@@ -3882,6 +3899,19 @@
             background: linear-gradient(135deg, #007fff, #23efff) !important;
         }
 
+        .swal2-container.swal2-top-end,
+        .swal2-container.swal2-top-right {
+            z-index: 20050 !important;
+            padding-top: calc(var(--navbar-height-desktop, 88px) + 16px) !important;
+        }
+
+        @media (max-width: 768px) {
+            .swal2-container.swal2-top-end,
+            .swal2-container.swal2-top-right {
+                padding-top: calc(var(--navbar-height-mobile, 72px) + 16px) !important;
+            }
+        }
+
         /* Navbar Actions */
         .navbar-actions {
             display: flex;
@@ -4628,7 +4658,7 @@
         [dir="rtl"] .contact-item,
         [dir="rtl"] .footer-copyright,
         [dir="rtl"] .footer-made {
-            font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+            font-family: var(--font-ar-heading);
         }
 
         [dir="rtl"] .footer-voltronix .footer-section {
@@ -4641,7 +4671,7 @@
 
         [dir="rtl"] .footer-brand-text,
         [dir="rtl"] .footer-title {
-            font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+            font-family: var(--font-ar-heading);
             letter-spacing: 0;
             text-transform: none;
         }
@@ -5328,7 +5358,7 @@
                         window.currencyNotificationTimeout = setTimeout(() => {
                             const locale = document.documentElement.lang || 'en';
                             const message = locale === 'ar' ? 
-                                `تم تغيير العملة إلى ${currencyCode} بنجاح` : 
+                                `{{ __('admin.currency.currency_switched') }}` : 
                                 `Currency switched to ${currencyCode} successfully`;
                             
                             Swal.fire({

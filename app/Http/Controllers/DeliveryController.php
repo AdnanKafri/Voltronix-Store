@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderDelivery;
 use App\Models\DeliveryAccessRequest;
+use App\Models\DeliveryLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class DeliveryController extends Controller
@@ -63,7 +63,7 @@ class DeliveryController extends Controller
     public function credentials(Request $request, string $token)
     {
         $delivery = OrderDelivery::where('token', $token)
-            ->whereIn('type', [OrderDelivery::TYPE_CREDENTIALS, OrderDelivery::TYPE_LICENSE])
+            ->where('type', OrderDelivery::TYPE_CREDENTIALS)
             ->first();
 
         if (!$delivery) {
@@ -97,12 +97,51 @@ class DeliveryController extends Controller
     }
 
     /**
+     * View license by token
+     */
+    public function license(Request $request, string $token)
+    {
+        $delivery = OrderDelivery::where('token', $token)
+            ->where('type', OrderDelivery::TYPE_LICENSE)
+            ->first();
+
+        if (!$delivery) {
+            abort(404, 'Delivery not found');
+        }
+
+        if (!$this->canAccessDelivery($delivery)) {
+            abort(403, 'Unauthorized access');
+        }
+
+        if (!$delivery->isAccessible()) {
+            $reason = $delivery->revoked ? 'Access revoked' :
+                ($delivery->expires_at && $delivery->expires_at->isPast() ? 'Access expired' : 'View limit exceeded');
+
+            return view('delivery.access-denied', compact('delivery', 'reason'));
+        }
+
+        if (!$delivery->isIpAllowed($request->ip())) {
+            return view('delivery.access-denied', [
+                'delivery' => $delivery,
+                'reason' => 'Access from this IP address is not allowed'
+            ]);
+        }
+
+        $delivery->recordView($request->ip(), $request->userAgent());
+
+        $licenseKey = $delivery->getLicenseKey();
+        $maskedLicenseKey = $delivery->getMaskedLicenseKey();
+
+        return view('delivery.license', compact('delivery', 'licenseKey', 'maskedLicenseKey'));
+    }
+
+    /**
      * Reveal credentials (AJAX)
      */
     public function revealCredentials(Request $request, string $token)
     {
         $delivery = OrderDelivery::where('token', $token)
-            ->whereIn('type', [OrderDelivery::TYPE_CREDENTIALS, OrderDelivery::TYPE_LICENSE])
+            ->where('type', OrderDelivery::TYPE_CREDENTIALS)
             ->first();
 
         if (

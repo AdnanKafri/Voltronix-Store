@@ -43,22 +43,19 @@
         </div>
 
         <!-- Admin Response -->
-        @if($order->admin_notes)
+        @if($order->customer_status_note)
         <div class="admin-response">
             <h5 class="admin-title">
                 <i class="bi bi-person-badge"></i>
                 {{ __('orders.admin_response') }}
             </h5>
             <div class="admin-message">
-                {{ $order->admin_notes }}
+                {{ $order->customer_status_note }}
             </div>
-            @if($order->approved_at)
+            @if($order->customer_status_note_date)
             <div class="admin-date">
-                {{ __('orders.approved_on') }}: {{ $order->approved_at->format('M d, Y H:i') }}
-            </div>
-            @elseif($order->rejected_at)
-            <div class="admin-date">
-                {{ __('orders.rejected_on') }}: {{ $order->rejected_at->format('M d, Y H:i') }}
+                {{ $order->rejected_at ? __('orders.rejected_on') : ($order->approved_at ? __('orders.approved_on') : __('orders.order_date')) }}:
+                {{ local_datetime($order->customer_status_note_date, 'M d, Y H:i') }}
             </div>
             @endif
         </div>
@@ -77,7 +74,7 @@
                     </div>
                     <div class="timeline-content">
                         <div class="timeline-title">{{ __('orders.order_placed') }}</div>
-                        <div class="timeline-date">{{ $order->created_at->format('M d, Y H:i') }}</div>
+                        <div class="timeline-date">{{ local_datetime($order->created_at, 'M d, Y H:i') }}</div>
                     </div>
                 </div>
                 
@@ -88,7 +85,7 @@
                     </div>
                     <div class="timeline-content">
                         <div class="timeline-title">{{ __('orders.order_approved') }}</div>
-                        <div class="timeline-date">{{ $order->approved_at->format('M d, Y H:i') }}</div>
+                        <div class="timeline-date">{{ local_datetime($order->approved_at, 'M d, Y H:i') }}</div>
                     </div>
                 </div>
                 @elseif($order->rejected_at)
@@ -98,7 +95,7 @@
                     </div>
                     <div class="timeline-content">
                         <div class="timeline-title">{{ __('orders.order_rejected') }}</div>
-                        <div class="timeline-date">{{ $order->rejected_at->format('M d, Y H:i') }}</div>
+                        <div class="timeline-date">{{ local_datetime($order->rejected_at, 'M d, Y H:i') }}</div>
                     </div>
                 </div>
                 @else
@@ -320,3 +317,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+

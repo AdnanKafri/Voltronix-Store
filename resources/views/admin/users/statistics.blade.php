@@ -263,7 +263,7 @@
                                     <span class="badge bg-primary">{{ $user->orders_count }}</span>
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-success">${{ number_format($user->total_spent, 2) }}</span>
+                                    <span class="fw-bold text-success">{{ currency_format($user->total_spent) }}</span>
                                 </td>
                                 <td>
                                     <span class="badge {{ $user->status_badge }}">{{ $user->status_text }}</span>

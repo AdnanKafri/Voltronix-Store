@@ -5,7 +5,7 @@
         </div>
         <div class="timeline-content">
             <div class="timeline-title">{{ __('orders.order_placed') }}</div>
-            <div class="timeline-date">{{ $order->created_at->format('M d, Y H:i') }}</div>
+            <div class="timeline-date">{{ local_datetime($order->created_at, 'M d, Y H:i') }}</div>
         </div>
     </div>
     
@@ -16,7 +16,7 @@
         </div>
         <div class="timeline-content">
             <div class="timeline-title">{{ __('orders.order_approved') }}</div>
-            <div class="timeline-date">{{ $order->approved_at->format('M d, Y H:i') }}</div>
+            <div class="timeline-date">{{ local_datetime($order->approved_at, 'M d, Y H:i') }}</div>
         </div>
     </div>
     @elseif($order->rejected_at)
@@ -26,7 +26,7 @@
         </div>
         <div class="timeline-content">
             <div class="timeline-title">{{ __('orders.order_rejected') }}</div>
-            <div class="timeline-date">{{ $order->rejected_at->format('M d, Y H:i') }}</div>
+            <div class="timeline-date">{{ local_datetime($order->rejected_at, 'M d, Y H:i') }}</div>
         </div>
     </div>
     @else
@@ -138,3 +138,5 @@
     }
 }
 </style>
+
+

@@ -106,7 +106,7 @@
                         <div class="col-md-6">
                             <div class="info-item mb-3">
                                 <label class="text-muted">{{ __('admin.currency.last_updated') }}</label>
-                                <div class="fw-bold">{{ $currency->updated_at->format('M d, Y H:i') }}</div>
+                                <div class="fw-bold">{{ local_datetime($currency->updated_at, 'M d, Y H:i') }}</div>
                             </div>
                         </div>
                     </div>
@@ -215,11 +215,11 @@
                 <div class="card-body">
                     <div class="info-item mb-2">
                         <small class="text-muted">{{ __('admin.currency.created_at') }}</small>
-                        <div>{{ $currency->created_at->format('F d, Y \a\t H:i') }}</div>
+                        <div>{{ local_datetime($currency->created_at, 'F d, Y \\a\\t H:i') }}</div>
                     </div>
                     <div class="info-item mb-2">
                         <small class="text-muted">{{ __('admin.currency.updated_at') }}</small>
-                        <div>{{ $currency->updated_at->format('F d, Y \a\t H:i') }}</div>
+                        <div>{{ local_datetime($currency->updated_at, 'F d, Y \a\t H:i') }}</div>
                     </div>
                     <div class="info-item">
                         <small class="text-muted">ID</small>
@@ -414,3 +414,5 @@ function refreshRates() {
 </script>
 @endpush
 @endsection
+
+

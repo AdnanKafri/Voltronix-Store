@@ -78,7 +78,7 @@
                         <div class="detail-item">
                             <i class="bi bi-calendar text-info"></i>
                             <span class="label">{{ __('admin.users.joined_date') }}:</span>
-                            <span class="value">{{ $user->created_at->format('M d, Y') }}</span>
+                            <span class="value">{{ local_datetime($user->created_at, 'M d, Y') }}</span>
                         </div>
 
                         <div class="detail-item">
@@ -164,7 +164,7 @@
                             </div>
                             <div class="delivery-stat-text">
                                 <h6>{{ __('admin.users.total_spent') }}</h6>
-                                <h4>${{ number_format($stats['total_spent'], 2) }}</h4>
+                                <h4>{{ currency_format($stats['total_spent']) }}</h4>
                             </div>
                         </div>
                     </div>
@@ -178,7 +178,7 @@
                             </div>
                             <div class="delivery-stat-text">
                                 <h6>{{ __('admin.users.average_order') }}</h6>
-                                <h4>${{ number_format($stats['average_order'], 2) }}</h4>
+                                <h4>{{ currency_format($stats['average_order']) }}</h4>
                             </div>
                         </div>
                     </div>
@@ -233,9 +233,9 @@
                                 </td>
                                 <td>
                                     <div class="text-muted small">
-                                        {{ $order->created_at->format('M d, Y') }}
+                                        {{ local_datetime($order->created_at, 'M d, Y') }}
                                         <br>
-                                        <small>{{ $order->created_at->format('H:i') }}</small>
+                                        <small>{{ local_datetime($order->created_at, 'H:i') }}</small>
                                     </div>
                                 </td>
                                 <td>
@@ -489,3 +489,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 @endpush
 @endsection
+
+

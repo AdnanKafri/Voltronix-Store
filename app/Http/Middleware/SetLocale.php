@@ -31,6 +31,9 @@ class SetLocale
         // Set application locale
         App::setLocale($locale);
         
+        // Set fallback locale to current locale to prevent language mixing
+        config(['app.fallback_locale' => $locale]);
+        
         // Store locale in session
         Session::put('locale', $locale);
         

@@ -46,20 +46,20 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="english-tab" data-bs-toggle="tab" data-bs-target="#english" type="button" role="tab">
                                     <i class="fas fa-globe {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                    English
+                                    {{ __('app.common.english') }}
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="arabic-tab" data-bs-toggle="tab" data-bs-target="#arabic" type="button" role="tab">
                                     <i class="fas fa-globe {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                    العربية
+                                    {{ __('app.common.arabic') }}
                                 </button>
                             </li>
                         </ul>
 
                         <!-- Tab Content -->
                         <div class="tab-content" id="languageTabContent">
-                            <!-- English Tab -->
+                            <!-- {{ __('app.common.english') }} Tab -->
                             <div class="tab-pane fade show active" id="english" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -278,11 +278,11 @@
                     <div class="small text-muted">
                         <div class="d-flex justify-content-between mb-1">
                             <span>{{ __('admin.category.created_at') }}:</span>
-                            <span>{{ $category->created_at->format('Y-m-d') }}</span>
+                            <span>{{ local_datetime($category->created_at, 'Y-m-d') }}</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>{{ __('admin.category.updated_at') }}:</span>
-                            <span>{{ $category->updated_at->format('Y-m-d') }}</span>
+                            <span>{{ local_datetime($category->updated_at, 'Y-m-d') }}</span>
                         </div>
                     </div>
                 </div>
@@ -325,7 +325,7 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-generate slug from English name (only if slug is empty or auto-generated)
+    // Auto-generate slug from {{ __('app.common.english') }} name (only if slug is empty or auto-generated)
     const nameEnInput = document.getElementById('name_en');
     const slugInput = document.getElementById('slug');
     const originalSlug = slugInput.value;
@@ -566,3 +566,5 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 </style>
 @endpush
+
+

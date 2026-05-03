@@ -441,23 +441,23 @@ textarea.form-control {
         padding: 1.5rem;
         text-align: center;
     }
-    
+
     .section-body {
         padding: 1.5rem;
     }
-    
+
     .media-upload-area {
         padding: 2rem 1rem;
     }
-    
+
     .upload-icon {
         font-size: 2.5rem;
     }
-    
+
     .form-actions {
         padding: 1.5rem;
     }
-    
+
     .btn-voltronix, .btn-secondary {
         width: 100%;
         margin-bottom: 0.5rem;
@@ -609,7 +609,7 @@ textarea.form-control {
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
             <h4 class="mb-1">{{ __('admin.product.create') }}</h4>
-            <p class="mb-0">Create a new digital product with advanced media options</p>
+            <p class="mb-0">{{ __('admin.product.create_desc') }}</p>
         </div>
         <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
@@ -621,8 +621,8 @@ textarea.form-control {
 <div class="loading-overlay" id="loadingOverlay">
     <div class="text-center text-white">
         <div class="loading-spinner mb-3"></div>
-        <h5>Creating Product...</h5>
-        <p>Please wait while we process your request</p>
+        <h5>{{ __('admin.product.creating_product') }}...</h5>
+        <p>{{ __('admin.product.wait_process') }}</p>
     </div>
 </div>
 
@@ -630,7 +630,7 @@ textarea.form-control {
     <div class="col-12">
         <form method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data" id="productForm" novalidate>
             @csrf
-            
+
             {{-- Global Error Display --}}
             @if($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -658,7 +658,7 @@ textarea.form-control {
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
-            
+
             <!-- Basic Information -->
             <div class="form-section">
                 <div class="section-header">
@@ -683,10 +683,10 @@ textarea.form-control {
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="col-md-6">
                             <label class="form-label">{{ __('admin.product.slug') }}</label>
-                            <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" 
+                            <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror"
                                    value="{{ old('slug') }}" placeholder="Auto-generated from English name">
                             @error('slug')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -708,18 +708,18 @@ textarea.form-control {
                     <!-- Enhanced Language Tabs -->
                     <ul class="nav nav-tabs mb-0" id="languageTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="english-tab" data-bs-toggle="tab" 
+                            <button class="nav-link active" id="english-tab" data-bs-toggle="tab"
                                     data-bs-target="#english" type="button" role="tab">
                                 <i class="bi bi-flag {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                <span>English</span>
+                                <span>{{ __('app.common.english') }}</span>
                                 <i class="bi bi-check-circle {{ app()->getLocale() == 'ar' ? 'me-2' : 'ms-2' }}" style="opacity: 0.7;"></i>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="arabic-tab" data-bs-toggle="tab" 
+                            <button class="nav-link" id="arabic-tab" data-bs-toggle="tab"
                                     data-bs-target="#arabic" type="button" role="tab">
                                 <i class="bi bi-flag {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                <span>العربية</span>
+                                <span>{{ __('app.common.arabic') }}</span>
                                 <i class="bi bi-check-circle {{ app()->getLocale() == 'ar' ? 'me-2' : 'ms-2' }}" style="opacity: 0.7;"></i>
                             </button>
                         </li>
@@ -735,20 +735,20 @@ textarea.form-control {
                                         {{ __('admin.product.name_en') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" name="name_en" class="form-control @error('name_en') is-invalid @enderror" 
-                                           value="{{ old('name_en') }}" required id="nameEn" 
+                                    <input type="text" name="name_en" class="form-control @error('name_en') is-invalid @enderror"
+                                           value="{{ old('name_en') }}" required id="nameEn"
                                            placeholder="Enter product name in English">
                                     @error('name_en')
                                         <div class="field-error" style="display: block;">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
+
                                 <div class="col-12">
                                     <label class="form-label">
                                         <i class="bi bi-card-text"></i>
                                         {{ __('admin.product.description_en') }}
                                     </label>
-                                    <textarea name="description_en" rows="5" 
+                                    <textarea name="description_en" rows="5"
                                               class="form-control @error('description_en') is-invalid @enderror"
                                               placeholder="Enter detailed product description in English">{{ old('description_en') }}</textarea>
                                     @error('description_en')
@@ -767,8 +767,8 @@ textarea.form-control {
                                                 <span class="input-group-text">
                                                     <i class="bi bi-star text-warning"></i>
                                                 </span>
-                                                <input type="text" name="features_en[]" class="form-control" 
-                                                       placeholder="Enter product feature in English">
+                                                <input type="text" name="features_en[]" class="form-control"
+                                                       placeholder="{{ __('admin.product.features_en') }}">
                                                 <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
@@ -792,23 +792,23 @@ textarea.form-control {
                                         Arabic Name
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" name="name_ar" class="form-control @error('name_ar') is-invalid @enderror" 
+                                    <input type="text" name="name_ar" class="form-control @error('name_ar') is-invalid @enderror"
                                            value="{{ old('name_ar') }}" required dir="rtl"
-                                           placeholder="أدخل اسم المنتج بالعربية">
+                                           placeholder="{{ __('admin.product.enter_name_ar') }}">
                                     @error('name_ar')
                                         <div class="field-error" style="display: block;">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
+
                                 <div class="col-12">
                                     <label class="form-label">
                                         <i class="bi bi-card-text"></i>
                                         Arabic Description
                                     </label>
-                                    <textarea name="description_ar" rows="5" 
-                                              class="form-control @error('description_ar') is-invalid @enderror" 
+                                    <textarea name="description_ar" rows="5"
+                                              class="form-control @error('description_ar') is-invalid @enderror"
                                               dir="rtl"
-                                              placeholder="أدخل وصف المنتج التفصيلي بالعربية">{{ old('description_ar') }}</textarea>
+                                              placeholder="{{ __('admin.product.enter_desc_ar') }}">{{ old('description_ar') }}</textarea>
                                     @error('description_ar')
                                         <div class="field-error" style="display: block;">{{ $message }}</div>
                                     @enderror
@@ -817,7 +817,7 @@ textarea.form-control {
                                 <div class="col-12">
                                     <label class="form-label">
                                         <i class="bi bi-list-stars"></i>
-                                        Arabic Features
+                                        {{ __('admin.product.features_ar') }}
                                     </label>
                                     <div id="featuresAr" class="features-container">
                                         <div class="feature-item mb-3">
@@ -825,8 +825,8 @@ textarea.form-control {
                                                 <span class="input-group-text">
                                                     <i class="bi bi-star text-warning"></i>
                                                 </span>
-                                                <input type="text" name="features_ar[]" class="form-control" 
-                                                       placeholder="أدخل ميزة المنتج بالعربية" dir="rtl">
+                                                <input type="text" name="features_ar[]" class="form-control"
+                                                       placeholder="{{ __('admin.product.enter_feature_ar') }}" dir="rtl">
                                                 <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
@@ -835,7 +835,7 @@ textarea.form-control {
                                     </div>
                                     <button type="button" class="btn btn-outline-primary" onclick="addFeature('featuresAr', 'features_ar[]')">
                                         <i class="bi bi-plus-circle {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                        إضافة ميزة
+                                        {{ __('admin.product.add_feature') }}
                                     </button>
                                 </div>
                             </div>
@@ -858,28 +858,28 @@ textarea.form-control {
                             <label class="form-label">{{ __('admin.product.price') }} <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" name="price" step="0.01" min="0" 
-                                       class="form-control @error('price') is-invalid @enderror" 
+                                <input type="number" name="price" step="0.01" min="0"
+                                       class="form-control @error('price') is-invalid @enderror"
                                        value="{{ old('price') }}" required>
                             </div>
                             @error('price')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="col-md-4">
-                            <label class="form-label">Discount Price</label>
+                            <label class="form-label">{{ __('admin.product.discount_price') }}</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" name="discount_price" step="0.01" min="0" 
-                                       class="form-control @error('discount_price') is-invalid @enderror" 
+                                <input type="number" name="discount_price" step="0.01" min="0"
+                                       class="form-control @error('discount_price') is-invalid @enderror"
                                        value="{{ old('discount_price') }}">
                             </div>
                             @error('discount_price')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="col-md-4">
                             <label class="form-label">{{ __('admin.product.status') }} <span class="text-danger">*</span></label>
                             <select name="status" class="form-select @error('status') is-invalid @enderror" required>
@@ -899,7 +899,7 @@ textarea.form-control {
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="is_featured" 
+                                        <input class="form-check-input" type="checkbox" name="is_featured"
                                                id="isFeatured" value="1" {{ old('is_featured') ? 'checked' : '' }}>
                                         <label class="form-check-label" for="isFeatured">
                                             <i class="bi bi-star me-1"></i> Featured Product
@@ -908,7 +908,7 @@ textarea.form-control {
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="is_new" 
+                                        <input class="form-check-input" type="checkbox" name="is_new"
                                                id="isNew" value="1" {{ old('is_new') ? 'checked' : '' }}>
                                         <label class="form-check-label" for="isNew">
                                             <i class="bi bi-lightning me-1"></i> New Product
@@ -916,9 +916,9 @@ textarea.form-control {
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Sort Order</label>
-                                    <input type="number" name="sort_order" min="0" 
-                                           class="form-control @error('sort_order') is-invalid @enderror" 
+                                    <label class="form-label">{{ __('admin.product.sort_order') }}</label>
+                                    <input type="number" name="sort_order" min="0"
+                                           class="form-control @error('sort_order') is-invalid @enderror"
                                            value="{{ old('sort_order', 0) }}">
                                 </div>
                             </div>
@@ -939,13 +939,13 @@ textarea.form-control {
                     <!-- Thumbnail -->
                     <div class="row g-3 mb-4">
                         <div class="col-12">
-                            <label class="form-label">Product Thumbnail <span class="text-danger">*</span></label>
+                            <label class="form-label">{{ __('admin.product.thumbnail') }} <span class="text-danger">*</span></label>
                             <div class="media-upload-area" onclick="document.getElementById('thumbnail').click()">
                                 <i class="bi bi-cloud-upload text-primary" style="font-size: 2rem;"></i>
-                                <h6 class="mt-2">Click to upload thumbnail</h6>
+                                <h6 class="mt-2">{{ __('admin.product.click_upload') }}</h6>
                                 <p class="text-muted mb-0">JPG, PNG, GIF up to 2MB</p>
                             </div>
-                            <input type="file" name="thumbnail" id="thumbnail" accept=".jpg,.jpeg,.png,.gif" 
+                            <input type="file" name="thumbnail" id="thumbnail" accept=".jpg,.jpeg,.png,.gif"
                                    class="d-none @error('thumbnail') is-invalid @enderror">
                             <div class="field-error" id="thumbnail-error"></div>
                             @error('thumbnail')
@@ -958,13 +958,13 @@ textarea.form-control {
                     <!-- Media Type Selection -->
                     <div class="row g-3 mb-4">
                         <div class="col-12">
-                            <label class="form-label">Select Media Types to Add</label>
+                            <label class="form-label">{{ __('admin.product.select_media') }}</label>
                             <div class="row g-3">
                                 <div class="col-md-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="enableGallery" name="enable_gallery">
                                         <label class="form-check-label" for="enableGallery">
-                                            <i class="bi bi-images me-2"></i>Image Gallery
+                                            <i class="bi bi-images me-2"></i>{{ __('admin.product.image_gallery') }}
                                         </label>
                                     </div>
                                 </div>
@@ -988,7 +988,7 @@ textarea.form-control {
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="enableYoutube" name="enable_youtube">
                                         <label class="form-check-label" for="enableYoutube">
-                                            <i class="bi bi-youtube me-2"></i>YouTube Video
+                                            <i class="bi bi-youtube me-2"></i>{{ __('admin.product.youtube_video') }}
                                         </label>
                                     </div>
                                 </div>
@@ -998,10 +998,10 @@ textarea.form-control {
 
                     <!-- Gallery Images Section -->
                     <div id="gallerySection" class="media-section" style="display: none;">
-                        <h6 class="text-primary mb-3"><i class="bi bi-images me-2"></i>Image Gallery</h6>
+                        <h6 class="text-primary mb-3"><i class="bi bi-images me-2"></i>{{ __('admin.product.image_gallery') }}</h6>
                         <div class="media-upload-area" onclick="document.getElementById('galleryImages').click()">
                             <i class="bi bi-images text-primary" style="font-size: 2rem;"></i>
-                            <h6 class="mt-2">Upload Gallery Images</h6>
+                            <h6 class="mt-2">{{ __('admin.product.upload_gallery') }}</h6>
                             <p class="text-muted mb-0">Select multiple images (up to 10)</p>
                         </div>
                         <input type="file" name="gallery_images[]" id="galleryImages" multiple accept=".jpg,.jpeg,.png,.gif" class="d-none">
@@ -1014,24 +1014,24 @@ textarea.form-control {
                         </div>
                     </div>
 
-                    <!-- Before/After Images Section -->
+                    <!-- Before/After Section -->
                     <div id="beforeAfterSection" class="media-section" style="display: none;">
-                        <h6 class="text-primary mb-3"><i class="bi bi-arrow-left-right me-2"></i>Before/After Images</h6>
+                        <h6 class="text-primary mb-3"><i class="bi bi-arrow-left-right me-2"></i>{{ __('admin.product.before_after') }}</h6>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Before Image</label>
+                                <label class="form-label">{{ __('admin.product.before_image') }}</label>
                                 <div class="media-upload-area" onclick="document.getElementById('beforeImage').click()">
                                     <i class="bi bi-arrow-left text-warning" style="font-size: 1.5rem;"></i>
-                                    <p class="mb-0 mt-2">Upload Before Image</p>
+                                    <p class="mb-0 mt-2">{{ __('admin.product.before_image') }}</p>
                                 </div>
                                 <input type="file" name="before_image" id="beforeImage" accept=".jpg,.jpeg,.png,.gif" class="d-none">
                                 <div id="beforePreview" class="media-preview"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">After Image</label>
+                                <label class="form-label">{{ __('admin.product.after_image') }}</label>
                                 <div class="media-upload-area" onclick="document.getElementById('afterImage').click()">
                                     <i class="bi bi-arrow-right text-success" style="font-size: 1.5rem;"></i>
-                                    <p class="mb-0 mt-2">Upload After Image</p>
+                                    <p class="mb-0 mt-2">{{ __('admin.product.after_image') }}</p>
                                 </div>
                                 <input type="file" name="after_image" id="afterImage" accept=".jpg,.jpeg,.png,.gif" class="d-none">
                                 <div id="afterPreview" class="media-preview"></div>
@@ -1039,15 +1039,15 @@ textarea.form-control {
                         </div>
                     </div>
 
-                    <!-- Video Upload Section -->
+                    <!-- {{ __('admin.product.video_upload') }} Section -->
                     <div id="videoSection" class="media-section" style="display: none;">
-                        <h6 class="text-primary mb-3"><i class="bi bi-play-circle me-2"></i>Video Upload</h6>
+                        <h6 class="text-primary mb-3"><i class="bi bi-play-circle me-2"></i>{{ __('admin.product.video_upload') }}</h6>
                         <div class="row g-3">
                             <div class="col-md-8">
                                 <div class="media-upload-area" onclick="document.getElementById('videoFile').click()">
                                     <i class="bi bi-camera-video text-primary" style="font-size: 2rem;"></i>
-                                    <h6 class="mt-2">Upload Video File</h6>
-                                    <p class="text-muted mb-0">MP4, AVI, MOV up to 50MB</p>
+                                    <h6 class="mt-2">{{ __('admin.product.upload_video') }}</h6>
+                                    <p class="text-muted mb-0">{{ __('admin.product.supported_formats') }}: MP4, AVI, MOV</p>
                                 </div>
                                 <input type="file" name="video_file" id="videoFile" accept="video/*" class="d-none">
                                 <div class="field-error" id="video-error"></div>
@@ -1062,7 +1062,7 @@ textarea.form-control {
                                 <label class="form-label">Video Poster (Optional)</label>
                                 <div class="media-upload-area" onclick="document.getElementById('videoPoster').click()">
                                     <i class="bi bi-image text-info" style="font-size: 1.5rem;"></i>
-                                    <p class="mb-0 mt-2">Upload Poster</p>
+                                    <p class="mb-0 mt-2">{{ __('admin.product.upload_poster') }}</p>
                                 </div>
                                 <input type="file" name="video_poster" id="videoPoster" accept=".jpg,.jpeg,.png,.gif" class="d-none">
                                 <div id="posterPreview" class="media-preview"></div>
@@ -1070,34 +1070,34 @@ textarea.form-control {
                         </div>
                         <div class="row g-3 mt-3">
                             <div class="col-md-6">
-                                <label class="form-label">Video Title</label>
+                                <label class="form-label">{{ __('admin.product.video_title') }}</label>
                                 <input type="text" name="video_title" class="form-control" placeholder="Enter video title">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Video Description</label>
+                                <label class="form-label">{{ __('admin.product.video_desc') }}</label>
                                 <input type="text" name="video_description" class="form-control" placeholder="Enter video description">
                             </div>
                         </div>
                     </div>
 
-                    <!-- YouTube Video Section -->
+                    <!-- {{ __('admin.product.youtube_video') }} Section -->
                     <div id="youtubeSection" class="media-section" style="display: none;">
-                        <h6 class="text-primary mb-3"><i class="bi bi-youtube me-2"></i>YouTube Video</h6>
+                        <h6 class="text-primary mb-3"><i class="bi bi-youtube me-2"></i>{{ __('admin.product.youtube_video') }}</h6>
                         <div class="row g-3">
                             <div class="col-md-12">
-                                <label class="form-label">YouTube URL</label>
-                                <input type="url" name="youtube_url" id="youtubeUrl" class="form-control" 
+                                <label class="form-label">{{ __('admin.product.youtube_url') }}</label>
+                                <input type="url" name="youtube_url" id="youtubeUrl" class="form-control"
                                        placeholder="https://www.youtube.com/watch?v=...">
                                 <div class="field-error" id="youtube-error"></div>
                             </div>
                         </div>
                         <div class="row g-3 mt-3">
                             <div class="col-md-6">
-                                <label class="form-label">Video Title</label>
+                                <label class="form-label">{{ __('admin.product.video_title') }}</label>
                                 <input type="text" name="youtube_title" class="form-control" placeholder="Enter video title">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Video Description</label>
+                                <label class="form-label">{{ __('admin.product.video_desc') }}</label>
                                 <input type="text" name="youtube_description" class="form-control" placeholder="Enter video description">
                             </div>
                         </div>
@@ -1120,8 +1120,8 @@ textarea.form-control {
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" 
-                                       id="auto_delivery_enabled" name="auto_delivery_enabled" 
+                                <input class="form-check-input" type="checkbox"
+                                       id="auto_delivery_enabled" name="auto_delivery_enabled"
                                        value="1" {{ old('auto_delivery_enabled', false) ? 'checked' : '' }}
                                        onchange="toggleDeliveryConfig()">
                                 <label class="form-check-label" for="auto_delivery_enabled">
@@ -1136,7 +1136,7 @@ textarea.form-control {
 
                     {{-- Delivery Configuration --}}
                     <div id="delivery-config" style="display: {{ old('auto_delivery_enabled', false) ? 'block' : 'none' }};">
-                        
+
                         {{-- Delivery Type Info --}}
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label">{{ __('admin.product.delivery_type') }}</label>
@@ -1169,92 +1169,92 @@ textarea.form-control {
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">{{ __('admin.product.max_downloads') }}</label>
                                 <div class="col-md-9">
-                                    <input type="number" class="form-control" name="default_max_downloads" 
-                                           value="{{ old('default_max_downloads', 5) }}" 
+                                    <input type="number" class="form-control" name="default_max_downloads"
+                                           value="{{ old('default_max_downloads', 5) }}"
                                            min="1" max="100">
                                     <small class="form-text text-muted">{{ __('admin.product.max_downloads_help') }}</small>
                                 </div>
                             </div>
                         </div>
-                        
+
                         {{-- Credentials Delivery Fields --}}
                         <div id="credentials-delivery-fields" style="display: {{ old('delivery_type') == 'credentials' ? 'block' : 'none' }};">
                             <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">{{ __('admin.product.username') }} <span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="default_username" 
+                                    <input type="text" class="form-control" name="default_username"
                                            value="{{ old('default_username') }}" placeholder="{{ __('admin.product.username_placeholder') }}">
                                     @error('default_username')
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">{{ __('admin.product.password') }} <span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="default_password" 
+                                    <input type="text" class="form-control" name="default_password"
                                            value="{{ old('default_password') }}" placeholder="{{ __('admin.product.password_placeholder') }}">
                                     @error('default_password')
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">{{ __('admin.product.notes') }}</label>
                                 <div class="col-md-9">
-                                    <textarea class="form-control" name="credential_notes" rows="3" 
+                                    <textarea class="form-control" name="credential_notes" rows="3"
                                               placeholder="{{ __('admin.product.notes_placeholder') }}">{{ old('credential_notes') }}</textarea>
                                     <small class="form-text text-muted">{{ __('admin.product.notes_help') }}</small>
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">{{ __('admin.product.max_views') }}</label>
                                 <div class="col-md-9">
-                                    <input type="number" class="form-control" name="default_max_views" 
-                                           value="{{ old('default_max_views', 10) }}" 
+                                    <input type="number" class="form-control" name="default_max_views"
+                                           value="{{ old('default_max_views', 10) }}"
                                            min="1" max="100">
                                     <small class="form-text text-muted">{{ __('admin.product.max_views_help') }}</small>
                                 </div>
                             </div>
                         </div>
-                        
+
                         {{-- License Delivery Fields --}}
                         <div id="license-delivery-fields" style="display: {{ old('delivery_type') == 'license' ? 'block' : 'none' }};">
                             <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">{{ __('admin.product.license_key') }} <span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="default_license_key" 
-                                           value="{{ old('default_license_key') }}" 
+                                    <input type="text" class="form-control" name="default_license_key"
+                                           value="{{ old('default_license_key') }}"
                                            placeholder="{{ __('admin.product.license_key_placeholder') }}">
                                     @error('default_license_key')
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">{{ __('admin.product.license_notes') }}</label>
                                 <div class="col-md-9">
-                                    <textarea class="form-control" name="license_instructions" rows="3" 
+                                    <textarea class="form-control" name="license_instructions" rows="3"
                                               placeholder="{{ __('admin.product.license_notes_placeholder') }}">{{ old('license_instructions') }}</textarea>
                                     <small class="form-text text-muted">{{ __('admin.product.license_notes_help') }}</small>
                                 </div>
                             </div>
                         </div>
-                        
+
                         {{-- Common Settings --}}
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label">{{ __('admin.product.expiration_days') }}</label>
                             <div class="col-md-9">
-                                <input type="number" class="form-control" name="default_expiration_days" 
-                                       value="{{ old('default_expiration_days', 30) }}" 
+                                <input type="number" class="form-control" name="default_expiration_days"
+                                       value="{{ old('default_expiration_days', 30) }}"
                                        min="1" max="365">
                                 <small class="form-text text-muted">{{ __('admin.product.expiration_days_help') }}</small>
                             </div>
@@ -1270,10 +1270,6 @@ textarea.form-control {
                     Back to Products
                 </a>
                 <div>
-                    <button type="button" class="btn btn-outline-primary me-2" onclick="previewProduct()">
-                        <i class="bi bi-eye me-2"></i>
-                        Preview
-                    </button>
                     <button type="submit" class="btn btn-voltronix">
                         <i class="bi bi-check-circle me-2"></i>
                         Create Product
@@ -1282,7 +1278,7 @@ textarea.form-control {
             </div>
         </form>
     </div>
-    
+
     <!-- Modern Voltronix Loading Overlay -->
     <div id="loadingOverlay" class="voltronix-loading-overlay">
         <div class="loading-content">
@@ -1320,7 +1316,7 @@ textarea.form-control {
         border-radius: 25px;
         padding: 3rem 2.5rem;
         text-align: center;
-        box-shadow: 
+        box-shadow:
             0 20px 60px rgba(0, 127, 255, 0.15),
             0 10px 30px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(20px);
@@ -1430,17 +1426,17 @@ textarea.form-control {
             padding: 2rem 1.5rem;
             border-radius: 20px;
         }
-        
+
         .loading-spinner {
             width: 60px;
             height: 60px;
             margin-bottom: 1.5rem;
         }
-        
+
         .loading-title {
             font-size: 1.25rem;
         }
-        
+
         .loading-subtitle {
             font-size: 0.9rem;
         }
@@ -1454,41 +1450,41 @@ textarea.form-control {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize advanced media system
     initializeMediaSystem();
-    
+
     // Auto-generate slug from English name
     const nameEn = document.getElementById('nameEn');
     const slugField = document.querySelector('input[name="slug"]');
-    
+
     nameEn.addEventListener('input', function() {
         if (!slugField.dataset.manual) {
             slugField.value = generateSlug(this.value);
         }
         validateField('name_en', this.value);
     });
-    
+
     slugField.addEventListener('input', function() {
         this.dataset.manual = 'true';
         validateField('slug', this.value);
     });
-    
+
     // Real-time validation for critical fields
     document.querySelector('input[name="name_ar"]').addEventListener('input', function() {
         validateField('name_ar', this.value);
     });
-    
+
     document.querySelector('input[name="price"]').addEventListener('input', function() {
         validateField('price', this.value);
     });
-    
+
     // Initialize image format validation
     initializeImageValidation();
-    
+
     // Form submission with enhanced validation
     document.getElementById('productForm').addEventListener('submit', function(e) {
         e.preventDefault();
         handleFormSubmission();
     });
-    
+
     // Hide loading overlay on page unload (in case of redirect or navigation)
     window.addEventListener('beforeunload', function() {
         const loadingOverlay = document.getElementById('loadingOverlay');
@@ -1502,12 +1498,12 @@ function initializeImageValidation() {
     // Add event listeners to all image upload inputs
     const imageInputs = [
         'thumbnail',
-        'galleryImages', 
+        'galleryImages',
         'beforeImage',
         'afterImage',
         'videoPoster'
     ];
-    
+
     imageInputs.forEach(inputId => {
         const input = document.getElementById(inputId);
         if (input) {
@@ -1521,13 +1517,13 @@ function initializeImageValidation() {
 function initializeMediaSystem() {
     // Media type toggles
     const toggles = ['enableGallery', 'enableBeforeAfter', 'enableVideo', 'enableYoutube'];
-    
+
     toggles.forEach(toggleId => {
         document.getElementById(toggleId).addEventListener('change', function() {
             toggleMediaSection(toggleId, this.checked);
         });
     });
-    
+
     // File upload handlers
     setupFileUpload('thumbnail', 'thumbnailPreview', false);
     setupFileUpload('galleryImages', 'galleryPreview', true);
@@ -1535,8 +1531,8 @@ function initializeMediaSystem() {
     setupFileUpload('afterImage', 'afterPreview', false);
     setupFileUpload('videoFile', 'videoPreview', false);
     setupFileUpload('videoPoster', 'posterPreview', false);
-    
-    // YouTube URL validation
+
+    // {{ __('admin.product.youtube_url') }} validation
     document.getElementById('youtubeUrl').addEventListener('input', function() {
         validateYouTubeUrl(this.value);
     });
@@ -1549,7 +1545,7 @@ function toggleMediaSection(toggleId, enabled) {
         'enableVideo': 'videoSection',
         'enableYoutube': 'youtubeSection'
     };
-    
+
     const section = document.getElementById(sectionMap[toggleId]);
     if (section) {
         section.style.display = enabled ? 'block' : 'none';
@@ -1559,15 +1555,15 @@ function toggleMediaSection(toggleId, enabled) {
 function setupFileUpload(inputId, previewId, multiple = false) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(previewId);
-    
+
     if (!input || !preview) return;
-    
+
     input.addEventListener('change', function(e) {
         const files = multiple ? Array.from(e.target.files) : [e.target.files[0]];
-        
+
         if (files[0]) {
             preview.innerHTML = '';
-            
+
             files.forEach((file, index) => {
                 if (file.type.startsWith('image/')) {
                     createImagePreview(file, preview, inputId, index);
@@ -1581,7 +1577,7 @@ function setupFileUpload(inputId, previewId, multiple = false) {
 
 function createImagePreview(file, container, inputId, index = 0) {
     const reader = new FileReader();
-    
+
     reader.onload = function(e) {
         const div = document.createElement('div');
         div.className = 'media-preview-item';
@@ -1593,7 +1589,7 @@ function createImagePreview(file, container, inputId, index = 0) {
         `;
         container.appendChild(div);
     };
-    
+
     reader.readAsDataURL(file);
 }
 
@@ -1616,9 +1612,9 @@ function createVideoPreview(file, container, inputId) {
 function removePreview(button, inputId, index = null) {
     const input = document.getElementById(inputId);
     const previewItem = button.closest('.media-preview-item');
-    
+
     previewItem.remove();
-    
+
     // Clear the input
     input.value = '';
 }
@@ -1626,29 +1622,29 @@ function removePreview(button, inputId, index = null) {
 function validateYouTubeUrl(url) {
     const errorDiv = document.getElementById('youtube-error');
     const previewDiv = document.getElementById('youtubePreview');
-    
+
     if (!url) {
         errorDiv.style.display = 'none';
         previewDiv.innerHTML = '';
         return;
     }
-    
+
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
-    
+
     if (!youtubeRegex.test(url)) {
-        showFieldError('youtube-error', 'Please enter a valid YouTube URL');
+        showFieldError('youtube-error', '{{ __("admin.product.youtube_url") }}');
         previewDiv.innerHTML = '';
         return;
     }
-    
+
     hideFieldError('youtube-error');
-    
+
     // Extract video ID and show preview
     const videoId = extractYouTubeId(url);
     if (videoId) {
         previewDiv.innerHTML = `
             <div class="youtube-preview">
-                <iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" 
+                <iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}"
                         frameborder="0" allowfullscreen></iframe>
             </div>
         `;
@@ -1674,10 +1670,10 @@ async function validateField(field, value) {
                 value: value
             })
         });
-        
+
         const result = await response.json();
         const input = document.querySelector(`input[name="${field}"]`);
-        
+
         if (result.valid) {
             input.classList.remove('is-invalid');
             input.classList.add('is-valid');
@@ -1712,20 +1708,20 @@ async function handleFormSubmission() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const submitButton = document.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.innerHTML;
-    
+
     loadingOverlay.style.display = 'flex';
     submitButton.disabled = true;
     submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> {{ __("admin.product.creating_product") }}...';
-    
+
     // Clear previous validation errors
     clearValidationErrors();
-    
+
     // Basic client-side validation
     const form = document.getElementById('productForm');
     const requiredFields = form.querySelectorAll('[required]');
     let isValid = true;
     let validationErrors = [];
-    
+
     requiredFields.forEach(field => {
         if (!field.value.trim()) {
             isValid = false;
@@ -1736,7 +1732,7 @@ async function handleFormSubmission() {
             field.classList.remove('is-invalid');
         }
     });
-    
+
     // Delivery-specific validation - check current toggle state
     const autoDeliveryEnabled = document.getElementById('auto_delivery_enabled').checked;
     if (autoDeliveryEnabled) {
@@ -1756,10 +1752,10 @@ async function handleFormSubmission() {
             deliveryFile.classList.remove('is-invalid');
         }
     }
-    
+
     if (!isValid) {
         hideLoadingAndRestore(loadingOverlay, submitButton, originalButtonText);
-        
+
         Swal.fire({
             title: '{{ __("admin.validation.errors_found") }}',
             html: '<ul style="text-align: left; margin: 0;">' + validationErrors.map(error => `<li>${error}</li>`).join('') + '</ul>',
@@ -1769,18 +1765,18 @@ async function handleFormSubmission() {
         });
         return;
     }
-    
+
     // Submit form via AJAX
     try {
         const formData = new FormData(form);
-        
+
         // Debug: Log form data
         console.log('Form action:', form.action);
         console.log('Form data entries:');
         for (let [key, value] of formData.entries()) {
             console.log(key, value);
         }
-        
+
         const response = await fetch(form.action, {
             method: 'POST',
             body: formData,
@@ -1789,10 +1785,10 @@ async function handleFormSubmission() {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         });
-        
+
         console.log('Response status:', response.status);
         console.log('Response headers:', response.headers);
-        
+
         if (response.ok) {
             // Success - redirect to products index
             Swal.fire({
@@ -1808,12 +1804,12 @@ async function handleFormSubmission() {
         } else {
             const errorData = await response.json();
             console.log('Error response data:', errorData);
-            
+
             if (response.status === 422) {
                 // Validation errors
                 displayValidationErrors(errorData.errors);
                 hideLoadingAndRestore(loadingOverlay, submitButton, originalButtonText);
-                
+
                 Swal.fire({
                     title: '{{ __("admin.product.validation_error") }}',
                     text: '{{ __("admin.product.check_errors_below") }}',
@@ -1823,7 +1819,7 @@ async function handleFormSubmission() {
             } else {
                 // Other errors
                 hideLoadingAndRestore(loadingOverlay, submitButton, originalButtonText);
-                
+
                 Swal.fire({
                     title: '{{ __("admin.product.error") }}',
                     text: errorData.message || '{{ __("admin.product.creation_failed") }}',
@@ -1835,7 +1831,7 @@ async function handleFormSubmission() {
     } catch (error) {
         console.error('Form submission error:', error);
         hideLoadingAndRestore(loadingOverlay, submitButton, originalButtonText);
-        
+
         Swal.fire({
             title: '{{ __("admin.product.error") }}',
             text: '{{ __("admin.product.network_error") }}',
@@ -1856,7 +1852,7 @@ function clearValidationErrors() {
     document.querySelectorAll('.is-invalid').forEach(field => {
         field.classList.remove('is-invalid');
     });
-    
+
     document.querySelectorAll('.invalid-feedback').forEach(feedback => {
         feedback.style.display = 'none';
     });
@@ -1867,7 +1863,7 @@ function displayValidationErrors(errors) {
         const field = document.querySelector(`[name="${fieldName}"]`);
         if (field) {
             field.classList.add('is-invalid');
-            
+
             // Find or create error message element
             let errorElement = field.parentNode.querySelector('.invalid-feedback');
             if (!errorElement) {
@@ -1875,12 +1871,12 @@ function displayValidationErrors(errors) {
                 errorElement.className = 'invalid-feedback';
                 field.parentNode.appendChild(errorElement);
             }
-            
+
             errorElement.textContent = errors[fieldName][0];
             errorElement.style.display = 'block';
         }
     });
-    
+
     // Scroll to first error
     const firstError = document.querySelector('.is-invalid');
     if (firstError) {
@@ -1899,11 +1895,11 @@ function addFeature(containerId, inputName) {
     const container = document.getElementById(containerId);
     const div = document.createElement('div');
     div.className = 'feature-item mb-3';
-    
+
     const isArabic = inputName.includes('_ar');
-    const placeholder = isArabic ? 'أدخل ميزة المنتج بالعربية' : 'Enter product feature in English';
+    const placeholder = isArabic ? '{{ __('admin.product.enter_feature_ar') }}' : '{{ __('admin.product.features_en') }}';
     const dirAttribute = isArabic ? ' dir="rtl"' : '';
-    
+
     div.innerHTML = `
         <div class="input-group">
             <span class="input-group-text">
@@ -1915,12 +1911,12 @@ function addFeature(containerId, inputName) {
             </button>
         </div>
     `;
-    
+
     // Add animation
     div.style.opacity = '0';
     div.style.transform = 'translateY(-10px)';
     container.appendChild(div);
-    
+
     // Animate in
     setTimeout(() => {
         div.style.transition = 'all 0.3s ease';
@@ -1931,12 +1927,12 @@ function addFeature(containerId, inputName) {
 
 function removeFeature(button) {
     const featureItem = button.closest('.feature-item');
-    
+
     // Animate out
     featureItem.style.transition = 'all 0.3s ease';
     featureItem.style.opacity = '0';
     featureItem.style.transform = 'translateY(-10px)';
-    
+
     // Remove after animation
     setTimeout(() => {
         featureItem.remove();
@@ -1948,10 +1944,10 @@ function toggleDeliveryConfig() {
     const enabled = document.getElementById('auto_delivery_enabled').checked;
     const config = document.getElementById('delivery-config');
     config.style.display = enabled ? 'block' : 'none';
-    
+
     // Clear any validation errors when toggling
     clearDeliveryValidationErrors();
-    
+
     // Update required state of delivery file based on toggle
     const deliveryFile = document.querySelector('input[name="delivery_file"]');
     if (deliveryFile) {
@@ -1971,7 +1967,7 @@ function clearDeliveryValidationErrors() {
     deliveryFields.forEach(field => {
         field.classList.remove('is-invalid', 'is-valid');
     });
-    
+
     // Clear any error messages
     const errorMessages = document.querySelectorAll('#delivery-config .text-danger');
     errorMessages.forEach(error => {
@@ -1985,14 +1981,14 @@ function clearDeliveryValidationErrors() {
 function validateImageFormat(input) {
     const allowedFormats = ['jpg', 'jpeg', 'png', 'gif'];
     const files = input.files;
-    
+
     if (!files || files.length === 0) return true;
-    
+
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileName = file.name.toLowerCase();
         const fileExtension = fileName.split('.').pop();
-        
+
         if (!allowedFormats.includes(fileExtension)) {
             // Show error message
             showImageFormatError(input, fileName, fileExtension);
@@ -2001,7 +1997,7 @@ function validateImageFormat(input) {
             return false;
         }
     }
-    
+
     // Clear any existing error messages
     clearImageFormatError(input);
     return true;
@@ -2010,23 +2006,23 @@ function validateImageFormat(input) {
 function showImageFormatError(input, fileName, extension) {
     // Remove existing error
     clearImageFormatError(input);
-    
+
     // Create error message
     const errorDiv = document.createElement('div');
     errorDiv.className = 'text-danger small mt-1 image-format-error';
     errorDiv.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i>Invalid format: "${fileName}" (.${extension}). Only JPG, JPEG, PNG, and GIF files are allowed.`;
-    
+
     // Insert after the input's parent
     const parent = input.closest('.media-upload-area') || input.parentElement;
     parent.parentElement.insertBefore(errorDiv, parent.nextSibling);
-    
+
     // Add invalid styling
     input.classList.add('is-invalid');
-    
+
     // Show SweetAlert notification
     Swal.fire({
-        title: 'Invalid Image Format',
-        text: `The file "${fileName}" has an unsupported format (.${extension}). Please use JPG, JPEG, PNG, or GIF files only.`,
+        title: '{{ __("admin.product.validation_error") }}',
+        text: `{{ __("admin.product.invalid_image_format_message") }}`,
         icon: 'error',
         confirmButtonColor: '#007fff',
         timer: 5000
@@ -2039,7 +2035,7 @@ function clearImageFormatError(input) {
     if (errorDiv) {
         errorDiv.remove();
     }
-    
+
     // Remove invalid styling
     input.classList.remove('is-invalid');
 }
@@ -2049,12 +2045,12 @@ function toggleDeliveryTypeFields() {
     const fileFields = document.getElementById('file-delivery-fields');
     const credentialsFields = document.getElementById('credentials-delivery-fields');
     const licenseFields = document.getElementById('license-delivery-fields');
-    
+
     // Hide all delivery type fields first
     fileFields.style.display = 'none';
     credentialsFields.style.display = 'none';
     licenseFields.style.display = 'none';
-    
+
     // Show relevant fields based on delivery type
     if (deliveryType === 'file') {
         fileFields.style.display = 'block';
@@ -2063,7 +2059,7 @@ function toggleDeliveryTypeFields() {
     } else if (deliveryType === 'license') {
         licenseFields.style.display = 'block';
     }
-    
+
     // Update required fields
     updateRequiredFields(deliveryType);
 }
@@ -2073,7 +2069,7 @@ function updateRequiredFields(deliveryType) {
     document.querySelectorAll('[name="delivery_file"], [name="default_username"], [name="default_password"], [name="default_license_key"]').forEach(field => {
         field.removeAttribute('required');
     });
-    
+
     // Add required attributes based on type
     if (deliveryType === 'file') {
         const fileField = document.querySelector('[name="delivery_file"]');
@@ -2096,3 +2092,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+

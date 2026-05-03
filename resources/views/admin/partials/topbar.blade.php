@@ -11,21 +11,21 @@
         <div class="dropdown me-3">
             <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                 <i class="bi bi-translate me-1"></i>
-                {{ app()->getLocale() == 'ar' ? 'العربية' : 'English' }}
+                {{ app()->getLocale() == 'ar' ? __('app.common.arabic') : __('app.common.english') }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li>
                     <a class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}" 
                        href="{{ route('locale.switch', 'en') }}">
                         <i class="bi bi-check me-2 {{ app()->getLocale() == 'en' ? '' : 'invisible' }}"></i>
-                        English
+                        {{ __('app.common.english') }}
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item {{ app()->getLocale() == 'ar' ? 'active' : '' }}" 
                        href="{{ route('locale.switch', 'ar') }}">
                         <i class="bi bi-check me-2 {{ app()->getLocale() == 'ar' ? '' : 'invisible' }}"></i>
-                        العربية
+                        {{ __('app.common.arabic') }}
                     </a>
                 </li>
             </ul>

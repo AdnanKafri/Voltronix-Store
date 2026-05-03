@@ -39,20 +39,20 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="english-tab" data-bs-toggle="tab" data-bs-target="#english" type="button" role="tab">
                                     <i class="fas fa-globe {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                    English
+                                    {{ __('app.common.english') }}
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="arabic-tab" data-bs-toggle="tab" data-bs-target="#arabic" type="button" role="tab">
                                     <i class="fas fa-globe {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
-                                    العربية
+                                    {{ __('app.common.arabic') }}
                                 </button>
                             </li>
                         </ul>
 
                         <!-- Tab Content -->
                         <div class="tab-content" id="languageTabContent">
-                            <!-- English Tab -->
+                            <!-- {{ __('app.common.english') }} Tab -->
                             <div class="tab-pane fade show active" id="english" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -260,7 +260,7 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-generate slug from English name
+    // Auto-generate slug from {{ __('app.common.english') }} name
     const nameEnInput = document.getElementById('name_en');
     const slugInput = document.getElementById('slug');
     

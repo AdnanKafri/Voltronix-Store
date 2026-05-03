@@ -48,11 +48,11 @@
     <div id="thumbnail-content" class="media-content {{ count($mediaTypes) <= 1 || $hasThumbnail ? 'active' : '' }}">
         <div class="gallery-main">
             @if($product->thumbnail)
-                <a href="{{ asset('storage/' . $product->thumbnail) }}" 
+                <a href="{{ $product->thumbnail_url }}" 
                    class="glightbox" 
                    data-gallery="product-gallery"
                    data-title="{{ $product->getTranslation('name') }}">
-                    <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                    <img src="{{ $product->thumbnail_url }}" 
                          alt="{{ $product->getTranslation('name') }}" 
                          class="main-image">
                 </a>
@@ -191,7 +191,7 @@
                         <div class="video-container">
                             <video controls 
                                    @if(isset($video->metadata['poster']))
-                                       poster="{{ asset('storage/' . $video->metadata['poster']) }}"
+                                       poster="{{ $product->resolveMediaUrl($video->metadata['poster']) }}"
                                    @endif>
                                 <source src="{{ $video->media_url }}" type="video/mp4">
                                 {{ __('app.products.video_not_supported') }}

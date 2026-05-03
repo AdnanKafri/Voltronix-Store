@@ -27,7 +27,7 @@
                     <video 
                         controls 
                         preload="metadata"
-                        poster="{{ $product->thumbnail ? asset('storage/' . $product->thumbnail) : '' }}"
+                        poster="{{ $product->thumbnail ? $product->thumbnail_url : '' }}"
                         class="video-element">
                         <source src="{{ $mainVideo->media_url }}" type="video/mp4">
                         {{ __('products.video_not_supported') }}

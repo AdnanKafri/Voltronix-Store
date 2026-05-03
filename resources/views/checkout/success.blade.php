@@ -409,6 +409,41 @@
     margin-top: 1.4rem;
 }
 
+.status-note-card {
+    margin-top: 1.5rem;
+}
+
+.status-note-box {
+    padding: 1.3rem;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(245, 248, 252, 0.98), rgba(236, 242, 249, 0.96));
+    border: 1px solid rgba(16, 35, 62, 0.08);
+}
+
+.status-note-title {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 0.7rem;
+    color: #10233e;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.status-note-message {
+    margin: 0;
+    color: #58697f;
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+.status-note-date {
+    margin-top: 0.85rem;
+    color: #7a8a9d;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
 .btn-success-primary,
 .btn-success-secondary,
 .btn-success-outline {
@@ -462,7 +497,7 @@
 [dir="rtl"] .checkout-success-page h4,
 [dir="rtl"] .checkout-success-page h5,
 [dir="rtl"] .checkout-success-page h6 {
-    font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+    font-family: var(--font-ar-heading);
 }
 
 [dir="rtl"] .success-state-chip,
@@ -583,7 +618,7 @@
 
                             <div class="summary-item">
                                 <span class="summary-label">{{ __('app.orders.order_date') }}</span>
-                                <div class="summary-value">{{ $order->created_at->format('M d, Y H:i') }}</div>
+                                <div class="summary-value">{{ local_datetime($order->created_at, 'M d, Y H:i') }}</div>
                             </div>
 
                             <div class="summary-item">
@@ -638,6 +673,30 @@
                 </aside>
             </div>
 
+            @if($order->customer_status_note)
+                <section class="success-card status-note-card">
+                    <div class="success-card-body">
+                        <div class="success-card-title">
+                            <i class="bi bi-chat-left-text"></i>
+                            <span>{{ __('orders.admin_response') }}</span>
+                        </div>
+                        <div class="status-note-box">
+                            <div class="status-note-title">
+                                <i class="bi bi-info-circle"></i>
+                                <span>{{ $order->localized_status }}</span>
+                            </div>
+                            <p class="status-note-message">{{ $order->customer_status_note }}</p>
+                            @if($order->customer_status_note_date)
+                                <div class="status-note-date">
+                                    {{ $order->rejected_at ? __('orders.rejected_on') : ($order->approved_at ? __('orders.approved_on') : __('orders.order_date')) }}:
+                                    {{ local_datetime($order->customer_status_note_date, 'M d, Y H:i') }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </section>
+            @endif
+
             <section class="success-card" style="margin-top: 1.5rem;">
                 <div class="success-card-body">
                     <div class="success-card-title">
@@ -664,7 +723,7 @@
                                     </div>
                                 </div>
 
-                                <div class="purchase-total">{{ $item->formatted_subtotal }}</div>
+                                <div class="purchase-total">{{ $order->formatMoney($item->subtotal) }}</div>
                             </article>
                         @endforeach
                     </div>
@@ -691,3 +750,5 @@
     </div>
 </div>
 @endsection
+
+

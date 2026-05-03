@@ -155,7 +155,7 @@
                                         @endswitch
                                     </td>
                                     <td>
-                                        <small>{{ $order->created_at->format('M d, Y') }}</small>
+                                        <small>{{ local_datetime($order->created_at, 'M d, Y') }}</small>
                                     </td>
                                     <td>
                                         <a href="{{ route('admin.orders.show', $order) }}" 
@@ -364,3 +364,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+

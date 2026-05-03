@@ -72,7 +72,11 @@ class OrderItem extends Model
      */
     public function getFormattedPriceAttribute(): string
     {
-        return '$' . number_format($this->product_price, 2);
+        if ($this->relationLoaded('order') && $this->order) {
+            return $this->order->formatMoney($this->product_price);
+        }
+
+        return currency_format($this->product_price);
     }
 
     /**
@@ -80,7 +84,11 @@ class OrderItem extends Model
      */
     public function getFormattedSubtotalAttribute(): string
     {
-        return '$' . number_format($this->subtotal, 2);
+        if ($this->relationLoaded('order') && $this->order) {
+            return $this->order->formatMoney($this->subtotal);
+        }
+
+        return currency_format($this->subtotal);
     }
 
     /**

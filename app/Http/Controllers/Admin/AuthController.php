@@ -38,7 +38,7 @@ class AuthController extends Controller
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
             throw ValidationException::withMessages([
-                'email' => "Too many login attempts. Please try again in {$seconds} seconds.",
+                'email' => __('admin.auth.too_many_attempts', ['seconds' => $seconds]),
             ]);
         }
 
@@ -53,7 +53,7 @@ class AuthController extends Controller
             if (!$admin->isActive()) {
                 Auth::guard('admin')->logout();
                 throw ValidationException::withMessages([
-                    'email' => 'Your admin account has been deactivated. Please contact the system administrator.',
+                    'email' => __('admin.auth.deactivated'),
                 ]);
             }
 
@@ -64,13 +64,13 @@ class AuthController extends Controller
             $request->session()->regenerate();
             
             return redirect()->intended(route('admin.dashboard'))
-                ->with('success', 'Welcome to Voltronix Admin Dashboard!');
+                ->with('success', __('admin.auth.welcome'));
         }
 
         RateLimiter::hit($key, 300); // 5 minutes lockout
 
         throw ValidationException::withMessages([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => __('admin.auth.invalid_credentials'),
         ]);
     }
 
@@ -90,6 +90,6 @@ class AuthController extends Controller
         $request->session()->forget('admin_authenticated');
 
         return redirect()->route('admin.login')
-            ->with('success', 'You have been logged out successfully.');
+            ->with('success', __('admin.auth.logged_out'));
     }
 }

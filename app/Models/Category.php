@@ -83,15 +83,11 @@ class Category extends Model
         $locale = $locale ?: app()->getLocale();
         $translations = $this->getAttribute($field);
         
+        // Return translation for requested locale only (strict locale separation)
         if (is_array($translations) && isset($translations[$locale])) {
             return $translations[$locale];
         }
-        
-        // Fallback to English if current locale not found
-        if (is_array($translations) && isset($translations['en'])) {
-            return $translations['en'];
-        }
-        
+
         return '';
     }
 
@@ -113,5 +109,41 @@ class Category extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * Resolve stored media path to a usable URL.
+     */
+    public function resolveMediaUrl(?string $path, ?string $fallback = null): string
+    {
+        $fallback = $fallback ?: asset('images/logo.png');
+
+        if (blank($path)) {
+            return $fallback;
+        }
+
+        $path = trim($path);
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        if (Str::startsWith($path, '/')) {
+            return url($path);
+        }
+
+        if (Str::startsWith($path, ['storage/', 'images/'])) {
+            return asset($path);
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
+    }
+
+    /**
+     * Normalized thumbnail URL for admin/frontend rendering.
+     */
+    public function getThumbnailUrlAttribute(): string
+    {
+        return $this->resolveMediaUrl($this->thumbnail);
     }
 }

@@ -96,7 +96,7 @@ class DeliveryController extends Controller
             'max_views' => $request->max_views,
             'require_otp' => $request->boolean('require_otp'),
             'view_duration' => $request->view_duration,
-            'created_by' => Auth::id(),
+            'created_by' => null,
             'admin_notes' => $request->admin_notes
         ]);
 
@@ -116,9 +116,14 @@ class DeliveryController extends Controller
         }
 
         // Handle credentials
-        if (in_array($request->type, ['credentials', 'license']) && $request->credentials) {
+        if ($request->type === OrderDelivery::TYPE_LICENSE) {
+            $delivery->license_key = $request->input('credentials.license_key');
+            $delivery->encrypted_credentials = null;
+            $delivery->credentials_type = $request->credentials_type ?: OrderDelivery::TYPE_LICENSE;
+        } elseif ($request->type === OrderDelivery::TYPE_CREDENTIALS && $request->credentials) {
             $delivery->setCredentials($request->credentials);
-            $delivery->credentials_type = $request->credentials_type;
+            $delivery->license_key = null;
+            $delivery->credentials_type = $request->credentials_type ?: OrderDelivery::TYPE_CREDENTIALS;
         }
 
         $delivery->save();
@@ -207,8 +212,9 @@ class DeliveryController extends Controller
      */
     public function update(Request $request, Order $order, OrderDelivery $delivery)
     {
-        $request->validate([
+            $rules = [
             'title' => 'required|string|max:255',
+            'type' => 'required|in:file,credentials,license,service',
             'description' => 'nullable|string',
             'expires_at' => 'nullable|date',
             'max_downloads' => 'nullable|integer|min:1',
@@ -218,11 +224,23 @@ class DeliveryController extends Controller
             'admin_notes' => 'nullable|string',
             'credentials' => 'nullable|array',
             'credentials_type' => 'nullable|string|max:100'
-        ]);
+            ];
+
+            if ($request->type === OrderDelivery::TYPE_CREDENTIALS) {
+                $rules['credentials.username'] = 'required|string|max:255';
+                $rules['credentials.password'] = 'required|string|max:255';
+            }
+
+            if ($request->type === OrderDelivery::TYPE_LICENSE) {
+                $rules['credentials.license_key'] = 'required|string|max:255';
+            }
+
+            $request->validate($rules);
 
         $oldData = $delivery->toArray();
 
         $delivery->update([
+            'type' => $request->type,
             'title' => $request->title,
             'description' => $request->description,
             'expires_at' => $request->expires_at,
@@ -230,14 +248,20 @@ class DeliveryController extends Controller
             'max_views' => $request->max_views,
             'require_otp' => $request->boolean('require_otp'),
             'view_duration' => $request->view_duration,
-            'updated_by' => Auth::id(),
+            'updated_by' => null,
             'admin_notes' => $request->admin_notes
         ]);
 
         // Update credentials if provided
-        if ($request->credentials && in_array($delivery->type, ['credentials', 'license'])) {
+        if ($delivery->type === OrderDelivery::TYPE_LICENSE) {
+            $delivery->license_key = $request->input('credentials.license_key');
+            $delivery->encrypted_credentials = null;
+            $delivery->credentials_type = $request->credentials_type ?: OrderDelivery::TYPE_LICENSE;
+            $delivery->save();
+        } elseif ($request->credentials && $delivery->type === OrderDelivery::TYPE_CREDENTIALS) {
             $delivery->setCredentials($request->credentials);
-            $delivery->credentials_type = $request->credentials_type;
+            $delivery->license_key = null;
+            $delivery->credentials_type = $request->credentials_type ?: OrderDelivery::TYPE_CREDENTIALS;
             $delivery->save();
         }
 
@@ -249,7 +273,7 @@ class DeliveryController extends Controller
 
         return redirect()
             ->route('admin.orders.deliveries.show', $order)
-            ->with('success', 'Delivery updated successfully.');
+            ->with('success', __('admin.deliveries.updated_successfully'));
     }
 
     /**
@@ -358,7 +382,7 @@ class DeliveryController extends Controller
         try {
             $delivery->update([
                 'revoked' => false,
-                'updated_by' => Auth::id()
+                'updated_by' => null
             ]);
 
             $delivery->recordAccess('restored', request()->ip(), request()->userAgent(), [
@@ -428,7 +452,7 @@ class DeliveryController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Delivery deleted successfully.'
+            'message' => __('admin.deliveries.deleted_successfully')
         ]);
     }
 

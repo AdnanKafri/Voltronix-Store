@@ -23,7 +23,7 @@ class OrderConfirmationMail extends Mailable
     public function __construct(Order $order)
     {
         $this->order = $order;
-        $this->subject = __('emails.order_confirmation.subject', ['order_number' => $order->order_number]);
+        $this->subject = __('emails.order_placed.subject', ['order_number' => $order->order_number]);
     }
 
     /**
@@ -34,7 +34,7 @@ class OrderConfirmationMail extends Mailable
     public function build()
     {
         return $this->subject($this->subject)
-                    ->view('emails.orders.confirmation')
+                    ->view('emails.orders.placed')
                     ->with([
                         'order' => $this->order,
                     ]);

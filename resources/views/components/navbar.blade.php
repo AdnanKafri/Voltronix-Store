@@ -117,15 +117,15 @@
                 <div class="control-group">
                     <button class="ctrl-btn" data-bs-toggle="dropdown">
                         <i class="bi bi-translate"></i>
-                        <span class="ctrl-text">{{ app()->getLocale() == 'ar' ? 'العربية' : 'English' }}</span>
+                        <span class="ctrl-text">{{ app()->isLocale('ar') ? __('app.language.arabic') : __('app.language.english') }}</span>
                         <i class="bi bi-chevron-down"></i>
                     </button>
                     <ul class="dropdown-menu ctrl-dropdown">
                         <li><a class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}">
-                            <i class="bi bi-check-circle"></i>English
+                            <i class="bi bi-check-circle"></i>{{ __('app.language.english') }}
                         </a></li>
                         <li><a class="dropdown-item {{ app()->getLocale() == 'ar' ? 'active' : '' }}" href="{{ route('locale.switch', 'ar') }}">
-                            <i class="bi bi-check-circle"></i>العربية
+                            <i class="bi bi-check-circle"></i>{{ __('app.language.arabic') }}
                         </a></li>
                     </ul>
                 </div>
@@ -250,7 +250,7 @@
                         </a>
                         <a class="mobile-control-option {{ app()->getLocale() == 'ar' ? 'active' : '' }}" href="{{ route('locale.switch', 'ar') }}">
                             <span class="option-flag">🇸🇦</span>
-                            <span>العربية</span>
+                            <span>{{ __('app.language.arabic') }}</span>
                         </a>
                     </div>
                 </div>

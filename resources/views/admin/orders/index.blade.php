@@ -643,7 +643,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="order-amount">${{ number_format($order->total_amount, 2) }}</span>
+                                        <span class="order-amount">{{ $order->formatted_total }}</span>
                                     </td>
                                     <td>
                                         <span class="badge bg-{{ $order->status == 'approved' ? 'success' : ($order->status == 'rejected' ? 'danger' : ($order->status == 'cancelled' ? 'secondary' : 'warning')) }}">
@@ -669,8 +669,8 @@
                                     </td>
                                     <td>
                                         <div class="d-flex flex-column">
-                                            <span>{{ $order->created_at->format('M d, Y') }}</span>
-                                            <small class="text-muted">{{ $order->created_at->format('H:i') }}</small>
+                                            <span>{{ local_datetime($order->created_at, 'M d, Y') }}</span>
+                                            <small class="text-muted">{{ local_datetime($order->created_at, 'H:i') }}</small>
                                         </div>
                                     </td>
                                     <td>
@@ -706,4 +706,5 @@
     </div>
 </div>
 @endsection
+
 

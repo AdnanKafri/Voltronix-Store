@@ -1,7 +1,7 @@
 <div class="simple-media">
     <div class="main-image">
         @if($product->thumbnail)
-            <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+            <img src="{{ $product->thumbnail_url }}" 
                  alt="{{ $product->getTranslation('name') }}"
                  class="img-fluid">
         @else
@@ -16,9 +16,9 @@
     <div class="media-navigation">
         <div class="thumbnail-grid">
             <!-- Main thumbnail -->
-            <div class="thumbnail-item active" onclick="changeMainImage('{{ $product->thumbnail ? asset('storage/' . $product->thumbnail) : '' }}')">
+            <div class="thumbnail-item active" onclick="changeMainImage('{{ $product->thumbnail ? $product->thumbnail_url : '' }}')">
                 @if($product->thumbnail)
-                    <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="Main">
+                    <img src="{{ $product->thumbnail_url }}" alt="Main">
                 @else
                     <div class="thumbnail-placeholder">
                         <i class="bi bi-image"></i>

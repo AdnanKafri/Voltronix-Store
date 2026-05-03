@@ -35,7 +35,7 @@
                         <div class="category-card">
                             <div class="category-image">
                                 @if($category->thumbnail)
-                                    <img src="{{ asset('storage/' . $category->thumbnail) }}" 
+                                    <img src="{{ $category->thumbnail_url }}" 
                                          alt="{{ $category->getTranslation('name') }}"
                                          loading="lazy">
                                 @else
@@ -111,3 +111,4 @@
     });
 </script>
 @endpush
+

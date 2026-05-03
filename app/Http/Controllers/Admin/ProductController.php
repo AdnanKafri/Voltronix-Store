@@ -237,7 +237,7 @@ class ProductController extends Controller
             if ($product->thumbnail) {
                 Storage::disk('public')->delete($product->thumbnail);
             }
-            $thumbnailPath = $request->file('thumbnail')->store('products', 'public');
+            $thumbnailPath = $request->file('thumbnail')->store('products/thumbnails', 'public');
         }
 
         // Prepare features array

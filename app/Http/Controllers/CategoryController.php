@@ -27,6 +27,10 @@ class CategoryController extends Controller
      */
     public function show(Category $category, Request $request): View
     {
+        $locale = app()->getLocale();
+        $namePath = "$.\"{$locale}\"";
+        $descriptionPath = "$.\"{$locale}\"";
+
         // Check if category is active
         if (!$category->is_active) {
             abort(404);
@@ -37,11 +41,9 @@ class CategoryController extends Controller
         // Search within category
         if ($request->filled('search')) {
             $search = $request->get('search');
-            $query->where(function ($q) use ($search) {
-                $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(name, '$.ar') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(description, '$.en') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(description, '$.ar') LIKE ?", ["%{$search}%"]);
+            $query->where(function ($q) use ($search, $namePath, $descriptionPath) {
+                $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, ?)) LIKE ?", [$namePath, "%{$search}%"])
+                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(description, ?)) LIKE ?", [$descriptionPath, "%{$search}%"]);
             });
         }
 
@@ -58,7 +60,7 @@ class CategoryController extends Controller
                 $query->orderBy('created_at', 'desc');
                 break;
             case 'name':
-                $query->orderByRaw("JSON_EXTRACT(name, '$.en') ASC");
+                $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(name, ?)) ASC", [$namePath]);
                 break;
             default:
                 $query->ordered();

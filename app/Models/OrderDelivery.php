@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\DeliveryCreated;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 
 class OrderDelivery extends Model
 {
+    private const DOWNLOAD_DEBOUNCE_SECONDS = 8;
+
     protected $fillable = [
         'order_id',
         'order_item_id',
@@ -73,6 +76,10 @@ class OrderDelivery extends Model
             if (empty($delivery->token)) {
                 $delivery->token = Str::random(64);
             }
+        });
+
+        static::created(function (self $delivery) {
+            DeliveryCreated::dispatch($delivery);
         });
     }
 
@@ -239,9 +246,29 @@ class OrderDelivery extends Model
     /**
      * Record download
      */
-    public function recordDownload(string $ip, ?string $userAgent = null): DeliveryLog
+    public function recordDownload(string $ip, ?string $userAgent = null): ?DeliveryLog
     {
+        $recentLogQuery = $this->logs()
+            ->where('action', 'download')
+            ->where('ip_address', $ip)
+            ->where('created_at', '>=', now()->subSeconds(self::DOWNLOAD_DEBOUNCE_SECONDS));
+
+        $sessionId = session()->getId();
+
+        if ($sessionId) {
+            $recentLogQuery->where('session_id', $sessionId);
+        } else {
+            $recentLogQuery->where('user_id', $this->user_id);
+        }
+
+        $recentLog = $recentLogQuery->latest('created_at')->first();
+
+        if ($recentLog) {
+            return $recentLog;
+        }
+
         $this->increment('downloads_count');
+        $this->refresh();
         
         return $this->recordAccess('download', $ip, $userAgent, [
             'file_name' => $this->file_name,
@@ -300,6 +327,13 @@ class OrderDelivery extends Model
      */
     public function setCredentials(array $credentials): void
     {
+        if ($this->type === self::TYPE_LICENSE) {
+            $this->license_key = $credentials['license_key'] ?? null;
+            $this->encrypted_credentials = null;
+            $this->save();
+            return;
+        }
+
         $this->encrypted_credentials = Crypt::encryptString(json_encode($credentials));
         $this->save();
     }
@@ -355,6 +389,10 @@ class OrderDelivery extends Model
      */
     public function getCredentialsUrl(): string
     {
+        if ($this->type === self::TYPE_LICENSE) {
+            return route('delivery.license', ['token' => $this->token]);
+        }
+
         return route('delivery.credentials', ['token' => $this->token]);
     }
 

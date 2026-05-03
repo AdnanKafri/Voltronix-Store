@@ -113,9 +113,9 @@ class UserController extends Controller
         // User statistics
         $stats = [
             'total_orders' => $user->orders()->count(),
-            'completed_orders' => $user->orders()->where('status', 'completed')->count(),
-            'total_spent' => $user->orders()->where('status', 'completed')->sum('total_amount'),
-            'average_order' => $user->orders()->where('status', 'completed')->avg('total_amount') ?? 0,
+            'completed_orders' => $user->orders()->where('status', Order::STATUS_APPROVED)->count(),
+            'total_spent' => $user->orders()->where('status', Order::STATUS_APPROVED)->sum('total_amount'),
+            'average_order' => $user->orders()->where('status', Order::STATUS_APPROVED)->avg('total_amount') ?? 0,
             'last_order' => $user->orders()->latest()->first(),
             'join_date' => $user->created_at,
             'last_login' => $user->last_login_at,

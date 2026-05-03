@@ -167,7 +167,7 @@
                                 </div>
                                 <small class="text-muted">
                                     @if($user->email_verified_at)
-                                        {{ __('admin.users.verified_at') }}: {{ $user->email_verified_at->format('M d, Y H:i') }}
+                                        {{ __('admin.users.verified_at') }}: {{ local_datetime($user->email_verified_at, 'M d, Y H:i') }}
                                     @else
                                         {{ __('admin.users.not_verified') }}
                                     @endif
@@ -189,7 +189,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="text-center">
-                                                <div class="h5 text-success mb-1">${{ number_format($user->total_spent, 2) }}</div>
+                                                <div class="h5 text-success mb-1">{{ currency_format($user->total_spent) }}</div>
                                                 <small class="text-muted">{{ __('admin.users.total_spent') }}</small>
                                             </div>
                                         </div>
@@ -407,3 +407,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 @endpush
 @endsection
+
+

@@ -177,7 +177,7 @@
                                 <label>{{ __('admin.coupon.start_date') }}</label>
                                 <div class="info-value">
                                     @if($coupon->start_date)
-                                        {{ $coupon->start_date->format('M d, Y H:i') }}
+                                        {{ local_datetime($coupon->start_date, 'M d, Y H:i') }}
                                     @else
                                         <span class="text-muted">{{ __('admin.immediately') }}</span>
                                     @endif
@@ -189,7 +189,7 @@
                                 <label>{{ __('admin.coupon.expiry_date') }}</label>
                                 <div class="info-value">
                                     @if($coupon->expiry_date)
-                                        {{ $coupon->expiry_date->format('M d, Y H:i') }}
+                                        {{ local_datetime($coupon->expiry_date, 'M d, Y H:i') }}
                                         @if($coupon->expiry_date->isPast())
                                             <span class="badge bg-danger ms-2">{{ __('admin.coupon.expired') }}</span>
                                         @endif
@@ -351,7 +351,7 @@
                                     </div>
                                     <div class="text-end">
                                         <div class="text-success">${{ number_format($order->discount_amount, 2) }}</div>
-                                        <div class="text-muted small">{{ $order->created_at->format('M d') }}</div>
+                                        <div class="text-muted small">{{ local_datetime($order->created_at, 'M d') }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -667,3 +667,5 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 </style>
 @endpush
+
+

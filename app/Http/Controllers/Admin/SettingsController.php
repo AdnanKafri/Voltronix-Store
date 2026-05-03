@@ -72,10 +72,10 @@ class SettingsController extends Controller
         }
 
         $validated = $request->validate($rules, [
-            'mtn_cash_phone.required' => __('admin.site_settings.mtn_cash_phone') . ' is required when MTN Cash is enabled.',
-            'mtn_cash_phone.regex' => __('admin.site_settings.mtn_cash_phone') . ' must be a valid phone number.',
-            'syriatel_cash_phone.required' => __('admin.site_settings.syriatel_cash_phone') . ' is required when Syriatel Cash is enabled.',
-            'syriatel_cash_phone.regex' => __('admin.site_settings.syriatel_cash_phone') . ' must be a valid phone number.',
+            'mtn_cash_phone.required' => __('admin.site_settings.mtn_cash_phone_required'),
+            'mtn_cash_phone.regex' => __('admin.site_settings.phone_must_be_valid'),
+            'syriatel_cash_phone.required' => __('admin.site_settings.syriatel_cash_phone_required'),
+            'syriatel_cash_phone.regex' => __('admin.site_settings.phone_must_be_valid'),
         ]);
 
         try {
@@ -118,9 +118,9 @@ class SettingsController extends Controller
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ], [
-            'title_en.required' => __('admin.homepage.title_en') . ' is required.',
-            'image.image' => 'The uploaded file must be an image.',
-            'image.max' => 'The image size cannot exceed 5MB.',
+            'title_en.required' => __('admin.homepage.title_en_required'),
+            'image.image' => __('admin.homepage.image_must_be_image'),
+            'image.max' => __('admin.homepage.image_max_5mb'),
         ]);
 
         try {

@@ -32,6 +32,21 @@ class CheckoutRequest extends FormRequest
         ];
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (!auth()->check()) {
+            return;
+        }
+
+        $user = auth()->user();
+
+        if (blank($this->input('customer_phone')) && filled($user?->phone)) {
+            $this->merge([
+                'customer_phone' => $user->phone,
+            ]);
+        }
+    }
+
     /**
      * Get custom attributes for validator errors.
      */

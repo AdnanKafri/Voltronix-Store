@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use App\Models\Admin;
 use App\Events\OrderStatusChanged;
+use App\Support\MoneyFormatter;
+use Throwable;
 
 class Order extends Model
 {
+    protected ?string $resolvedCurrencySymbol = null;
+
     protected $fillable = [
         'user_id',
         'session_id',
@@ -38,7 +42,7 @@ class Order extends Model
         'downloads_expires_at'
     ];
     
-    protected $appends = ['formatted_total', 'formatted_date', 'localized_status'];
+    protected $appends = ['formatted_total', 'formatted_discount', 'formatted_subtotal', 'formatted_date', 'localized_status'];
 
     protected $casts = [
         'total_amount' => 'decimal:2',
@@ -145,9 +149,7 @@ class Order extends Model
      */
     public function getFormattedTotalAttribute(): string
     {
-        // Use stored currency for historical accuracy
-        $symbol = $this->getCurrencySymbol();
-        return $symbol . number_format($this->total_amount, 2);
+        return $this->formatMoney($this->total_amount);
     }
     
     /**
@@ -158,23 +160,47 @@ class Order extends Model
         if (!$this->discount_amount) {
             return '';
         }
-        
-        $symbol = $this->getCurrencySymbol();
-        return $symbol . number_format($this->discount_amount, 2);
+
+        return $this->formatMoney($this->discount_amount);
+    }
+
+    /**
+     * Get the pre-discount subtotal formatted with the stored currency snapshot.
+     */
+    public function getFormattedSubtotalAttribute(): string
+    {
+        return $this->formatMoney($this->getSubtotalAmount());
     }
     
     /**
      * Get currency symbol for this order
      */
-    private function getCurrencySymbol(): string
+    public function getCurrencySymbol(): string
     {
-        return match($this->currency_code) {
+        if ($this->resolvedCurrencySymbol !== null) {
+            return $this->resolvedCurrencySymbol;
+        }
+
+        try {
+            $currency = Currency::query()
+                ->select('symbol')
+                ->where('code', $this->currency_code)
+                ->first();
+        } catch (Throwable) {
+            $currency = null;
+        }
+
+        if ($currency?->symbol) {
+            return $this->resolvedCurrencySymbol = $currency->symbol;
+        }
+
+        return $this->resolvedCurrencySymbol = match ($this->currency_code) {
             'USD' => '$',
             'EUR' => '€',
             'GBP' => '£',
             'SAR' => 'ر.س',
             'SYP' => 'ل.س',
-            default => '$'
+            default => $this->currency_code ?: '$',
         };
     }
     
@@ -183,7 +209,7 @@ class Order extends Model
      */
     public function getFormattedDateAttribute(): string
     {
-        return $this->created_at->format('M d, Y H:i');
+        return local_datetime($this->created_at, 'M d, Y H:i');
     }
     
     /**
@@ -191,7 +217,22 @@ class Order extends Model
      */
     public function getLocalizedStatusAttribute(): string
     {
-        return __('app.orders.status.' . $this->status);
+        $status = (string) $this->status;
+
+        $appKey = 'app.orders.status.' . $status;
+        $ordersKey = 'orders.status.' . $status;
+
+        $appTranslation = __($appKey);
+        if ($appTranslation !== $appKey) {
+            return $appTranslation;
+        }
+
+        $ordersTranslation = __($ordersKey);
+        if ($ordersTranslation !== $ordersKey) {
+            return $ordersTranslation;
+        }
+
+        return __('app.orders.status.unknown');
     }
     
     /**
@@ -199,7 +240,71 @@ class Order extends Model
      */
     public function getPaymentMethodNameAttribute(): string
     {
-        return __('app.checkout.payment_methods.' . $this->payment_method);
+        if (!$this->payment_method) {
+            return __('orders.payment_method_not_specified');
+        }
+
+        $translationKey = 'app.checkout.payment_methods.' . $this->payment_method;
+        $translation = __($translationKey);
+
+        return $translation !== $translationKey
+            ? $translation
+            : __('orders.payment_method_not_specified');
+    }
+
+    /**
+     * Customer-facing note to show on order details and success screens.
+     */
+    public function getCustomerStatusNoteAttribute(): ?string
+    {
+        return $this->admin_notes ?: $this->rejection_reason;
+    }
+
+    /**
+     * Timestamp associated with the customer-facing note.
+     */
+    public function getCustomerStatusNoteDateAttribute(): mixed
+    {
+        return $this->rejected_at ?: $this->approved_at ?: $this->updated_at;
+    }
+
+    /**
+     * Format any order-related amount using the currency snapshot saved on the order.
+     */
+    public function formatMoney(mixed $amount, bool $showSymbol = true): string
+    {
+        return MoneyFormatter::formatSnapshot(
+            amount: $amount,
+            currencyCode: $this->currency_code ?: 'USD',
+            symbol: $this->getCurrencySymbol(),
+            rate: $this->getCurrencyRateValue(),
+            showSymbol: $showSymbol
+        );
+    }
+
+    /**
+     * Get the snapshot-converted amount without formatting.
+     */
+    public function convertMoney(mixed $amount): float
+    {
+        return MoneyFormatter::round(MoneyFormatter::normalize($amount) * $this->getCurrencyRateValue());
+    }
+
+    /**
+     * Get subtotal before discount using stored order values.
+     */
+    public function getSubtotalAmount(): float
+    {
+        return MoneyFormatter::round(
+            MoneyFormatter::normalize($this->total_amount) + MoneyFormatter::normalize($this->discount_amount)
+        );
+    }
+
+    private function getCurrencyRateValue(): float
+    {
+        $rate = MoneyFormatter::normalize($this->currency_rate);
+
+        return $rate > 0 ? $rate : 1.0;
     }
     
     /**
@@ -456,6 +561,8 @@ class Order extends Model
         ]);
 
         try {
+            $previousStatus = $this->status;
+
             $updateData = [
                 'status' => 'rejected',
                 'rejected_at' => now(),
@@ -474,6 +581,10 @@ class Order extends Model
                 'new_status' => $this->fresh()->status,
                 'order_id' => $this->id
             ]);
+
+            if ($previousStatus !== 'rejected') {
+                OrderStatusChanged::dispatch($this, $previousStatus, 'rejected');
+            }
 
             return true;
         } catch (\Throwable $e) {

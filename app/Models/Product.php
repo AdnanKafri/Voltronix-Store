@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Product extends Model
@@ -157,24 +158,12 @@ class Product extends Model
             return (string) $translations ?: '';
         }
         
-        // Return translation for requested locale
+        // Return translation for requested locale only (strict locale separation)
         if (isset($translations[$locale])) {
             $value = $translations[$locale];
             return is_array($value) ? '' : (string) $value;
         }
-        
-        // Fallback to English if current locale not found
-        if (isset($translations['en'])) {
-            $value = $translations['en'];
-            return is_array($value) ? '' : (string) $value;
-        }
-        
-        // Return first available translation
-        if (!empty($translations)) {
-            $firstValue = reset($translations);
-            return is_array($firstValue) ? '' : (string) $firstValue;
-        }
-        
+
         return '';
     }
 
@@ -189,17 +178,28 @@ class Product extends Model
         if (!is_array($translations)) {
             return [];
         }
-        
-        // Return array for requested locale
+
+        // Expected structure: ['en' => [...], 'ar' => [...]]
         if (isset($translations[$locale]) && is_array($translations[$locale])) {
-            return $translations[$locale];
+            return array_values(array_filter($translations[$locale], fn ($item) => is_string($item) && trim($item) !== ''));
         }
-        
-        // Fallback to English
-        if (isset($translations['en']) && is_array($translations['en'])) {
-            return $translations['en'];
+
+        // Legacy structure: [['en' => '...', 'ar' => '...'], ...]
+        if (array_is_list($translations) && !empty($translations) && is_array($translations[0])) {
+            $localized = [];
+            foreach ($translations as $item) {
+                if (isset($item[$locale]) && is_string($item[$locale]) && trim($item[$locale]) !== '') {
+                    $localized[] = $item[$locale];
+                }
+            }
+            return $localized;
         }
-        
+
+        // Legacy non-translatable structure: ['feature 1', 'feature 2', ...]
+        if (array_is_list($translations)) {
+            return array_values(array_filter($translations, fn ($item) => is_string($item) && trim($item) !== ''));
+        }
+
         return [];
     }
 
@@ -228,7 +228,7 @@ class Product extends Model
      */
     public function getFormattedPriceAttribute(): string
     {
-        return '$' . number_format($this->price, 2);
+        return currency_format($this->price);
     }
 
     /**
@@ -260,7 +260,7 @@ class Product extends Model
      */
     public function getFormattedEffectivePriceAttribute(): string
     {
-        return '$' . number_format($this->effective_price, 2);
+        return currency_format($this->effective_price);
     }
 
     /**
@@ -268,7 +268,51 @@ class Product extends Model
      */
     public function getFormattedDiscountPriceAttribute(): string
     {
-        return $this->discount_price ? '$' . number_format($this->discount_price, 2) : '';
+        return $this->discount_price ? currency_format($this->discount_price) : '';
+    }
+
+    /**
+     * Resolve stored media path to a usable URL.
+     */
+    public function resolveMediaUrl(?string $path, ?string $fallback = null): string
+    {
+        $fallback = $fallback ?: asset('images/logo.png');
+
+        if (blank($path)) {
+            return $fallback;
+        }
+
+        $path = trim($path);
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        if (Str::startsWith($path, '/')) {
+            return url($path);
+        }
+
+        if (Str::startsWith($path, 'images/')) {
+            return asset($path);
+        }
+
+        $normalizedPath = ltrim($path, '/');
+        $normalizedPath = preg_replace('#^public/#', '', $normalizedPath) ?? $normalizedPath;
+        $normalizedPath = preg_replace('#^storage/#', '', $normalizedPath) ?? $normalizedPath;
+
+        if (Storage::disk('public')->exists($normalizedPath)) {
+            return Storage::disk('public')->url($normalizedPath);
+        }
+
+        return asset('storage/' . $normalizedPath);
+    }
+
+    /**
+     * Normalized thumbnail URL for admin/frontend rendering.
+     */
+    public function getThumbnailUrlAttribute(): string
+    {
+        return $this->resolveMediaUrl($this->thumbnail);
     }
 
     /**

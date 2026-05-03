@@ -180,7 +180,7 @@
 @section('content')
 <!-- Category Header -->
 <section class="category-header">
-    <div class="container">
+    <div class="volt-container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-voltronix">
                 <li class="breadcrumb-item">
@@ -205,7 +205,7 @@
             <div class="col-lg-4 text-lg-end">
                 @if($category->thumbnail)
                     <div style="width: 120px; height: 120px; margin: 0 auto; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 15px; background: linear-gradient(135deg, var(--voltronix-primary), #00d4ff);">
-                        <img src="{{ asset('storage/' . $category->thumbnail) }}" 
+                        <img src="{{ $category->thumbnail_url }}" 
                              alt="{{ $category->getTranslation('name') }}"
                              style="width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 10px; box-sizing: border-box;">
                     </div>
@@ -226,7 +226,7 @@
 
 <!-- Products Section -->
 <section class="py-5" style="background: var(--voltronix-light);">
-    <div class="container">
+    <div class="volt-container">
         <!-- Filters and Search -->
         <div class="filters-section">
             <form method="GET" action="{{ route('categories.show', $category->slug) }}" class="row g-3">
@@ -289,7 +289,7 @@
                         <div class="product-card">
                             <div class="product-image">
                                 @if($product->thumbnail)
-                                    <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                                    <img src="{{ $product->thumbnail_url }}" 
                                          alt="{{ $product->getTranslation('name') }}"
                                          loading="lazy">
                                 @else
@@ -406,3 +406,5 @@
     });
 </script>
 @endpush
+
+

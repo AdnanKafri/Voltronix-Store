@@ -1,6 +1,8 @@
 <?php
 
 use App\Services\SettingsService;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 if (!function_exists('setting')) {
     /**
@@ -39,3 +41,34 @@ if (!function_exists('safe_subtract')) {
     }
 }
 
+if (!function_exists('display_timezone')) {
+    /**
+     * Get configured UI display timezone.
+     */
+    function display_timezone(): string
+    {
+        return config('app.display_timezone', 'Asia/Damascus');
+    }
+}
+
+if (!function_exists('local_datetime')) {
+    /**
+     * Render date/time in configured display timezone.
+     */
+    function local_datetime(mixed $value, string $format = 'Y-m-d H:i', string $fallback = '-'): string
+    {
+        if (blank($value)) {
+            return $fallback;
+        }
+
+        try {
+            if ($value instanceof CarbonInterface) {
+                return $value->copy()->timezone(display_timezone())->format($format);
+            }
+
+            return Carbon::parse($value)->timezone(display_timezone())->format($format);
+        } catch (\Throwable) {
+            return $fallback;
+        }
+    }
+}

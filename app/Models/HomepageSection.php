@@ -85,22 +85,11 @@ class HomepageSection extends Model
             return (string) $fieldContent;
         }
         
-        // Return translation for requested locale
+        // Return translation for requested locale only (strict locale separation)
         if (isset($fieldContent[$locale])) {
             return (string) $fieldContent[$locale];
         }
-        
-        // Fallback to English
-        if (isset($fieldContent['en'])) {
-            return (string) $fieldContent['en'];
-        }
-        
-        // Return first available translation
-        if (!empty($fieldContent)) {
-            $firstValue = reset($fieldContent);
-            return (string) $firstValue;
-        }
-        
+
         return '';
     }
 

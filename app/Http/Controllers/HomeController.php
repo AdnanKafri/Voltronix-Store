@@ -19,6 +19,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $locale = app()->getLocale();
         // ✅ Set homepage SEO data
         $this->setSeoData([
             'title' => __('app.hero.title'),
@@ -29,7 +30,7 @@ class HomeController extends Controller
         ]);
 
         // Cache homepage sections for 5 minutes
-        $sections = Cache::remember('homepage_sections', 300, function() {
+        $sections = Cache::remember("homepage_sections_{$locale}", 300, function() {
             return HomepageSection::active()
                 ->ordered()
                 ->get()
@@ -39,14 +40,14 @@ class HomeController extends Controller
         // Load all dynamic data
         $data = [
             'sections' => $sections,
-            'categories' => $this->loadCategories(),
-            'latestProducts' => $this->loadLatestProducts(),
-            'featuredProducts' => $this->loadFeaturedProducts(),
-            'popularProducts' => $this->loadPopularProducts(),
-            'specialOffers' => $this->loadSpecialOffers(),
-            'trendingProducts' => $this->loadTrendingProducts(),
-            'testimonials' => $this->loadTestimonials(),
-            'stats' => $this->loadStats(),
+            'categories' => $this->loadCategories($locale),
+            'latestProducts' => $this->loadLatestProducts($locale),
+            'featuredProducts' => $this->loadFeaturedProducts($locale),
+            'popularProducts' => $this->loadPopularProducts($locale),
+            'specialOffers' => $this->loadSpecialOffers($locale),
+            'trendingProducts' => $this->loadTrendingProducts($locale),
+            'testimonials' => $this->loadTestimonials($locale),
+            'stats' => $this->loadStats($locale),
         ];
 
         return view('home', $data);
@@ -55,9 +56,9 @@ class HomeController extends Controller
     /**
      * Load featured products
      */
-    private function loadFeaturedProducts()
+    private function loadFeaturedProducts(string $locale)
     {
-        return Cache::remember('homepage_featured_products', 300, function() {
+        return Cache::remember("homepage_featured_products_{$locale}", 300, function() {
             return Product::available()
                 ->where('is_featured', true)
                 ->with('category')
@@ -70,9 +71,9 @@ class HomeController extends Controller
     /**
      * Load popular products (trending)
      */
-    private function loadPopularProducts()
+    private function loadPopularProducts(string $locale)
     {
-        return Cache::remember('homepage_popular_products', 300, function() {
+        return Cache::remember("homepage_popular_products_{$locale}", 300, function() {
             // Get products with most orders or highest ratings
             return Product::available()
                 ->with(['category', 'reviews'])
@@ -86,9 +87,9 @@ class HomeController extends Controller
     /**
      * Load special offers - products with active discounts only
      */
-    private function loadSpecialOffers()
+    private function loadSpecialOffers(string $locale)
     {
-        return Cache::remember('homepage_special_offers', 300, function() {
+        return Cache::remember("homepage_special_offers_{$locale}", 300, function() {
             return Product::available()
                 ->whereNotNull('discount_price')
                 ->whereColumn('discount_price', '<', 'price')
@@ -103,9 +104,9 @@ class HomeController extends Controller
     /**
      * Load trending products - newest and most popular combined
      */
-    private function loadTrendingProducts()
+    private function loadTrendingProducts(string $locale)
     {
-        return Cache::remember('homepage_trending_products', 300, function() {
+        return Cache::remember("homepage_trending_products_{$locale}", 300, function() {
             // Get mix of newest products and popular ones
             $newest = Product::available()
                 ->with(['category'])
@@ -130,9 +131,9 @@ class HomeController extends Controller
     /**
      * Load active categories for showcase
      */
-    private function loadCategories()
+    private function loadCategories(string $locale)
     {
-        return Cache::remember('homepage_categories', 300, function() {
+        return Cache::remember("homepage_categories_{$locale}", 300, function() {
             return Category::active()
                 ->ordered()
                 ->withCount('products')
@@ -144,9 +145,9 @@ class HomeController extends Controller
     /**
      * Load latest products
      */
-    private function loadLatestProducts()
+    private function loadLatestProducts(string $locale)
     {
-        return Cache::remember('homepage_latest_products', 300, function() {
+        return Cache::remember("homepage_latest_products_{$locale}", 300, function() {
             return Product::available()
                 ->with('category')
                 ->latest()
@@ -158,9 +159,9 @@ class HomeController extends Controller
     /**
      * Load customer testimonials - Enhanced with quality control
      */
-    private function loadTestimonials()
+    private function loadTestimonials(string $locale)
     {
-        return Cache::remember('homepage_testimonials', 300, function() {
+        return Cache::remember("homepage_testimonials_{$locale}", 300, function() {
             return ProductReview::approved()
                 ->with(['product', 'user'])
                 ->where('rating', '>=', 4) // Only high-rating reviews
@@ -175,9 +176,9 @@ class HomeController extends Controller
     /**
      * Load dynamic stats from database
      */
-    private function loadStats()
+    private function loadStats(string $locale)
     {
-        return Cache::remember('homepage_stats', 300, function() {
+        return Cache::remember("homepage_stats_{$locale}", 300, function() {
             return [
                 'customers' => \App\Models\User::count(),
                 'products' => Product::available()->count(),

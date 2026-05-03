@@ -176,7 +176,7 @@
                             <td>
                                 @if($delivery->expires_at)
                                     <small class="{{ $delivery->expires_at->isPast() ? 'text-danger' : 'text-success' }}">
-                                        {{ $delivery->expires_at->format('M d, Y') }}
+                                        {{ local_datetime($delivery->expires_at, 'M d, Y') }}
                                     </small>
                                 @else
                                     <small class="text-muted">{{ __('admin.order.never') }}</small>

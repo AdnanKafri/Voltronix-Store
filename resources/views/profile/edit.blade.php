@@ -369,7 +369,7 @@
                                     <label class="form-label form-label-modern">{{ __('app.profile.member_since') }}</label>
                                     <input type="text" 
                                            class="form-control form-control-modern" 
-                                           value="{{ $user->created_at->format('F j, Y') }}" 
+                                           value="{{ local_datetime($user->created_at, 'F j, Y') }}" 
                                            readonly>
                                 </div>
                             </div>
@@ -407,7 +407,7 @@
                                                     </span>
                                                 </div>
                                                 <p class="card-text text-muted small mb-2">
-                                                    {{ $order->created_at->format('M j, Y') }}
+                                                    {{ local_datetime($order->created_at, 'M j, Y') }}
                                                 </p>
                                                 <p class="card-text">
                                                     <strong>{{ $order->formatted_total }}</strong>
@@ -548,3 +548,5 @@ document.getElementById('passwordForm').addEventListener('submit', function(e) {
 </script>
 @endpush
 @endsection
+
+

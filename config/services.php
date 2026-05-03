@@ -46,6 +46,7 @@ return [
     // Admin Notifications Configuration
     'admin' => [
         'email' => env('ADMIN_EMAIL', 'admin@voltronix.com'),
+        'emails' => env('ADMIN_EMAILS', ''),
         'sitemap_notifications' => env('SITEMAP_EMAIL_NOTIFICATIONS', false),
     ],
 

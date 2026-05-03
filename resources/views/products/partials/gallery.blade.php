@@ -7,7 +7,7 @@
     <div class="gallery-main">
         <div class="main-image" id="galleryMainImage">
             @if($product->thumbnail)
-                <img src="{{ asset('storage/' . $product->thumbnail) }}" 
+                <img src="{{ $product->thumbnail_url }}" 
                      alt="{{ $product->getTranslation('name') }}"
                      class="img-fluid main-gallery-image"
                      onclick="openLightbox(this.src)">
@@ -37,8 +37,8 @@
         <div class="thumbnail-grid">
             <!-- Main thumbnail -->
             @if($product->thumbnail)
-            <div class="thumbnail-item active" data-image="{{ asset('storage/' . $product->thumbnail) }}" onclick="selectGalleryImage(this)">
-                <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="Main">
+            <div class="thumbnail-item active" data-image="{{ $product->thumbnail_url }}" onclick="selectGalleryImage(this)">
+                <img src="{{ $product->thumbnail_url }}" alt="Main">
             </div>
             @endif
             

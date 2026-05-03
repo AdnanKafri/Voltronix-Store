@@ -33,6 +33,7 @@ class StoreProductRequest extends FormRequest
             'status' => 'required|in:available,unavailable',
             'is_featured' => 'boolean',
             'is_new' => 'boolean',
+            'features_en' => 'nullable|array',
             'features_ar' => 'nullable|array',
             'sort_order' => 'integer|min:0',
             

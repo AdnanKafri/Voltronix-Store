@@ -192,7 +192,7 @@
                     
                     <!-- Results Text -->
                     <div class="pagination-info text-muted small mt-2">
-                        {{ __('Showing') }} <span class="fw-semibold">{{ $products->firstItem() }}</span> {{ __('to') }} <span class="fw-semibold">{{ $products->lastItem() }}</span> {{ __('of') }} <span class="fw-semibold">{{ $products->total() }}</span> {{ __('results') }}
+                        {{ __('app.common.showing') }} <span class="fw-semibold">{{ $products->firstItem() }}</span> {{ __('app.common.to') }} <span class="fw-semibold">{{ $products->lastItem() }}</span> {{ __('app.common.of') }} <span class="fw-semibold">{{ $products->total() }}</span> {{ __('app.common.results') }}
                     </div>
                 </div>
             @endif

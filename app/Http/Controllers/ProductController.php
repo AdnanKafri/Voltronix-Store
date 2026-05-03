@@ -19,6 +19,10 @@ class ProductController extends Controller
      */
     public function index(Request $request): View
     {
+        $locale = app()->getLocale();
+        $namePath = "$.\"{$locale}\"";
+        $descriptionPath = "$.\"{$locale}\"";
+
         // ✅ Set products page SEO data
         $this->setSeoData([
             'title' => __('app.nav.products'),
@@ -31,11 +35,9 @@ class ProductController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->get('search');
-            $query->where(function ($q) use ($search) {
-                $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(name, '$.ar') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(description, '$.en') LIKE ?", ["%{$search}%"])
-                  ->orWhereRaw("JSON_EXTRACT(description, '$.ar') LIKE ?", ["%{$search}%"]);
+            $query->where(function ($q) use ($search, $namePath, $descriptionPath) {
+                $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, ?)) LIKE ?", [$namePath, "%{$search}%"])
+                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(description, ?)) LIKE ?", [$descriptionPath, "%{$search}%"]);
             });
         }
 
@@ -65,7 +67,7 @@ class ProductController extends Controller
                 $query->orderBy('created_at', 'desc');
                 break;
             case 'name':
-                $query->orderByRaw("JSON_EXTRACT(name, '$.en') ASC");
+                $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(name, ?)) ASC", [$namePath]);
                 break;
             default:
                 $query->ordered();
@@ -147,8 +149,9 @@ class ProductController extends Controller
         $products = Product::available()
             ->with('category')
             ->where(function ($query) use ($search) {
-                $query->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ["%{$search}%"])
-                      ->orWhereRaw("JSON_EXTRACT(name, '$.ar') LIKE ?", ["%{$search}%"]);
+                $locale = app()->getLocale();
+                $namePath = "$.\"{$locale}\"";
+                $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, ?)) LIKE ?", [$namePath, "%{$search}%"]);
             })
             ->ordered()
             ->take(10)
@@ -160,7 +163,7 @@ class ProductController extends Controller
                     'id' => $product->id,
                     'name' => $product->getTranslation('name'),
                     'price' => $product->formatted_price,
-                    'thumbnail' => $product->thumbnail ? asset('storage/' . $product->thumbnail) : null,
+                    'thumbnail' => $product->thumbnail_url,
                     'url' => route('products.show', $product->slug)
                 ];
             })
@@ -205,7 +208,7 @@ class ProductController extends Controller
                 'user_id' => auth()->id(),
                 'rating' => $request->rating,
                 'comment' => $request->comment,
-                'approved' => false // Reviews need admin approval
+                'status' => 'pending',
             ]);
 
             return response()->json([
@@ -217,7 +220,8 @@ class ProductController extends Controller
                     'comment' => $review->comment,
                     'user_name' => $review->user->name,
                     'created_at' => $review->formatted_date,
-                    'approved' => $review->approved
+                    'status' => $review->status,
+                    'approved' => $review->approved,
                 ]
             ]);
 
@@ -252,7 +256,7 @@ class ProductController extends Controller
             $review->update([
                 'rating' => $request->rating,
                 'comment' => $request->comment,
-                'approved' => false // Reset approval status
+                'status' => 'pending',
             ]);
 
             return response()->json([
@@ -264,7 +268,8 @@ class ProductController extends Controller
                     'comment' => $review->comment,
                     'user_name' => $review->user->name,
                     'created_at' => $review->formatted_date,
-                    'approved' => $review->approved
+                    'status' => $review->status,
+                    'approved' => $review->approved,
                 ]
             ]);
 

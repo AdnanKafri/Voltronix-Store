@@ -285,7 +285,7 @@
                         <div class="col-md-6">
                             <p><strong>{{ __('admin.orders.order_id') }}:</strong> {{ $order->id }}</p>
                             <p><strong>{{ __('admin.orders.order_number') }}:</strong> {{ $order->order_number }}</p>
-                            <p><strong>{{ __('admin.orders.order_date') }}:</strong> {{ $order->created_at->format('M d, Y H:i') }}</p>
+                            <p><strong>{{ __('admin.orders.order_date') }}:</strong> {{ local_datetime($order->created_at, 'M d, Y H:i') }}</p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>{{ __('admin.orders.current_status') }}:</strong> 
@@ -355,15 +355,15 @@
                                         </div>
                                     </td>
                                     <td>{{ $item->quantity }}</td>
-                                    <td>${{ number_format($item->product_price, 2) }}</td>
-                                    <td>${{ number_format($item->subtotal, 2) }}</td>
+                                    <td>{{ $order->formatMoney($item->product_price) }}</td>
+                                    <td>{{ $order->formatMoney($item->subtotal) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <th colspan="3" class="text-end">{{ __('admin.orders.total_amount') }}:</th>
-                                    <th>${{ number_format($order->total_amount, 2) }}</th>
+                                    <th>{{ $order->formatted_total }}</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -421,7 +421,7 @@
                                             <small class="text-muted">{{ __('admin.orders.expires') }}:</small>
                                             <span class="{{ $delivery->expires_at && $delivery->expires_at->isPast() ? 'text-danger' : 'text-success' }}">
                                                 @if($delivery->expires_at)
-                                                    {{ $delivery->expires_at->format('M d, Y') }}
+                                                    {{ local_datetime($delivery->expires_at, 'M d, Y') }}
                                                 @else
                                                     {{ __('admin.orders.never') }}
                                                 @endif
@@ -527,7 +527,7 @@
                                 @endif
                             </p>
                             <p><strong>{{ __('admin.orders.total_amount') }}:</strong> 
-                                {{ currency_format($order->total_amount) }}
+                                {{ $order->formatted_total }}
                             </p>
                             <p><strong>{{ __('admin.orders.currency') }}:</strong> 
                                 {{ $order->currency_code }} 
@@ -537,7 +537,7 @@
                             </p>
                             @if($order->discount_amount > 0)
                             <p><strong>{{ __('admin.orders.discount_applied') }}:</strong> 
-                                -{{ currency_format($order->discount_amount) }}
+                                -{{ $order->formatted_discount }}
                                 @if($order->coupon_code)
                                     <small class="text-muted">({{ $order->coupon_code }})</small>
                                 @endif
@@ -559,7 +559,7 @@
                                 @endif
                                 @if(isset($details['timestamp']))
                                     <p><strong>{{ __('admin.orders.payment_timestamp') }}:</strong> 
-                                        {{ \Carbon\Carbon::parse($details['timestamp'])->format('Y-m-d H:i:s') }}
+                                        {{ local_datetime($details['timestamp'], 'Y-m-d H:i:s') }}
                                     </p>
                                 @endif
                             @endif
@@ -936,3 +936,5 @@ function adminResetZoom() {
 }
 </script>
 @endpush
+
+

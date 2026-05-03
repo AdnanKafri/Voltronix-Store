@@ -561,13 +561,15 @@
                                 </div>
                                 
                                 <div class="col-12">
-                                    <label for="customer_phone" class="form-label">{{ __('app.checkout.customer_phone') }} *</label>
+                                    <label for="customer_phone" class="form-label">
+                                        {{ __('app.checkout.customer_phone') }}{{ filled($user->phone ?? null) ? '' : ' *' }}
+                                    </label>
                                     <input type="tel" 
                                            class="form-control @error('customer_phone') is-invalid @enderror" 
                                            id="customer_phone" 
                                            name="customer_phone" 
-                                           value="{{ old('customer_phone') }}" 
-                                           required>
+                                           value="{{ old('customer_phone', $user->phone ?? '') }}"
+                                           {{ blank($user->phone ?? null) ? 'required' : '' }}>
                                     @error('customer_phone')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -767,7 +769,7 @@
                             <div class="discount-details">
                                 <div class="d-flex justify-content-between">
                                     <span>{{ __('app.checkout.discount') }}:</span>
-                                    <span class="text-success">-$<span id="discountAmount">0.00</span></span>
+                                    <span class="text-success" id="discountAmount">{{ currency_format(0) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -805,6 +807,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     let appliedCouponData = null;
     const originalTotal = {{ $cartTotal }};
+    const originalTotalFormatted = @json(currency_format($cartTotal));
     
     // Coupon functionality
     const couponCodeInput = document.getElementById('couponCode');
@@ -880,8 +883,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update UI
         document.getElementById('appliedCouponCode').textContent = data.coupon.code;
         document.getElementById('appliedCouponName').textContent = data.coupon.name;
-        document.getElementById('discountAmount').textContent = data.discount;
-        document.getElementById('finalTotal').textContent = data.new_total;
+        document.getElementById('discountAmount').textContent = `-${data.formatted_discount}`;
+        document.getElementById('finalTotal').textContent = data.formatted_new_total;
         
         // Show applied coupon section
         appliedCouponDiv.style.display = 'block';
@@ -919,7 +922,7 @@ document.addEventListener('DOMContentLoaded', function() {
         appliedCouponDiv.style.display = 'none';
         originalTotalDiv.style.display = 'none';
         document.querySelector('.coupon-form').style.display = 'block';
-        document.getElementById('finalTotal').textContent = originalTotal.toFixed(2);
+        document.getElementById('finalTotal').textContent = originalTotalFormatted;
         
         // Remove hidden inputs
         const form = document.getElementById('checkoutForm');

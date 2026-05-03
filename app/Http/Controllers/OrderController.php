@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderDownload;
+use App\Events\OrderStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -54,9 +55,34 @@ class OrderController extends Controller
             abort(404);
         }
 
-        $order->load(['items.product', 'downloads', 'approvedBy', 'rejectedBy']);
+        $order->load([
+            'items.product.category',
+            'items.order',
+            'items.delivery',
+            'downloads',
+            'approvedBy',
+            'rejectedBy',
+            'coupon',
+        ]);
 
         return view('orders.show', compact('order'));
+    }
+
+    /**
+     * Display print-friendly invoice view
+     */
+    public function invoice(Order $order): View
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(404);
+        }
+
+        $order->load([
+            'items.product.category',
+            'coupon',
+        ]);
+
+        return view('orders.invoice', compact('order'));
     }
 
     /**
@@ -89,10 +115,14 @@ class OrderController extends Controller
         }
 
         // Cancel the order
+        $previousStatus = $order->status;
         $order->update([
             'status' => Order::STATUS_CANCELLED,
             'cancelled_at' => now()
         ]);
+        if ($previousStatus !== Order::STATUS_CANCELLED) {
+            OrderStatusChanged::dispatch($order->fresh(), $previousStatus, Order::STATUS_CANCELLED);
+        }
 
         $successMessage = __('orders.cancelled_successfully');
 

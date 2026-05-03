@@ -242,7 +242,7 @@ class OrderController extends Controller
                     
                     $result = $order->reject($admin, 'Status updated via admin panel', 'Status updated via admin panel');
                     \Log::info('Reject method result', ['result' => $result, 'new_status' => $order->fresh()->status]);
-                    $shouldDispatchStatusEvent = true;
+                    $shouldDispatchStatusEvent = false; // reject() already dispatches status change
                 } else {
                     \Log::info('Direct status update to rejected', ['order_id' => $order->id]);
                     $order->update(['status' => $status]);
@@ -287,7 +287,7 @@ class OrderController extends Controller
             
             return response()->json([
                 'success' => false,
-                'message' => __('admin.orders.status_update_failed') . ': ' . $e->getMessage()
+                'message' => __('admin.orders.status_update_failed')
             ], 500);
         }
     }

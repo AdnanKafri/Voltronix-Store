@@ -132,7 +132,7 @@
                         <div class="alert alert-info">
                             <h6><i class="fas fa-info-circle me-2"></i>{{ __('admin.current') }}:</h6>
                             <p class="mb-0">1 USD = {{ $currency->formatted_rate }} {{ $currency->code }}</p>
-                            <small class="text-muted">{{ __('admin.currency.last_updated') }}: {{ $currency->updated_at->format('M d, Y H:i') }}</small>
+                            <small class="text-muted">{{ __('admin.currency.last_updated') }}: {{ local_datetime($currency->updated_at, 'M d, Y H:i') }}</small>
                         </div>
                     </div>
                 </div>
@@ -316,3 +316,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endpush
 @endsection
+
+

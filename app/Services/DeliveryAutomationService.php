@@ -6,9 +6,7 @@ use App\Models\Order;
 use App\Models\OrderDelivery;
 use App\Models\DeliveryLog;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Crypt;
 
 class DeliveryAutomationService
 {
@@ -157,12 +155,12 @@ class DeliveryAutomationService
         $fileInfo = $product->getDeliveryFileInfo();
         $config = $product->getDeliveryConfig();
 
-        // Create delivery record in transaction
+        // Create delivery record in transaction with idempotency guard
         $delivery = DB::transaction(function () use ($order, $item, $product, $fileInfo, $config) {
-            // Create delivery record using same structure as manual creation
-            return OrderDelivery::create([
-                'order_id' => $order->id,
+            return OrderDelivery::firstOrCreate([
                 'order_item_id' => $item->id,
+            ], [
+                'order_id' => $order->id,
                 'user_id' => $order->user_id,
                 'type' => OrderDelivery::TYPE_FILE,
                 'title' => $product->getTranslation('name') . ' - Auto Delivery',
@@ -229,18 +227,19 @@ class DeliveryAutomationService
             'notes' => $config['credential_notes'] ?? ''
         ];
 
-        // Create delivery record in transaction
+        // Create delivery record in transaction with idempotency guard
         $delivery = DB::transaction(function () use ($order, $item, $product, $config, $credentials) {
-            return OrderDelivery::create([
-                'order_id' => $order->id,
+            return OrderDelivery::firstOrCreate([
                 'order_item_id' => $item->id,
+            ], [
+                'order_id' => $order->id,
                 'user_id' => $order->user_id,
                 'type' => OrderDelivery::TYPE_CREDENTIALS,
                 'title' => $product->getTranslation('name') . ' - Credentials',
                 'description' => 'Automatically delivered credentials upon order approval',
                 
                 // Credentials information
-                'encrypted_credentials' => json_encode($credentials),
+                'encrypted_credentials' => Crypt::encryptString(json_encode($credentials)),
                 'credentials_type' => 'login_credentials',
                 
                 // Configuration from product defaults
@@ -291,11 +290,12 @@ class DeliveryAutomationService
         // Use the license key from product configuration
         $licenseKey = $config['default_license_key'] ?? 'VTX-' . strtoupper(\Str::random(4)) . '-' . strtoupper(\Str::random(4)) . '-' . strtoupper(\Str::random(4));
 
-        // Create delivery record in transaction
+        // Create delivery record in transaction with idempotency guard
         $delivery = DB::transaction(function () use ($order, $item, $product, $config, $licenseKey) {
-            return OrderDelivery::create([
-                'order_id' => $order->id,
+            return OrderDelivery::firstOrCreate([
                 'order_item_id' => $item->id,
+            ], [
+                'order_id' => $order->id,
                 'user_id' => $order->user_id,
                 'type' => OrderDelivery::TYPE_LICENSE,
                 'title' => $product->getTranslation('name') . ' - License',

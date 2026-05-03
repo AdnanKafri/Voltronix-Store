@@ -69,6 +69,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Display Timezone
+    |--------------------------------------------------------------------------
+    |
+    | This timezone is used only when rendering date/time values in the UI.
+    | Stored timestamps remain in UTC.
+    |
+    */
+    'display_timezone' => env('APP_DISPLAY_TIMEZONE', 'Asia/Damascus'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |

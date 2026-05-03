@@ -103,7 +103,7 @@
                         </div>
 
                         <!-- Credentials Section -->
-                        <div id="credentials-section" class="mb-4" style="display: {{ in_array($delivery->type, ['credentials', 'license']) ? 'block' : 'none' }};">
+                        <div id="credentials-section" class="mb-4" style="display: {{ $delivery->type === 'credentials' ? 'block' : 'none' }};">
                             <h6 class="fw-bold">{{ __('admin.delivery.credentials_settings') }}</h6>
                             @php
                                 $credentials = $delivery->getCredentials();
@@ -135,6 +135,26 @@
                             </div>
                         </div>
 
+                        <!-- License Section -->
+                        <div id="license-section" class="mb-4" style="display: {{ $delivery->type === 'license' ? 'block' : 'none' }};">
+                            <h6 class="fw-bold">{{ __('admin.delivery.type_license') }}</h6>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="license_key" class="form-label">{{ __('admin.deliveries.license_key') }}</label>
+                                    <input
+                                        type="text"
+                                        class="form-control @error('credentials.license_key') is-invalid @enderror"
+                                        id="license_key"
+                                        name="credentials[license_key]"
+                                        value="{{ old('credentials.license_key', $delivery->license_key) }}"
+                                        placeholder="XXXX-XXXX-XXXX-XXXX">
+                                    @error('credentials.license_key')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Access Control -->
                         <h6 class="fw-bold mb-3">{{ __('admin.delivery.access_control') }}</h6>
                         <div class="row mb-4">
@@ -142,7 +162,7 @@
                                 <label for="expires_at" class="form-label">{{ __('admin.delivery.expires_at') }}</label>
                                 <input type="datetime-local" class="form-control @error('expires_at') is-invalid @enderror" 
                                        id="expires_at" name="expires_at" 
-                                       value="{{ old('expires_at', $delivery->expires_at ? $delivery->expires_at->format('Y-m-d\TH:i') : '') }}">
+                                       value="{{ old('expires_at', $delivery->expires_at ? local_datetime($delivery->expires_at, 'Y-m-d\TH:i') : '') }}">
                                 @error('expires_at')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -236,7 +256,7 @@
                     </div>
                     <div class="mb-3">
                         <strong>{{ __('admin.delivery.created') }}:</strong><br>
-                        {{ $delivery->created_at->format('M d, Y H:i') }}
+                        {{ local_datetime($order->created_at, 'M d, Y H:i') }}
                     </div>
                     <div class="mb-3">
                         <strong>{{ __('admin.delivery.status') }}:</strong><br>
@@ -261,10 +281,12 @@ function toggleDeliveryTypeFields() {
     const type = document.getElementById('type').value;
     const fileSection = document.getElementById('file-section');
     const credentialsSection = document.getElementById('credentials-section');
+    const licenseSection = document.getElementById('license-section');
     
     // Show/hide sections based on type
     fileSection.style.display = type === 'file' ? 'block' : 'none';
-    credentialsSection.style.display = ['credentials', 'license'].includes(type) ? 'block' : 'none';
+    credentialsSection.style.display = type === 'credentials' ? 'block' : 'none';
+    licenseSection.style.display = type === 'license' ? 'block' : 'none';
 }
 
 // Initialize on page load
@@ -273,3 +295,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+
+

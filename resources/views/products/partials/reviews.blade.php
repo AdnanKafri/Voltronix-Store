@@ -34,7 +34,7 @@
     @auth
         @if($canReview)
         <div class="write-review-section">
-            <h5>{{ __('products.write_review') }}</h5>
+            <h5 class="section-block-title">{{ __('products.write_review') }}</h5>
             <form id="reviewForm" class="review-form">
                 @csrf
                 <div class="rating-input mb-3">
@@ -63,27 +63,42 @@
         </div>
         @elseif($userReview)
         <div class="user-review-section">
-            <h5>{{ __('products.your_review') }}</h5>
-            <div class="user-review-card">
+            <h5 class="section-block-title">{{ __('products.your_review') }}</h5>
+            <div class="user-review-card"
+                 data-review-id="{{ $userReview->id }}"
+                 data-rating="{{ $userReview->rating }}"
+                 data-comment="{{ e($userReview->comment ?? '') }}">
                 <div class="review-header">
-                    <div class="review-rating">{!! $userReview->stars_html !!}</div>
-                    <div class="review-date">{{ $userReview->formatted_date }}</div>
+                    <div class="review-meta">
+                        <div class="review-rating">{!! $userReview->stars_html !!}</div>
+                        <div class="review-date">{{ $userReview->formatted_date }}</div>
+                    </div>
+                    <span class="review-status-badge {{ $userReview->status_badge_class }}">
+                        @if($userReview->status === 'approved')
+                            <i class="bi bi-check-circle-fill"></i>
+                        @elseif($userReview->status === 'rejected')
+                            <i class="bi bi-x-circle-fill"></i>
+                        @else
+                            <i class="bi bi-clock-fill"></i>
+                        @endif
+                        {{ $userReview->status_label }}
+                    </span>
                 </div>
                 @if($userReview->comment)
                 <div class="review-comment">{{ $userReview->comment }}</div>
                 @endif
-                @if(!$userReview->approved)
-                <div class="review-status">
+                @if($userReview->status === 'pending')
+                <div class="review-status-note">
                     <i class="bi bi-clock text-warning me-2"></i>
                     {{ __('products.review_pending_approval') }}
                 </div>
                 @endif
                 <div class="review-actions">
-                    <button class="btn btn-sm btn-outline-primary" onclick="editReview({{ $userReview->id }})">
+                    <button type="button" class="btn btn-sm btn-outline-primary review-action-btn" onclick="editReview({{ $userReview->id }})">
                         <i class="bi bi-pencil me-1"></i>
                         {{ __('products.edit_review') }}
                     </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteReview({{ $userReview->id }})">
+                    <button type="button" class="btn btn-sm btn-outline-danger review-action-btn" onclick="deleteReview({{ $userReview->id }})">
                         <i class="bi bi-trash me-1"></i>
                         {{ __('products.delete_review') }}
                     </button>
@@ -103,7 +118,7 @@
         <div class="alert alert-info">
             <i class="bi bi-person-plus me-2"></i>
             {{ __('products.login_to_review') }}
-            <a href="{{ route('login') }}" class="btn btn-sm btn-primary ms-2">{{ __('auth.login') }}</a>
+            <a href="{{ route('login') }}" class="btn btn-sm btn-primary ms-2">{{ __('app.nav.login') }}</a>
         </div>
     </div>
     @endauth
@@ -111,10 +126,13 @@
     <!-- Reviews List -->
     @if($product->approvedReviews->count() > 0)
     <div class="reviews-list">
-        <h5>{{ __('products.customer_reviews') }}</h5>
+        <h5 class="section-block-title">{{ __('products.customer_reviews') }}</h5>
         <div id="reviewsList">
             @foreach($product->approvedReviews as $review)
-            <div class="review-item" data-review-id="{{ $review->id }}" data-rating="{{ $review->rating }}">
+            <div class="review-item"
+                 data-review-id="{{ $review->id }}"
+                 data-rating="{{ $review->rating }}"
+                 data-comment="{{ e($review->comment ?? '') }}">
                 <div class="review-header">
                     <div class="reviewer-info">
                         <div class="reviewer-name">
@@ -148,23 +166,23 @@
                 <div class="review-actions">
                     @auth
                         @if($review->user_id === auth()->id())
-                            <button class="btn btn-sm btn-outline-primary" onclick="editReview({{ $review->id }})">
+                            <button type="button" class="btn btn-sm btn-outline-primary review-action-btn" onclick="editReview({{ $review->id }})">
                                 <i class="bi bi-pencil me-1"></i>
                                 {{ __('products.edit_review') }}
                             </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteReview({{ $review->id }})">
+                            <button type="button" class="btn btn-sm btn-outline-danger review-action-btn" onclick="deleteReview({{ $review->id }})">
                                 <i class="bi bi-trash me-1"></i>
                                 {{ __('products.delete_review') }}
                             </button>
                         @else
 
-                            <button class="btn btn-sm btn-outline-secondary" onclick="reportReview({{ $review->id }})">
+                            <button type="button" class="btn btn-sm btn-outline-secondary review-action-btn" onclick="reportReview({{ $review->id }})">
                                 <i class="bi bi-flag me-1"></i>
                                 {{ __('products.report_review') }}
                             </button>
                         @endif
                     @else
-                        <button class="btn btn-sm btn-outline-secondary" onclick="reportReview({{ $review->id }})">
+                        <button type="button" class="btn btn-sm btn-outline-secondary review-action-btn" onclick="reportReview({{ $review->id }})">
                             <i class="bi bi-flag me-1"></i>
                             {{ __('products.report_review') }}
                         </button>
@@ -348,8 +366,12 @@ function createReviewHtml(review) {
 
 function editReview(reviewId) {
     const reviewElement = document.querySelector(`[data-review-id="${reviewId}"]`);
-    const currentRating = reviewElement.dataset.rating;
-    const currentComment = reviewElement.querySelector('.review-comment').textContent.trim();
+    if (!reviewElement) {
+        return;
+    }
+
+    const currentRating = Number(reviewElement.dataset.rating || 0);
+    const currentComment = reviewElement.dataset.comment || reviewElement.querySelector('.review-comment')?.textContent.trim() || '';
     
     Swal.fire({
         title: '{{ __("products.edit_review") }}',
@@ -522,6 +544,13 @@ function reportReview(reviewId) {
     padding: 0;
 }
 
+.section-block-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
 .rating-summary {
     background: rgba(0, 127, 255, 0.05);
     border-radius: 15px;
@@ -601,7 +630,7 @@ function reportReview(reviewId) {
 .user-review-section {
     background: white;
     border-radius: 15px;
-    padding: 2rem;
+    padding: 1.5rem;
     margin-bottom: 2rem;
     border: 1px solid rgba(0, 127, 255, 0.1);
 }
@@ -625,10 +654,55 @@ function reportReview(reviewId) {
 }
 
 .user-review-card {
-    background: rgba(0, 127, 255, 0.05);
-    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(0, 127, 255, 0.08), rgba(35, 239, 255, 0.04));
+    border-radius: 16px;
     padding: 1.5rem;
+    border: 1px solid rgba(0, 127, 255, 0.14);
     border-left: 4px solid #007fff;
+    box-shadow: 0 14px 30px rgba(0, 127, 255, 0.08);
+}
+
+.user-review-card .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.review-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.review-status-badge.is-approved {
+    background: rgba(40, 167, 69, 0.12);
+    color: #198754;
+}
+
+.review-status-badge.is-pending {
+    background: rgba(255, 193, 7, 0.14);
+    color: #a86c00;
+}
+
+.review-status-badge.is-rejected {
+    background: rgba(220, 53, 69, 0.12);
+    color: #b42335;
+}
+
+.review-status-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.9rem;
+    color: #8a6d1d;
+    font-size: 0.92rem;
+    font-weight: 600;
 }
 
 .review-restriction .alert {
@@ -643,7 +717,7 @@ function reportReview(reviewId) {
 .review-item {
     background: white;
     border-radius: 15px;
-    padding: 1.5rem;
+    padding: 1.25rem;
     margin-bottom: 1.5rem;
     border: 1px solid rgba(0, 127, 255, 0.1);
     transition: all 0.3s ease;
@@ -660,7 +734,8 @@ function reportReview(reviewId) {
 .reviewer-info {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    gap: 1rem;
 }
 
 .reviewer-name {
@@ -677,7 +752,10 @@ function reportReview(reviewId) {
 }
 
 .review-meta {
-    text-align: right;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .review-rating {
@@ -691,8 +769,9 @@ function reportReview(reviewId) {
 
 .review-comment {
     color: #1a1a1a;
-    line-height: 1.6;
+    line-height: 1.7;
     margin-bottom: 1rem;
+    white-space: pre-line;
 }
 
 .admin-reply {
@@ -715,12 +794,20 @@ function reportReview(reviewId) {
 
 .review-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .review-actions .btn {
     font-size: 0.85rem;
+}
+
+.review-action-btn {
+    min-width: 120px;
+    justify-content: center;
 }
 
 .load-more-section {
@@ -759,9 +846,10 @@ function reportReview(reviewId) {
         flex-direction: column;
         gap: 0.5rem;
     }
-    
-    .review-meta {
-        text-align: left;
+
+    .user-review-card .review-header {
+        flex-direction: column;
+        align-items: stretch;
     }
     
     .write-review-section,
@@ -771,6 +859,10 @@ function reportReview(reviewId) {
     
     .review-actions {
         flex-wrap: wrap;
+    }
+
+    .review-action-btn {
+        width: 100%;
     }
 }
 </style>

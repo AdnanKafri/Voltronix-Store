@@ -153,6 +153,11 @@ class CheckoutController extends Controller
             $cartTotal = $this->cartService->getCartTotal();
             $user = auth()->user();
 
+            if ($request->filled('customer_phone') && $request->customer_phone !== $user->phone) {
+                $user->forceFill(['phone' => $request->customer_phone])->save();
+                $user->refresh();
+            }
+
             // Handle coupon if provided
             $coupon = null;
             $discountAmount = 0;
@@ -287,7 +292,7 @@ class CheckoutController extends Controller
                 'exception' => $e->getTraceAsString()
             ]);
 
-            $errorMessage = __('app.checkout.order_failed') . ': ' . $e->getMessage();
+            $errorMessage = __('app.checkout.order_failed');
             
             if ($request->expectsJson()) {
                 return response()->json([
@@ -328,7 +333,7 @@ class CheckoutController extends Controller
                 ];
                 break;
                 
-            case 'usdt':
+            case 'crypto_usdt':
                 $details['crypto_info'] = [
                     'wallet_address' => setting('usdt_wallet_address', ''),
                     'network' => setting('usdt_network', 'TRC20'),
@@ -336,7 +341,7 @@ class CheckoutController extends Controller
                 ];
                 break;
                 
-            case 'btc':
+            case 'crypto_btc':
                 $details['crypto_info'] = [
                     'wallet_address' => setting('btc_wallet_address', ''),
                     'network' => 'Bitcoin',
@@ -376,7 +381,7 @@ class CheckoutController extends Controller
             abort(404);
         }
 
-        $order->load(['items.product', 'items.delivery', 'downloads']);
+        $order->load(['items.product', 'items.order', 'items.delivery', 'downloads']);
         
         // Clear the order_placed session flag if set
         if (session('order_placed')) {

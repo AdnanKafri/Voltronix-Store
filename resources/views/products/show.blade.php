@@ -402,17 +402,39 @@
     }
     
     .product-features {
-        background: #f8f9fa;
-        border-radius: 15px;
-        padding: 1.5rem;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        border: 1px solid rgba(0, 127, 255, 0.16);
+        border-radius: 16px;
+        padding: 1.25rem 1.25rem 1rem;
         margin-bottom: 2rem;
+        box-shadow: 0 6px 18px rgba(0, 127, 255, 0.08);
+    }
+
+    .features-title {
+        display: flex;
+        align-items: center;
+        font-family: 'Orbitron', monospace;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--voltronix-accent);
+        margin-bottom: 1rem;
     }
     
     .feature-item {
         display: flex;
-        align-items: center;
-        margin-bottom: 0.75rem;
+        align-items: flex-start;
+        gap: 0.65rem;
+        margin-bottom: 0.7rem;
+        padding: 0.45rem 0.25rem;
+        border-radius: 10px;
+        color: #1f2a37;
         font-size: 1rem;
+        line-height: 1.45;
+        transition: background-color 0.2s ease;
+    }
+
+    .feature-item:hover {
+        background: rgba(0, 127, 255, 0.06);
     }
     
     .feature-item:last-child {
@@ -421,8 +443,9 @@
     
     .feature-icon {
         color: var(--voltronix-primary);
-        margin-right: 0.75rem;
-        font-size: 1.2rem;
+        font-size: 1.05rem;
+        margin-top: 0.1rem;
+        flex-shrink: 0;
     }
     
     .btn-add-cart {
@@ -577,7 +600,13 @@
     }
     
     .reviews-content {
-        padding: 0;
+        padding: 0.25rem 0;
+    }
+
+    .product-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
     }
     
     /* Before/After Comparison Styles */
@@ -636,6 +665,18 @@
     }
 
     @media (max-width: 768px) {
+        .product-features {
+            padding: 1rem;
+        }
+
+        .features-title {
+            font-size: 1rem;
+        }
+
+        .feature-item {
+            font-size: 0.95rem;
+        }
+
         .reviews-header {
             padding: 1.25rem 1.5rem;
         }
@@ -648,6 +689,11 @@
             flex-direction: column;
             align-items: flex-end;
             gap: 0.25rem;
+        }
+
+        .product-actions {
+            flex-direction: column;
+            align-items: stretch;
         }
         
         .comparison-image img {
@@ -726,13 +772,14 @@
                     @endif
                     
                     {{-- Product Features --}}
-                    @if($product->features && count($product->getTranslationArray('features')) > 0)
+                    @php($localizedFeatures = $product->getTranslationArray('features', app()->getLocale()))
+                    @if(!empty($localizedFeatures))
                         <div class="product-features">
-                            <h5 class="mb-3">
+                            <h5 class="features-title">
                                 <i class="bi bi-star {{ app()->getLocale() == 'ar' ? 'ms-2' : 'me-2' }}"></i>
                                 {{ __('products.features') }}
                             </h5>
-                            @foreach($product->getTranslationArray('features') as $feature)
+                            @foreach($localizedFeatures as $feature)
                                 <div class="feature-item">
                                     <i class="bi bi-check-circle-fill feature-icon"></i>
                                     {{ $feature }}
@@ -820,8 +867,8 @@
                     <div class="related-card">
                         <div class="related-image">
                             @if($related->thumbnail)
-                                <img src="{{ asset('storage/' . $related->thumbnail) }}" 
-                                     alt="{{ $related->getTranslation('name') }}"
+                                <img src="{{ $related->thumbnail_url }}" 
+                                     alt="{{ $related->getTranslation('name') }}" 
                                      loading="lazy">
                             @else
                                 <i class="bi bi-box-seam product-icon"></i>
@@ -1034,3 +1081,4 @@ function showMainImage(imageSrc, thumbElement) {
 }
 </script>
 @endpush
+

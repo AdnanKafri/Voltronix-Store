@@ -640,8 +640,8 @@
                                 </td>
                                 <td>
                                     <div class="d-flex flex-column">
-                                        <span>{{ $review->created_at->format('M d, Y') }}</span>
-                                        <small class="text-muted">{{ $review->created_at->format('H:i') }}</small>
+                                        <span>{{ local_datetime($review->created_at, 'M d, Y') }}</span>
+                                        <small class="text-muted">{{ local_datetime($review->created_at, 'H:i') }}</small>
                                     </div>
                                 </td>
                                 <td>
@@ -720,23 +720,23 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute
 
 // Update Review Status
 function updateReviewStatus(reviewId, action) {
-    const actionText = action === 'approve' ? 'Approve' : 'Reject';
+    const actionText = action === 'approve' ? '{{ __("admin.reviews_page.approve") }}' : '{{ __("admin.reviews_page.reject") }}';
     
     Swal.fire({
-        title: `${actionText} Review?`,
-        text: 'This action will change the review status.',
+        title: `${actionText} {{ __("admin.reviews.title") }}?`,
+        text: '{{ __("admin.order_status.status_change_message") }}',
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: action === 'approve' ? '#28a745' : '#ffc107',
         cancelButtonColor: '#6c757d',
         confirmButtonText: `Yes, ${actionText}`,
-        cancelButtonText: 'Cancel',
+        cancelButtonText: '{{ __("admin.common.cancel") }}',
         reverseButtons: {{ app()->getLocale() == 'ar' ? 'true' : 'false' }}
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading
             Swal.fire({
-                title: 'Processing...',
+                title: '{{ __("admin.common.loading") }}',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -755,7 +755,7 @@ function updateReviewStatus(reviewId, action) {
             .then(data => {
                 if (data.success) {
                     Swal.fire({
-                        title: 'Success!',
+                        title: '{{ __("admin.common.success") }}',
                         text: data.message,
                         icon: 'success',
                         confirmButtonColor: '#007fff'
@@ -768,10 +768,10 @@ function updateReviewStatus(reviewId, action) {
                         // Update status badge
                         if (data.status === 'approved') {
                             statusBadge.className = 'badge bg-success';
-                            statusBadge.innerHTML = '<i class="bi bi-check-circle"></i> Approved';
+                            statusBadge.innerHTML = '<i class="bi bi-check-circle"></i> {{ __("admin.common.approved") }}';
                         } else if (data.status === 'rejected') {
                             statusBadge.className = 'badge bg-danger';
-                            statusBadge.innerHTML = '<i class="bi bi-x-circle"></i> Rejected';
+                            statusBadge.innerHTML = '<i class="bi bi-x-circle"></i> {{ __("admin.common.rejected") }}';
                         }
                         
                         // Reload page to update buttons properly
@@ -779,7 +779,7 @@ function updateReviewStatus(reviewId, action) {
                     });
                 } else {
                     Swal.fire({
-                        title: 'Error!',
+                        title: '{{ __("admin.common.error") }}',
                         text: data.message,
                         icon: 'error',
                         confirmButtonColor: '#007fff'
@@ -788,8 +788,8 @@ function updateReviewStatus(reviewId, action) {
             })
             .catch(error => {
                 Swal.fire({
-                    title: 'Error!',
-                    text: 'An error occurred while processing your request.',
+                    title: '{{ __("admin.common.error") }}',
+                    text: '{{ __("admin.something_went_wrong") }}',
                     icon: 'error',
                     confirmButtonColor: '#007fff'
                 });
@@ -801,20 +801,20 @@ function updateReviewStatus(reviewId, action) {
 // Delete Review
 function deleteReview(reviewId) {
     Swal.fire({
-        title: 'Delete Review?',
-        text: 'This action cannot be undone.',
+        title: '{{ __("admin.reviews.delete") }}?',
+        text: '{{ __("admin.cannot_be_undone") }}',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, Delete',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: '{{ __("admin.yes_delete") }}',
+        cancelButtonText: '{{ __("admin.common.cancel") }}',
         reverseButtons: {{ app()->getLocale() == 'ar' ? 'true' : 'false' }}
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading
             Swal.fire({
-                title: 'Deleting...',
+                title: '{{ __("admin.common.loading") }}',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -833,7 +833,7 @@ function deleteReview(reviewId) {
             .then(data => {
                 if (data.success) {
                     Swal.fire({
-                        title: 'Deleted!',
+                        title: '{{ __("admin.common.success") }}',
                         text: data.message,
                         icon: 'success',
                         confirmButtonColor: '#007fff'
@@ -844,7 +844,7 @@ function deleteReview(reviewId) {
                     });
                 } else {
                     Swal.fire({
-                        title: 'Error!',
+                        title: '{{ __("admin.common.error") }}',
                         text: data.message,
                         icon: 'error',
                         confirmButtonColor: '#007fff'
@@ -853,8 +853,8 @@ function deleteReview(reviewId) {
             })
             .catch(error => {
                 Swal.fire({
-                    title: 'Error!',
-                    text: 'An error occurred while deleting the review.',
+                    title: '{{ __("admin.common.error") }}',
+                    text: '{{ __("admin.something_went_wrong") }}',
                     icon: 'error',
                     confirmButtonColor: '#007fff'
                 });
@@ -864,3 +864,5 @@ function deleteReview(reviewId) {
 }
 </script>
 @endpush
+
+

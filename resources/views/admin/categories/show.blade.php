@@ -283,11 +283,11 @@
                     <div class="small text-muted">
                         <div class="d-flex justify-content-between mb-2">
                             <span>{{ __('admin.category.created_at') }}:</span>
-                            <span>{{ $category->created_at->format('Y-m-d H:i') }}</span>
+                            <span>{{ local_datetime($category->created_at, 'Y-m-d H:i') }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>{{ __('admin.category.updated_at') }}:</span>
-                            <span>{{ $category->updated_at->format('Y-m-d H:i') }}</span>
+                            <span>{{ local_datetime($category->updated_at, 'Y-m-d H:i') }}</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>{{ __('admin.category.slug') }}:</span>
@@ -476,3 +476,5 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 </style>
 @endpush
+
+

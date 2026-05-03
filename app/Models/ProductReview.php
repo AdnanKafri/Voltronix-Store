@@ -95,7 +95,39 @@ class ProductReview extends Model
      */
     public function getFormattedDateAttribute(): string
     {
-        return $this->created_at->format('M d, Y');
+        return local_datetime($this->created_at, 'M d, Y');
+    }
+
+    /**
+     * Backward-compatible boolean approval flag for legacy Blade/JS.
+     */
+    public function getApprovedAttribute(): bool
+    {
+        return $this->status === 'approved';
+    }
+
+    /**
+     * Localized review status label.
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->status) {
+            'approved' => __('products.review_status_approved'),
+            'rejected' => __('products.review_status_rejected'),
+            default => __('products.review_status_pending'),
+        };
+    }
+
+    /**
+     * Badge styling for the review status indicator.
+     */
+    public function getStatusBadgeClassAttribute(): string
+    {
+        return match ($this->status) {
+            'approved' => 'is-approved',
+            'rejected' => 'is-rejected',
+            default => 'is-pending',
+        };
     }
 
     /**

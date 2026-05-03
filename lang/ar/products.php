@@ -9,7 +9,6 @@ return [
     'description' => 'الوصف',
     'specifications' => 'المواصفات',
     'features' => 'الميزات',
-    // Reviews & Ratings
     'reviews' => 'التقييمات',
     'ratings' => 'التقييمات',
     'reviews_ratings' => 'التقييمات والمراجعات',
@@ -20,15 +19,11 @@ return [
     'in_stock' => 'متوفر',
     'availability' => 'التوفر',
     'category' => 'الفئة',
-    
-    // Actions
     'add_to_cart' => 'أضف إلى السلة',
     'buy_now' => 'اشتري الآن',
     'view_details' => 'عرض التفاصيل',
     'download' => 'تحميل',
     'share' => 'مشاركة',
-    
-    // Media Types
     'gallery' => 'المعرض',
     'before_after' => 'قبل وبعد',
     'video_preview' => 'معاينة الفيديو',
@@ -36,8 +31,6 @@ return [
     'view_gallery' => 'عرض المعرض',
     'play_video' => 'تشغيل الفيديو',
     'compare_images' => 'مقارنة الصور',
-    
-    // Reviews & Ratings
     'customer_reviews' => 'تقييمات العملاء',
     'write_review' => 'اكتب تقييماً',
     'your_rating' => 'تقييمك',
@@ -54,8 +47,6 @@ return [
     'helpful' => 'مفيد',
     'not_helpful' => 'غير مفيد',
     'report_review' => 'الإبلاغ عن التقييم',
-    
-    // Rating Labels
     'excellent' => 'ممتاز',
     'very_good' => 'جيد جداً',
     'good' => 'جيد',
@@ -67,58 +58,40 @@ return [
     'average_rating' => 'متوسط التقييم',
     'rating_distribution' => 'توزيع التقييمات',
     'total_reviews' => 'إجمالي التقييمات',
-    
-    // Review Form
     'rating_required' => 'يرجى اختيار تقييم',
     'comment_placeholder' => 'شارك تجربتك مع هذا المنتج...',
     'comment_required' => 'يرجى كتابة تعليق',
     'comment_min_length' => 'يجب أن يكون التعليق 10 أحرف على الأقل',
     'comment_max_length' => 'يجب ألا يتجاوز التعليق 1000 حرف',
-    
-    // Related Products
     'related_products' => 'منتجات ذات صلة',
     'you_may_also_like' => 'قد يعجبك أيضاً',
     'similar_products' => 'منتجات مشابهة',
     'from_same_category' => 'من نفس الفئة',
-    
-    // Product Badges
     'new' => 'جديد',
     'featured' => 'مميز',
     'sale' => 'تخفيض',
     'bestseller' => 'الأكثر مبيعاً',
     'limited_time' => 'لفترة محدودة',
-    
-    // Errors
     'product_not_found' => 'المنتج غير موجود',
     'product_unavailable' => 'هذا المنتج غير متوفر حالياً',
     'review_error' => 'خطأ في إرسال التقييم. يرجى المحاولة مرة أخرى.',
     'media_load_error' => 'خطأ في تحميل محتوى الوسائط',
-    
-    // Success Messages
     'added_to_cart' => 'تم إضافة المنتج إلى السلة بنجاح!',
     'removed_from_cart' => 'تم إزالة المنتج من السلة',
     'quantity_updated' => 'تم تحديث كمية السلة',
-    
-    // Tabs
     'overview' => 'نظرة عامة',
     'details' => 'التفاصيل',
     'reviews_tab' => 'التقييمات (:count)',
     'media_tab' => 'الوسائط',
-    
-    // Lightbox
     'close' => 'إغلاق',
     'previous' => 'السابق',
     'next' => 'التالي',
     'zoom_in' => 'تكبير',
     'zoom_out' => 'تصغير',
     'fullscreen' => 'ملء الشاشة',
-    
-    // Before/After Slider
     'before' => 'قبل',
     'after' => 'بعد',
     'drag_to_compare' => 'اسحب للمقارنة',
-    
-    // Video Player
     'play' => 'تشغيل',
     'pause' => 'إيقاف مؤقت',
     'mute' => 'كتم الصوت',
@@ -126,14 +99,10 @@ return [
     'volume' => 'مستوى الصوت',
     'settings' => 'الإعدادات',
     'quality' => 'الجودة',
-    
-    // Loading States
     'loading' => 'جاري التحميل...',
     'loading_reviews' => 'جاري تحميل التقييمات...',
     'loading_media' => 'جاري تحميل الوسائط...',
     'processing' => 'جاري المعالجة...',
-    
-    // Additional UI Elements
     'no_image' => 'لا توجد صورة متاحة',
     'no_images' => 'لا توجد صور متاحة',
     'no_video' => 'لا يوجد فيديو متاح',
@@ -149,6 +118,9 @@ return [
     'no_media' => 'لا توجد وسائط متاحة',
     'load_more_reviews' => 'تحميل المزيد من التقييمات',
     'review_pending_approval' => 'تقييمك في انتظار الموافقة',
+    'review_status_pending' => 'بانتظار الموافقة',
+    'review_status_approved' => 'مقبول',
+    'review_status_rejected' => 'مرفوض',
     'edit_review' => 'تعديل التقييم',
     'update_review' => 'تحديث التقييم',
     'delete_review' => 'حذف التقييم',
@@ -161,4 +133,6 @@ return [
     'submit_report' => 'إرسال البلاغ',
     'report_submitted' => 'تم إرسال البلاغ',
     'report_thank_you' => 'شكراً لك على البلاغ. سنراجعه قريباً.',
+    'video' => 'فيديو',
+    'videos' => 'فيديوهات',
 ];

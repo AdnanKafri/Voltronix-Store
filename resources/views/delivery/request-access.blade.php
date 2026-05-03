@@ -34,7 +34,7 @@
                             @endif
                             
                             @if($delivery->expires_at && $delivery->expires_at->isPast())
-                                <li>{{ __('app.delivery.status_expired', ['date' => $delivery->expires_at->format('M d, Y H:i')]) }}</li>
+                                <li>{{ __('app.delivery.status_expired', ['date' => local_datetime($delivery->expires_at, 'M d, Y H:i')]) }}</li>
                             @endif
                             
                             @if($delivery->max_downloads && $delivery->downloads_count >= $delivery->max_downloads)
@@ -143,3 +143,5 @@ document.getElementById('accessRequestForm').addEventListener('submit', function
 });
 </script>
 @endpush
+
+

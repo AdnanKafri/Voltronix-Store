@@ -117,7 +117,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getTotalSpentAttribute(): float
     {
-        return $this->orders()->where('status', 'completed')->sum('total_amount');
+        return (float) $this->orders()
+            ->where('status', Order::STATUS_APPROVED)
+            ->sum('total_amount');
     }
 
     /**
@@ -150,7 +152,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getFormattedJoinDateAttribute(): string
     {
-        return $this->created_at->format('M d, Y');
+        return local_datetime($this->created_at, 'M d, Y');
     }
 
     /**
@@ -162,7 +164,7 @@ class User extends Authenticatable implements MustVerifyEmail
             return __('admin.users.never_logged_in');
         }
         
-        return $this->last_login_at->diffForHumans();
+        return local_datetime($this->last_login_at, 'M d, Y H:i');
     }
 
     /**
